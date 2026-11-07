@@ -145,7 +145,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         public RequestApproval()
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalConstructor);
-
+            
             try
             {
                 this.InitializeComponent();
@@ -508,7 +508,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.Approvers);
+                e.Result = XpathValidator.IsXPath(this.Approvers);
             }
             finally
             {
@@ -572,8 +572,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalEscalationIsXPathCondition, ConditionTemplate, this.Escalation);
 
             try
-            {
-                e.Result = ExpressionEvaluator.IsXPath(this.Escalation);
+            {                
+                e.Result = XpathValidator.IsXPath(this.Escalation);
             }
             finally
             {
@@ -638,7 +638,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.ApprovalEmailTemplate);
+                e.Result = XpathValidator.IsXPath(this.ApprovalEmailTemplate);
             }
             finally
             {
@@ -705,7 +705,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.EscalationEmailTemplate);
+                e.Result = XpathValidator.IsXPath(this.EscalationEmailTemplate);
             }
             finally
             {
@@ -775,7 +775,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.ApprovalCompleteEmailTemplate);
+                e.Result = XpathValidator.IsXPath(this.ApprovalCompleteEmailTemplate);
             }
             finally
             {
@@ -842,7 +842,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.ApprovalDeniedEmailTemplate);
+                e.Result = XpathValidator.IsXPath(this.ApprovalDeniedEmailTemplate);
             }
             finally
             {
@@ -909,7 +909,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.ApprovalTimeoutEmailTemplate);
+                e.Result = XpathValidator.IsXPath(this.ApprovalTimeoutEmailTemplate);
             }
             finally
             {

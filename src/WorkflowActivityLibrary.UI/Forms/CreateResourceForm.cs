@@ -594,7 +594,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                     }
 
                     // Make sure that the specified XPath filter is properly formatted
-                    if (!ExpressionEvaluator.IsXPath(definition.Right))
+                    if (!XpathValidator.IsXPath(definition.Right))
                     {
                         this.controller.ValidationError = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.QueryDefintionRightValidationError, definition.Left);
                         return false;
@@ -621,9 +621,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 
                 if (GetActorType(this.actorType.Value) == ActorType.Resolve)
                     evaluator.ParseExpression(this.actorString.Value);
-                
+
                 // Verify that the supplied conflict filter is a valid XPath query, if necessary
-                if (this.checkForConflict.Value && !ExpressionEvaluator.IsXPath(this.conflictFilter.Value))
+                if (this.checkForConflict.Value && !XpathValidator.IsXPath(this.conflictFilter.Value))
                 {
                     this.controller.ValidationError = ActivitySettings.ConflictResourceSearchFilterValidationError;
                     return false;

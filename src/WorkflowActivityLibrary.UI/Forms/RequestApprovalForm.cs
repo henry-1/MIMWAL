@@ -96,13 +96,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
 
         #endregion
 
+        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestApprovalForm"/> class.
         /// </summary>
         public RequestApprovalForm()
         {
             Logger.Instance.WriteMethodEntry();
-
+                        
             try
             {
                 // Add the standard controls to the form via the activity form controller
@@ -422,6 +424,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             }
         }
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S6580", Justification = "IFormatProvider overload of TimeSpan.TryParse not available in .NET 3.5")]
         private bool ValidateDuration()
         {
             TimeSpan parsedTimeSpan;
@@ -433,7 +436,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             if ( ExpressionEvaluator.DetermineParameterType(this.duration.Value, true) ==  Enumerations.ParameterType.Lookup)
                 return true;
 
-            if (ExpressionEvaluator.IsXPath(this.duration.Value))
+            if (XpathValidator.IsXPath(this.duration.Value))
                 return true;
             
             return false;
@@ -450,7 +453,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 return true;
             }
 
-            if (ExpressionEvaluator.IsXPath(this.threshold.Value))
+            if (XpathValidator.IsXPath(this.threshold.Value))
                 return true;
 
             if (ExpressionEvaluator.DetermineParameterType(this.threshold.Value, true) == ParameterType.Lookup)
@@ -498,7 +501,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 {
                     evaluator.ParseExpression(recipient);
                 }
-                else if (ExpressionEvaluator.IsXPath(recipient) || ExpressionEvaluator.IsEmailAddress(recipient))
+                else if (XpathValidator.IsXPath(recipient) || ExpressionEvaluator.IsEmailAddress(recipient))
                 {
                     // nothing to check
                 }
@@ -531,7 +534,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                     // Try to parse it as an expression
                     evaluator.ParseExpression(template);
                 }
-                else if (ExpressionEvaluator.IsXPath(template))
+                else if (XpathValidator.IsXPath(template))
                 {
                     // nothing to check
                 }

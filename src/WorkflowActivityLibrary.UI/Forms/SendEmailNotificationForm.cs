@@ -584,7 +584,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 }
 
                 // Make sure that the specified XPath filter is properly formatted
-                if (!ExpressionEvaluator.IsXPath(definition.Right))
+                if (!XpathValidator.IsXPath(definition.Right))
                 {
                     this.controller.ValidationError = string.Format(
                         CultureInfo.CurrentUICulture,
@@ -675,7 +675,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 {
                     evaluator.ParseExpression(recipient);
                 }
-                else if (ExpressionEvaluator.IsXPath(recipient) || ExpressionEvaluator.IsEmailAddress(recipient))
+                else if (XpathValidator.IsXPath(recipient) || ExpressionEvaluator.IsEmailAddress(recipient))
                 {
                     // nothing to check
                 }
@@ -708,7 +708,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                     // Try to parse it as an expression
                     evaluator.ParseExpression(template);
                 }
-                else if (ExpressionEvaluator.IsXPath(template))
+                else if (XpathValidator.IsXPath(template))
                 {
                     // nothing to check
                 }

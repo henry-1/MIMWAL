@@ -360,7 +360,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 }
 
                 // Verify that the supplied conflict filter is a valid XPath query
-                if (!ExpressionEvaluator.IsXPath(this.conflictFilter.Value))
+                if (!XpathValidator.IsXPath(this.conflictFilter.Value))
                 {
                     this.controller.ValidationError = ActivitySettings.ConflictFilterValidationError;
                     return false;

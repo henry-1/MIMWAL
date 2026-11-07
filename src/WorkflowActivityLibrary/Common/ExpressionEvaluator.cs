@@ -184,23 +184,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         {
             return DetermineParameterType(parameter, false);
         }
-
-        /// <summary>
-        /// Test if the specified input string is a XPath search filter
-        /// </summary>
-        /// <param name="input">input string to test as XPath</param>
-        /// <returns>True if the specified input string is XPath. Otherwise false.</returns>
-        public static bool IsXPath(string input)
-        {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsXPath, InputTemplate, input);
-
-            bool result = !string.IsNullOrEmpty(input) && input.StartsWith("/", StringComparison.OrdinalIgnoreCase);
-
-            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsXPath, InputTemplateWithReturning, input, result);
-
-            return result;
-        }
-
+                
         /// <summary>
         /// Test if the specified input string is an expression
         /// </summary>

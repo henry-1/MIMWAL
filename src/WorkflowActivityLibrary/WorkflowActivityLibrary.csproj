@@ -50,7 +50,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReferencedAssemblies\4.7.6.0\Microsoft.ResourceManagement.dll</HintPath>
     </Reference>
-	<Reference Include="Microsoft.ResourceManagement.WorkflowContract">
+    <Reference Include="Microsoft.ResourceManagement.WorkflowContract">
       <HintPath>..\ReferencedAssemblies\4.7.6.0\Microsoft.ResourceManagement.WorkflowContract.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
@@ -220,6 +220,7 @@
     <Compile Include="Common\SafeRegistryHandle.cs" />
     <Compile Include="Common\SafeTokenHandle.cs" />
     <Compile Include="Common\WellKnownGuids.cs" />
+    <Compile Include="Common\XpathValidator.cs" />
     <Compile Include="Definitions\DefinitionsConverter.cs" />
     <Compile Include="Enumerations\LogOnProvider.cs" />
     <Compile Include="Enumerations\LogOnType.cs" />

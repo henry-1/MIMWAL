@@ -570,7 +570,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                     }
 
                     // Make sure that the specified XPath filter is properly formatted
-                    if (!ExpressionEvaluator.IsXPath(definition.Right))
+                    if (!XpathValidator.IsXPath(definition.Right))
                     {
                         this.controller.ValidationError = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.QueryDefintionRightValidationError, definition.Left);
                         return false;

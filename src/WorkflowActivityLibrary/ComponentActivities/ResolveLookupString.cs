@@ -309,7 +309,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
 
             try
             {
-                if (ExpressionEvaluator.IsXPath(this.StringForResolution))
+                if (XpathValidator.IsXPath(this.StringForResolution))
                 {
                     // We'll support XPath expressions /EmailTemplate[DisplayName='[//WorkflowData/EmailTemplate]']
                     // as well as /"EmailTemplate[DisplayName='" + [//WorkflowData/EmailTemplate] + "']"
@@ -357,7 +357,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
 
             try
             {
-                if (ExpressionEvaluator.IsXPath(this.StringForResolution))
+                if (XpathValidator.IsXPath(this.StringForResolution))
                 {
                     // We'll support XPath expressions /EmailTemplate[DisplayName='[//WorkflowData/EmailTemplate]']
                     // as well as /"EmailTemplate[DisplayName='" + [//WorkflowData/EmailTemplate] + "']"

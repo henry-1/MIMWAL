@@ -71,6 +71,7 @@
     <Compile Include="Activities\SendEmailNotification.Tests.cs" />
     <Compile Include="Activities\VerifyRequests.Tests.cs" />
     <Compile Include="Activities\UpdateResources.Tests.cs" />
+    <Compile Include="Common\XpathValidator.Tests.cs" />
     <Compile Include="ExpressionFunctions\Boolean\And.Tests.cs" />
     <Compile Include="ExpressionFunctions\Boolean\Eq.Tests.cs" />
     <Compile Include="ExpressionFunctions\Boolean\GreaterThan.Tests.cs" />

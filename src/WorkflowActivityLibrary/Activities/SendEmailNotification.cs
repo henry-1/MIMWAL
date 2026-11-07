@@ -1248,7 +1248,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.EmailTemplate);
+                e.Result = XpathValidator.IsXPath(this.EmailTemplate);
             }
             finally
             {
@@ -1267,7 +1267,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.To);
+                e.Result = XpathValidator.IsXPath(this.To);
             }
             finally
             {
@@ -1286,7 +1286,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.CC);
+                e.Result = XpathValidator.IsXPath(this.CC);
             }
             finally
             {
@@ -1305,7 +1305,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                e.Result = ExpressionEvaluator.IsXPath(this.Bcc);
+                e.Result = XpathValidator.IsXPath(this.Bcc);
             }
             finally
             {
