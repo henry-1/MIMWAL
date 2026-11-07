@@ -13,7 +13,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
     using System;
     using System.Security;
     using Microsoft.Win32.SafeHandles;
-    
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Win32 safe handle implementation.
     /// </summary>
@@ -44,6 +45,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// Initializes a new instance of the SafeRegistryHandle class
         /// </summary>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S108", Justification = "Unsure if I can remove the try catch completly.")]
         [SecurityCritical]
         internal SafeRegistryHandle()
             : base(true)

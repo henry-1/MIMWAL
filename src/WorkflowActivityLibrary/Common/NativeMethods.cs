@@ -7,35 +7,165 @@
 // Native Method calls
 // </summary>
 //-----------------------------------------------------------------------------------------------------------------------
-
+#pragma warning disable CA5122
 namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Runtime.InteropServices;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Enumerations;
+    using System.Text;
+    using System.Security;
+    using Microsoft.Win32.SafeHandles;
 
     /// <summary>
     /// Class to call Win32 API's
     /// </summary>
+    [System.Security.SecurityCritical]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S101", Justification = "Approved.")]
     internal static class NativeMethods
     {
         #region Impersonation API's
 
-        /// <summary>
-        /// DPAPI flag: Prevents the display of profile error messages
-        /// </summary>
-        public const int PI_NOUI = 1;
+        public const int DefaultTimeoutExitCode = -2; // sentinel: distinguishes between "script was killed" and a real script exit code
 
-        /// <summary>
-        /// Registry Access Parameter
-        /// </summary>
-        public const int KEY_ALL_ACCESS = 0xF003F;
+        public const int ERROR_NOT_ALL_ASSIGNED = 1300;
 
-        /// <summary>
-        /// WINAPI error code for too small buffer to receive the data
-        /// </summary>
-        public const int ERROR_MORE_DATA = 0xEA;
+        public const uint TOKEN_ALL_ACCESS = 0xF01FF;
+        internal const int TOKEN_ADJUST_PRIVILEGES = 0x00000020;        
+        internal const int TOKEN_QUERY = 0x00000008;
+
+        internal const int SE_PRIVILEGE_ENABLED = 0x00000002;        
+        internal const string SE_BACKUP_NAME = "SeBackupPrivilege";
+        internal const string SE_RESTORE_NAME = "SeRestorePrivilege";
+
+        internal const int CREATE_NO_WINDOW = 0x08000000;
+        internal const int CREATE_UNICODE_ENVIRONMENT = 0x00000400;
+
+        internal const uint INFINITE = 0xFFFFFFFF;
+        internal const int STARTF_USESTDHANDLES = 0x00000100;
+        internal const int HANDLE_FLAG_INHERIT = 0x00000001;
+
+        public const uint PIPE_ACCESS_INBOUND = 0x00000001;
+        public const uint FILE_FLAG_OVERLAPPED = 0x40000000;
+        public const uint PIPE_TYPE_BYTE = 0x00000000;
+        public const uint PIPE_WAIT = 0x00000000;
+        public const uint GENERIC_WRITE = 0x40000000;
+        public const uint OPEN_EXISTING = 3;
+        public const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+
+        public const uint WAIT_TIMEOUT = 0x00000102; // 258
+        public const uint WAIT_OBJECT_0 = 0x00000000;
+        public const uint WAIT_FAILED = 0xFFFFFFFF;
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LUID
+        {
+            public uint LowPart;
+            public int HighPart;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LUID_AND_ATTRIBUTES
+        {
+            public LUID Luid;
+            public uint Attributes;
+        }
+
+        
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct TOKEN_PRIVILEGES
+        {
+            public uint PrivilegeCount;
+            public LUID_AND_ATTRIBUTES Privilege;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct STARTUPINFO
+        {
+            public int cb;
+            public string lpReserved;
+            public string lpDesktop;
+            public string lpTitle;
+            public int dwX;
+            public int dwY;
+            public int dwXSize;
+            public int dwYSize;
+            public int dwXCountChars;
+            public int dwYCountChars;
+            public int dwFillAttribute;
+            public int dwFlags;
+            public short wShowWindow;
+            public short cbReserved2;
+            public IntPtr lpReserved2;
+            public IntPtr hStdInput;
+            public IntPtr hStdOutput;
+            public IntPtr hStdError;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PROCESS_INFORMATION
+        {
+            public IntPtr hProcess;
+            public IntPtr hThread;
+            public int dwProcessId;
+            public int dwThreadId;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SECURITY_ATTRIBUTES
+        {
+            public int nLength;
+            public IntPtr lpSecurityDescriptor;
+            public bool bInheritHandle;
+        }
+
+        [SecurityCritical]
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern bool OpenThreadToken(IntPtr ThreadHandle, uint DesiredAccess, bool OpenAsSelf, out IntPtr TokenHandle);
+
+        [SecurityCritical]
+        [DllImport("advapi32.dll", SetLastError = true)]
+        internal static extern bool OpenProcessToken(IntPtr ProcessHandle, int DesiredAccess, out IntPtr TokenHandle);
+
+        [SecurityCritical]
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        internal static extern bool LookupPrivilegeValue(string lpSystemName, string lpName, ref LUID lpLuid);
+
+        [SecurityCritical]
+        [DllImport("advapi32.dll", SetLastError = true)]
+        internal static extern bool AdjustTokenPrivileges(IntPtr TokenHandle, bool DisableAllPrivileges, ref TOKEN_PRIVILEGES NewState, int BufferLength, IntPtr PreviousState, IntPtr ReturnLength);
+
+        [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern bool DuplicateTokenEx(
+            SafeTokenHandle hExistingToken,
+            uint dwDesiredAccess,
+            IntPtr lpTokenAttributes,
+            SecurityImpersonationLevel ImpersonationLevel,
+            TokenType TokenType,
+            out SafeTokenHandle phNewToken);
+
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern SafeFileHandle CreateNamedPipeW(
+            string lpName,
+            uint dwOpenMode,
+            uint dwPipeMode,
+            uint nMaxInstances,
+            uint nOutBufferSize,
+            uint nInBufferSize,
+            uint nDefaultTimeOut,
+            ref SECURITY_ATTRIBUTES lpSecurityAttributes);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern SafeFileHandle CreateFileW(
+            string lpFileName,
+            uint dwDesiredAccess,
+            uint dwShareMode,
+            ref SECURITY_ATTRIBUTES lpSecurityAttributes,
+            uint dwCreationDisposition,
+            uint dwFlagsAndAttributes,
+            IntPtr hTemplateFile);
 
         /// <summary>
         /// Advapi32 function used for logging in as a user
@@ -54,22 +184,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         internal static extern bool LogonUser(string lpszUsername, string lpszDomain, string lpszPassword, LogOnType dwLogonType, LogOnProvider dwLogonProvider, out SafeTokenHandle phToken);
 
         /// <summary>
-        /// The DuplicateToken function creates an impersonation token,
-        /// which you can use in functions such as SetThreadToken and ImpersonateLoggedOnUser.
-        /// The token created by DuplicateToken cannot be used in the CreateProcessAsUser function,
-        /// which requires a primary token.
-        /// To create a token that you can pass to CreateProcessAsUser,
-        /// use the DuplicateTokenEx function.
-        /// </summary>
-        /// <param name="hToken">A handle to an access token opened with TOKEN_DUPLICATE access</param>
-        /// <param name="impersonationLevel">Specifies the impersonation level of the new token.</param>
-        /// <param name="hNewToken">A pointer to a variable that receives a handle to the duplicate token</param>
-        /// <returns>If the function succeeds, the return value is nonzero</returns>
-        ////[DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        ////[return: MarshalAs(UnmanagedType.Bool)]
-        ////internal static extern bool DuplicateToken(IntPtr hToken, LogOnUser.ImpersonationLevel impersonationLevel, ref IntPtr hNewToken);
-
-        /// <summary>
         /// Advapi32 function used to close the handle to impersonated user token
         /// </summary>
         /// <param name="handle">Token returned from LogOnUser</param>
@@ -80,7 +194,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         internal static extern bool CloseHandle(IntPtr handle);
 
         [SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "CA5122 is firing in this case because the module is build against 3.5, which causes the entire assembly to be safe critical as the security transparency features of the .NET framework began in 4.0")]
-        [DllImport("userenv.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DllImport("userenv.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool LoadUserProfile(IntPtr hToken, ref PROFILEINFO lpProfileInfo);
 
@@ -88,6 +202,30 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         [DllImport("Userenv.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool UnloadUserProfile(IntPtr hToken, IntPtr hProfile);
+
+        [SecurityCritical]
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        internal static extern bool CreateProcessAsUserW(
+            IntPtr hToken, string lpApplicationName, string lpCommandLine,
+            IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles,
+            int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory,
+            ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
+
+        [SecurityCritical]
+        [DllImport("userenv.dll", SetLastError = true)]
+        internal static extern bool DestroyEnvironmentBlock(IntPtr lpEnvironment);
+        
+        [DllImport("userenv.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [SecurityCritical]
+        internal static extern bool CreateEnvironmentBlock(out IntPtr lpEnvironment, IntPtr hToken, bool bInherit);
+
+        [SecurityCritical]
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool GetExitCodeProcess(IntPtr hProcess, out int lpExitCode);
+
+        [SecurityCritical]
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
 
         #endregion Impersonation API's
 
@@ -109,7 +247,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// Contains information about a user profile
         /// </summary>
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct PROFILEINFO
         {
             /// <summary>
@@ -129,29 +267,34 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             /// Pointer to the name of the user.
             /// This member is used as the base name of the directory in which to scope a new profile.
             /// </summary>
+            [MarshalAs(UnmanagedType.LPWStr)]
             public string lpUserName;
 
             /// <summary>
             /// Pointer to the roaming user profile path.
             /// If the user does not have a roaming profile, this member can be NULL.
             /// </summary>
+            [MarshalAs(UnmanagedType.LPWStr)]
             public string lpProfilePath;
 
             /// <summary>
             /// Pointer to the default user profile path. This member can be NULL.
             /// </summary>
+            [MarshalAs(UnmanagedType.LPWStr)]
             public string lpDefaultPath;
 
             /// <summary>
             /// Pointer to the name of the validating domain controller, in NetBIOS format.
             /// If this member is NULL, the Windows NT 4.0-style policy will not be applied.
             /// </summary>
+            [MarshalAs(UnmanagedType.LPWStr)]
             public string lpServerName;
 
             /// <summary>
             /// Pointer to the path of the Windows NT 4.0-style policy file. 
             /// This member can be NULL.
             /// </summary>
+            [MarshalAs(UnmanagedType.LPWStr)]
             public string lpPolicyPath;
 
             /// <summary>
@@ -161,5 +304,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         }
 
         #endregion Impersonation Structures
+        
     }
 }

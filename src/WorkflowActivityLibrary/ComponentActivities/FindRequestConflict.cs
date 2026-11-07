@@ -32,18 +32,22 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
     {
         #region Windows Workflow Designer generated code
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty AdvancedRequestFilterProperty =
             DependencyProperty.Register("AdvancedRequestFilter", typeof(string), typeof(FindRequestConflict));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty MatchConditionProperty =
             DependencyProperty.Register("MatchCondition", typeof(string), typeof(FindRequestConflict));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ConflictFoundProperty =
             DependencyProperty.Register("ConflictFound", typeof(bool), typeof(FindRequestConflict));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ConflictingRequestProperty =
             DependencyProperty.Register("ConflictingRequest", typeof(Guid), typeof(FindRequestConflict));
@@ -293,7 +297,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
                 // Retrieve the Guid of the request from the instance data
                 // Fetch the resolve lookups activity and supply the currently evaluated request as the compared request
                 // This will ensure it is used for the resolution of all [//ComparedRequest/...] expressions
-                Guid request = new Guid();
+                Guid request = Guid.Empty;
                 if (e.InstanceData != null)
                 {
                     request = (Guid)(Guid?)e.InstanceData;
@@ -328,7 +332,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             try
             {
                 // Retrieve the Guid of the request from the instance data
-                Guid request = new Guid();
+                Guid request = Guid.Empty;
                 if (e.InstanceData != null)
                 {
                     request = (Guid)(Guid?)e.InstanceData;

@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A78184AA-61F8-4FC7-A8C0-A3B66CA27FBE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WorkflowActivityLibrary.Tests</RootNamespace>
+    <AssemblyName>WorkflowActivityLibrary.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ResourceManagement, Version=4.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Workflow.Activities" />
+    <Reference Include="System.Workflow.ComponentModel" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="Activities\ActivityTestHelper.cs" />
+    <Compile Include="Activities\AddDelay.Tests.cs" />
+    <Compile Include="Activities\CreateResource.Tests.cs" />
+    <Compile Include="Activities\DeleteResource.Tests.cs" />
+    <Compile Include="Activities\GenerateUniqueValue.Tests.cs" />
+    <Compile Include="Activities\RequestApproval.Tests.cs" />
+    <Compile Include="Activities\RunPowershellScript.Tests.cs" />
+    <Compile Include="Activities\MimProcessLauncher.Tests.cs" />
+    <Compile Include="Activities\SendEmailNotification.Tests.cs" />
+    <Compile Include="Activities\VerifyRequests.Tests.cs" />
+    <Compile Include="Activities\UpdateResources.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Boolean\And.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Boolean\Eq.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Boolean\GreaterThan.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Boolean\IsPresent.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Boolean\LessThan.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Boolean\Not.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Boolean\Or.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Collection\Contains.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Collection\First.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Collection\IndexByValue.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Collection\InsertValues.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Collection\Last.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Collection\RemoveValues.cs" />
+    <Compile Include="ExpressionFunctions\Collection\RemoveDuplicates.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertFromBase64.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertNumberToList.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertSidToString.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertStringToGuid.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertToBase64.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertToBoolean.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertToNumber.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertToString.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Converter\ConvertToUniqueIdentifier.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeAdd.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeBeforeTests.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeFormat.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeFromFileTimeUtc.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeFromString.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeNow.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeSubtract.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeToFileTimeUtc.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeUtcToLocalTime.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Logic\LogicBitAnd.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Logic\LogicBitNot.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Logic\LogicBitOr.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathDevide.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathMod.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathMultiply.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathNull.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathRandomNumber.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathSubstract.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Parameter\ParameterContain.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Parameter\ParameterList.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Parameter\ParametersTable.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Parameter\ParameterValue.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Parameter\ParameterValueAdded.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Parameter\ParameterValueRemoved.Tests.cs" />
+    <Compile Include="ExpressionFunctions\DateTime\DateTimeAfter.Tests.cs" />
+    <Compile Include="ExpressionFunctions\ExpressionFunctionTestHelper.cs" />
+    <Compile Include="ExpressionFunctions\Collection\SortList.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathCount.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringTitleCase.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringConcatenate.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringConcatenateMultivaluedString.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringCR.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringCRLF.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringFormatMultivaluedList.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringLeft.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringLeftPad.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringLowerCase.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringLTrim.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringMid.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringNormalizeString.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringProperCase.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringLength.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringRegexMatch.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringRegexReplace.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringReplaceString.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringRight.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringRightPad.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringRTrim.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringSplit.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringTrim.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringUpperCase.Tests.cs" />
+    <Compile Include="ExpressionFunctions\String\StringWord.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Unsorted\EscapeDNComponent.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Unsorted\GenerateRandomPassword.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Unsorted\PasswordGenerator.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Unsorted\IIF.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Unsorted\WrapXPathFilter.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Value\ValueType.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Value\ValueByKey.Tests.cs" />
+    <Compile Include="ExpressionFunctions\Value\ValueByIndex.Tests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ExpressionFunctions\Math\MathAdd.Tests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WorkflowActivityLibrary.UI\WorkflowActivityLibrary.UI.csproj">
+      <Project>{5ecc33f8-d920-47ec-af5f-f4a11fd0a4fc}</Project>
+      <Name>WorkflowActivityLibrary.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WorkflowActivityLibrary\WorkflowActivityLibrary.csproj">
+      <Project>{e2f7c594-3e4a-42df-b293-7cb418dab0da}</Project>
+      <Name>WorkflowActivityLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ExpressionFunctions\Shared\" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <SonarQubeTestProject>true</SonarQubeTestProject>
+    <SonarQubeExclude>true</SonarQubeExclude>
+  </PropertyGroup>
+</Project>

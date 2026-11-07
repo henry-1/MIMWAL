@@ -21,6 +21,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Exceptions;
+    using System.Diagnostics.CodeAnalysis;
 
     #endregion
 
@@ -29,6 +30,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
     /// </summary>
     public static class ProtectedData
     {
+        private const string ThumbprintTemplate = "Thumbprint: {0}.";
+        private const string EncryptedDataConfigTemplate = "EncryptedDataConfig: {0}.";
+
         /// <summary>
         /// Searches the certificate store of the current user and returns the matching certificate.
         /// </summary>
@@ -38,7 +42,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>The matching certificate</returns>
         public static X509Certificate2 GetCertificate(string thumbprint, StoreName storeName, StoreLocation storeLocation)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataGetCertificate, "Thumbprint: {0}.", thumbprint);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataGetCertificate, ThumbprintTemplate, thumbprint);
 
             try
             {
@@ -61,7 +65,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataGetCertificate, "Thumbprint: {0}.", thumbprint);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataGetCertificate, ThumbprintTemplate, thumbprint);
             }
         }
 
@@ -74,7 +78,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>The base64 encoded public key xml string</returns>
         public static string GetCertificatePublicKeyXml(string thumbprint, StoreName storeName, StoreLocation storeLocation)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataGetCertificatePublicKeyXml, "Thumbprint: {0}.", thumbprint);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataGetCertificatePublicKeyXml, ThumbprintTemplate, thumbprint);
 
             try
             {
@@ -91,7 +95,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataGetCertificatePublicKeyXml, "Thumbprint: {0}.", thumbprint);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataGetCertificatePublicKeyXml, ThumbprintTemplate, thumbprint);
             }
         }
 
@@ -128,6 +132,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <param name="secret">Sensitive data</param>
         /// <param name="base64EncodedPublicKeyXml">Base64 encoded RSA public key xml for encrypting the data</param>
         /// <returns>The encrypted data</returns>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S4426", Justification = "Cannot break historical ecryption configuration")]
         public static string EncryptData(SecureString secret, string base64EncodedPublicKeyXml)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataEncryptData, "PublicKeyXml: {0}.", base64EncodedPublicKeyXml);
@@ -275,7 +280,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>The decrypted data</returns>
         public static SecureString DecryptData(string encryptedDataConfig)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataDecryptData, "EncryptedDataConfig: {0}.", encryptedDataConfig);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataDecryptData, EncryptedDataConfigTemplate, encryptedDataConfig);
 
             try
             {
@@ -338,7 +343,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataDecryptData, "EncryptedDataConfig: {0}.", encryptedDataConfig);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataDecryptData, EncryptedDataConfigTemplate, encryptedDataConfig);
             }
         }
 
@@ -413,7 +418,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>The decrypted data</returns>
         private static SecureString DecryptDataUsingCertificate(string encryptedDataConfig)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataDecryptDataUsingCertificate, "EncryptedDataConfig: {0}.", encryptedDataConfig);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ProtectedDataDecryptDataUsingCertificate, EncryptedDataConfigTemplate, encryptedDataConfig);
 
             try
             {
@@ -450,7 +455,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataDecryptDataUsingCertificate, "EncryptedDataConfig: {0}.", encryptedDataConfig);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ProtectedDataDecryptDataUsingCertificate, EncryptedDataConfigTemplate, encryptedDataConfig);
             }
         }
     }

@@ -42,6 +42,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
 
         #endregion
 
+        const string LookupTemplate = "Lookup: '{0}'.";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LookupEvaluator" /> class.
         /// </summary>
@@ -49,7 +51,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Validated in ValidateLookupGrammar.")]
         public LookupEvaluator(string lookup)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.LookupEvaluatorConstructor, "Lookup: '{0}'.", lookup);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.LookupEvaluatorConstructor, LookupTemplate, lookup);
 
             try
             {
@@ -74,113 +76,10 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
                 // A read will only be required when an attribute is included in the lookup: For example, [//Delta/Attribute] or [//Target/Attribute]
                 // If the lookup represents only a parameter name, it will be resolved directly and without a standard read: For example, [//Target], [//Requestor], etc.
                 this.components = lookup.Substring(3, lookup.Length - 4).Split('/').ToList();
-                StringBuilder resourceBuilder = new StringBuilder();
+                
                 if (this.components.Count > 1)
-                {
-                    // Loop through each component of the relative lookup except for the last, which is known to be an attribute
-                    for (int i = 0; i < this.components.Count - 1; i++)
-                    {
-                        // Determine the resource name by adding the current component to all previous components
-                        // If this is the first component, do not add the preceding "/" character
-                        if (i > 0)
-                        {
-                            resourceBuilder.Append("/");
-                        }
-
-                        resourceBuilder.Append(this.components[i]);
-
-                        // Determine if the resource is associated with a required read operation
-                        // by evaluating special parsing conditions
-                        bool requiresRead = true;
-                        switch (this.Parameter)
-                        {
-                            case LookupParameter.Delta:
-
-                                // If the resource being evaluated is "Delta", or alternatively if the resource is "Delta/MultiValuedAttribute" and
-                                // is part of a "Delta/MultiValuedAttribute/Added" or "Delta/MultiValuedAttribute/Removed" expression,
-                                // it should not be added to the read dictionary as it does not represent a required resource read operation
-                                // The attribute will either be resolved by evaluating the request parameters, or the attribute needs to be resolved 
-                                // from a read on the multi-valued attribute's Added or Removed value
-                                if (i == 0)
-                                {
-                                    requiresRead = false;
-                                }
-
-                                if (i == 1 && this.components.Count > 2 &&
-                                    (this.components[2].Equals("Added", StringComparison.OrdinalIgnoreCase) ||
-                                     this.components[2].Equals("Removed", StringComparison.OrdinalIgnoreCase)))
-                                {
-                                    requiresRead = false;
-                                }
-
-                                break;
-                            case LookupParameter.ComparedRequest:
-
-                                // If the resource being evaluated is "ComparedRequest/Delta", or alternatively if the resource is "ComparedRequest/Delta/MultiValuedAttribute" and
-                                // is part of a "ComparedRequest/Delta/MultiValuedAttribute/Added" or "ComparedRequest/Delta/MultiValuedAttribute/Removed" expression,
-                                // it should not be added to the read dictionary as it does not represent a required resource read operation
-                                // The attribute will either be resolved by evaluating the compared request parameters, or the attribute needs to be resolved 
-                                // from a read on the multi-valued attribute's Added or Removed value
-                                if (this.components[1].Equals(LookupParameter.Delta.ToString(), StringComparison.OrdinalIgnoreCase))
-                                {
-                                    if (i < 2)
-                                    {
-                                        requiresRead = false;
-                                    }
-
-                                    if (this.components.Count > 3 &&
-                                        i == 2 &&
-                                        (this.components[3].Equals("Added", StringComparison.OrdinalIgnoreCase) ||
-                                         this.components[3].Equals("Removed", StringComparison.OrdinalIgnoreCase)))
-                                    {
-                                        requiresRead = false;
-                                    }
-                                }
-
-                                break;
-                            case LookupParameter.WorkflowData:
-
-                                // If the resource being evaluated is "WorkflowData",
-                                // it should not be added to the read dictionary as it does not represent a valid resource
-                                // Deep resolution against the workflow dictionary will be supported by evaluating any resources written to the dictionary
-                                // For example: WorkflowData/MyResource/DisplayName will flag WorkflowData/MyResource as a resource to be read
-                                if (i == 0)
-                                {
-                                    requiresRead = false;
-                                }
-
-                                break;
-                            case LookupParameter.Queries:
-
-                                // If the resource being evaluated is "Queries",
-                                // it should not be added to the read dictionary because it is only used to access supplied query results via a lookup key
-                                // For example: [//Queries/DirectReports/...] will facilitate lookups against the results of the "DirectReports" query
-                                if (i == 0)
-                                {
-                                    requiresRead = false;
-                                }
-
-                                break;
-                            case LookupParameter.RequestParameter:
-
-                                // The "RequestParameter" lookup parameter is only used for two supported lookups
-                                // [//RequestParameter/AllChangesAuthorizationTable] and [//RequestParameter/AllChangesActionTable]
-                                // This lookup will always be outsourced to the native FIM grammar resolution activity
-                                requiresRead = false;
-                                break;
-                        }
-
-                        // If necessary, add the resource and its attribute value
-                        // to the read dictionary
-                        if (requiresRead)
-                        {
-                            this.reads.Add(resourceBuilder.ToString(), this.components[i + 1]);
-
-                            Logger.Instance.WriteVerbose(EventIdentifier.LookupEvaluatorConstructor, "Added the resource '{0}' and its attribute '{1}' to the read dictionary.", resourceBuilder, this.components[i + 1]);
-                        }
-                    }
-                }
-
+                    CreateResourceReadDictionary();
+                
                 // Determine the target resource lookup value and attribute
                 // These values will be used when a lookup is used to express the target for an update request
                 if (this.reads.Count > 0)
@@ -210,8 +109,96 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.LookupEvaluatorConstructor, "Lookup: '{0}'.", lookup);
+                Logger.Instance.WriteMethodExit(EventIdentifier.LookupEvaluatorConstructor, LookupTemplate, lookup);
             }
+        }
+
+        private void CreateResourceReadDictionary()
+        {
+            StringBuilder resourceBuilder = new StringBuilder();
+            // Loop through each component of the relative lookup except for the last, which is known to be an attribute
+            for (int i = 0; i < this.components.Count - 1; i++)
+            {
+                // Determine the resource name by adding the current component to all previous components
+                // If this is the first component, do not add the preceding "/" character
+                if (i > 0)
+                {
+                    resourceBuilder.Append("/");
+                }
+
+                resourceBuilder.Append(this.components[i]);
+
+                // Determine if the resource is associated with a required read operation
+                // by evaluating special parsing conditions
+                bool requiresRead = GetRequiresRead(i);
+
+                // If necessary, add the resource and its attribute value
+                // to the read dictionary
+                if (requiresRead)
+                {
+                    this.reads.Add(resourceBuilder.ToString(), this.components[i + 1]);
+
+                    Logger.Instance.WriteVerbose(EventIdentifier.LookupEvaluatorConstructor, "Added the resource '{0}' and its attribute '{1}' to the read dictionary.", resourceBuilder, this.components[i + 1]);
+                }
+            }
+        }
+
+        private bool IsAddedOrRemoved(int componentIndex)
+        {
+            return this.components.Count > componentIndex &&
+                   (this.components[componentIndex].Equals("Added", StringComparison.OrdinalIgnoreCase) ||
+                    this.components[componentIndex].Equals("Removed", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private bool GetRequiresRead(int i)
+        {
+            // The "RequestParameter" lookup parameter is only used for two supported lookups
+            // [//RequestParameter/AllChangesAuthorizationTable] and [//RequestParameter/AllChangesActionTable]
+            // This lookup will always be outsourced to the native FIM grammar resolution activity
+            if (this.Parameter == LookupParameter.RequestParameter)            
+                return false;
+
+            // "WorkflowData": the root should not be added to the read dictionary as it does not represent a valid resource
+            // Deep resolution against the workflow dictionary will be supported by evaluating any resources written to the dictionary
+            // For example: WorkflowData/MyResource/DisplayName will flag WorkflowData/MyResource as a resource to be read
+            //
+            // "Queries": the root should not be added to the read dictionary because it is only used to access supplied
+            // query results via a lookup key
+            // For example: [//Queries/DirectReports/...] will facilitate lookups against the results of the "DirectReports" query
+            if ((this.Parameter == LookupParameter.WorkflowData || this.Parameter == LookupParameter.Queries) && i == 0)
+                return false;
+
+            // If the resource being evaluated is "Delta", or alternatively if the resource is "Delta/MultiValuedAttribute" and
+            // is part of a "Delta/MultiValuedAttribute/Added" or "Delta/MultiValuedAttribute/Removed" expression,
+            // it should not be added to the read dictionary as it does not represent a required resource read operation
+            // The attribute will either be resolved by evaluating the request parameters, or the attribute needs to be resolved
+            // from a read on the multi-valued attribute's Added or Removed value
+            if (this.Parameter == LookupParameter.Delta)
+            {
+                if (i == 0)
+                {
+                    return false;
+                }
+
+                return !(i == 1 && this.IsAddedOrRemoved(2));
+            }
+
+            // Same rules as "Delta", but shifted one level deeper: "ComparedRequest/Delta" and
+            // "ComparedRequest/Delta/MultiValuedAttribute" (when followed by Added or Removed) do not require a read
+            // The attribute will either be resolved by evaluating the compared request parameters, or from a read
+            // on the multi-valued attribute's Added or Removed value
+            if (this.Parameter == LookupParameter.ComparedRequest)
+            {
+                if (!this.components[1].Equals(LookupParameter.Delta.ToString(), StringComparison.OrdinalIgnoreCase))
+                    return true;
+                
+                if (i < 2)
+                    return false;
+                
+                return !(i == 2 && this.IsAddedOrRemoved(3));
+            }
+
+            return true;            
         }
 
         #region Properties
@@ -280,7 +267,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>True if look expression is valid. Otherwise false.</returns>
         public static bool ValidateLookupGrammar(string lookup)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.LookupEvaluatorValidateLookupGrammar, "Lookup: '{0}'.", lookup);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.LookupEvaluatorValidateLookupGrammar, LookupTemplate, lookup);
 
             bool valid = true;
             try
@@ -310,9 +297,10 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// </summary>
         /// <param name="lookup">The lookup expression.</param>
         /// <returns>The LookupParameter</returns>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S3878", Justification = "Split('/')[0] is a simpler expression than everything else available in .Net Framework 3.5")]
         public static LookupParameter DetermineLookupParameter(string lookup)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.LookupEvaluatorDetermineLookupParameter, "Lookup: '{0}'.", lookup);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.LookupEvaluatorDetermineLookupParameter, LookupTemplate, lookup);
 
             LookupParameter lookupParameter = LookupParameter.Unknown;
 

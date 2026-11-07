@@ -29,6 +29,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// Deletes resources
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
     public partial class DeleteResources : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -77,7 +80,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The current target.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid Target;
 
         /// <summary>
@@ -85,28 +87,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Guid> Targets;
 
         /// <summary>
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
         /// The current iterated value.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public object Value;
 
         /// <summary>
         /// The value ([//Value]) expressions.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Bound to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Dictionary<string, object> ValueExpressions;
 
         #endregion
@@ -443,20 +441,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             {
                 // Determine if requests should be submitted based on whether or not a condition was supplied
                 // and if that condition resolves to true
-                if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
-                {
-                    submitRequests = true;
-                }
-                else
-                {
-                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
-                    if (resolved is bool && (bool)resolved)
-                    {
-                        submitRequests = true;
-                    }
-                }
-
-                if (!submitRequests)
+                submitRequests = TestSubmittedRequest();
+                if(!submitRequests)
                 {
                     return;
                 }
@@ -502,6 +488,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
+        private bool TestSubmittedRequest()
+        {
+            if (string.IsNullOrEmpty(this.ActivityExecutionCondition))            
+                return true;
+
+            object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
+            return resolved is bool && (bool)resolved;            
+        }
+
         /// <summary>
         /// Handles the ChildInitialized event of the ForEachIteration ReplicatorActivity.
         /// </summary>
@@ -519,7 +514,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodEntry(EventIdentifier.DeleteResourcesForEachIterationChildInitialized, "Current Iteration Value: '{0}'.", e.InstanceData);
+                Logger.Instance.WriteMethodExit(EventIdentifier.DeleteResourcesForEachIterationChildInitialized, "Current Iteration Value: '{0}'.", e.InstanceData);
             }
         }
 
@@ -613,7 +608,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             {
                 // Cast the instance data as a Guid and prepare the delete resource activity
                 // by assigning a resource ID
-                Guid target = new Guid();
+                Guid target = Guid.Empty;
                 if (e.InstanceData != null)
                 {
                     target = (Guid)((Guid?)e.InstanceData);

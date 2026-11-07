@@ -25,6 +25,13 @@ bld/
 # Visual Studio 2015 cache/options directory
 .vs/
 
+# SonarQube directory
+.sonarqube/
+sonarqube.txt
+
+# Dependency Check
+dependency-check.txt
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -210,6 +217,9 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-/src/ReferencedAssemblies
+/src/ReferencedAssemblies/**/*.cab
+/src/ReferencedAssemblies/**/*.dll
+
 /src/SolutionOutput
 /src/WAL.snk
+

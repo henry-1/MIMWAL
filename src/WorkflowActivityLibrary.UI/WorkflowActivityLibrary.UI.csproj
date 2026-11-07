@@ -25,7 +25,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!-- <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,20 +40,20 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\WAL.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>MIMWAL.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <DelaySign>true</DelaySign>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.IdentityManagement.WebUI.Controls">
-      <HintPath>..\ReferencedAssemblies\4.1.3496.0\Microsoft.IdentityManagement.WebUI.Controls.dll</HintPath>
+      <HintPath>..\ReferencedAssemblies\4.7.6.0\Microsoft.IdentityManagement.WebUI.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.IdentityManagement.WFExtensionInterfaces">
-      <HintPath>..\ReferencedAssemblies\4.1.3496.0\Microsoft.IdentityManagement.WFExtensionInterfaces.dll</HintPath>
+      <HintPath>..\ReferencedAssemblies\4.7.6.0\Microsoft.IdentityManagement.WFExtensionInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ResourceManagement">
-      <HintPath>..\ReferencedAssemblies\4.1.3496.0\Microsoft.ResourceManagement.dll</HintPath>
+      <HintPath>..\ReferencedAssemblies\4.7.6.0\Microsoft.ResourceManagement.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -105,12 +105,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\WAL.snk">
-      <Link>WAL.snk</Link>
-    </None>
+    <!-- HS -->
+    <!--
     <None Include="..\Settings.StyleCop">
       <Link>Settings.StyleCop</Link>
     </None>
+	-->
+    <None Include="MIMWAL.snk" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ActivitySettings.resx">
@@ -137,4 +138,13 @@ xcopy /I /Y "$(SolutionDir)Scripts\*.*" "$(SolutionDir)SolutionOutput"</PostBuil
   <Target Name="AfterBuild">
   </Target>
   -->
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>1502,5122</NoWarn>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+  <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
+</PropertyGroup>
+
 </Project>

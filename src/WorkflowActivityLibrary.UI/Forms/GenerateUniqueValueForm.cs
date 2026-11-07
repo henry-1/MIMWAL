@@ -81,6 +81,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
         /// </summary>
         private readonly DefinitionsController valueExpressions;
 
+        private const string strValueExpressions = "ValueExpressions";
+
         #endregion
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
 
                 // Create a new definitions controller to allow for the specification
                 // of value expressions
-                this.valueExpressions = new DefinitionsController("ValueExpressions", 500, 0, 0)
+                this.valueExpressions = new DefinitionsController(strValueExpressions, 500, 0, 0)
                 {
                     DisplayName = ActivitySettings.ValueExpressions,
                     Description = ActivitySettings.ValueExpressionsHelpText,
@@ -251,7 +253,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 // Use the controller to persist the settings for standard activity controls
                 ActivitySettingsPartData data = this.controller.PersistSettings();
                 data = this.ldapQueries.PersistSettings(data);
-                data["ValueExpressions"] = this.FetchValueExpressions();
+                data[strValueExpressions] = this.FetchValueExpressions();
                 return data;
             }
             catch (Exception e)
@@ -278,9 +280,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 // Use the controller and definitions controller to restore settings for activity controls
                 this.controller.RestoreSettings(data);
                 this.ldapQueries.RestoreSettings(data);
-                if (data != null && data["ValueExpressions"] != null)
+                if (data != null && data[strValueExpressions] != null)
                 {
-                    this.LoadValueExpressions((ArrayList)data["ValueExpressions"]);
+                    this.LoadValueExpressions((ArrayList)data[strValueExpressions]);
                 }
 
                 this.ManageQueryLdapControls();
@@ -373,104 +375,20 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
 
                 ExpressionEvaluator evaluator = new ExpressionEvaluator();
 
-                if (this.queryLdap.Value)
+                if (this.queryLdap.Value && !ValidateLdapQuery(evaluator))
                 {
-                    // Loop through all active query listings and make sure they are valid
-                    foreach (DefinitionListing query in this.ldapQueries.DefinitionListings.Where(query => query.Active))
-                    {
-                        // If a value is missing for key or query, the definition
-                        // will be null and the listing fails validation
-                        if (query.Definition == null)
-                        {
-                            this.controller.ValidationError = ActivitySettings.LdapQueryDefinitionValidationError;
-                            return false;
-                        }
-
-                        // Make sure that the specified XPath filter is properly formatted
-                        if (!query.Definition.Right.ToUpperInvariant().Contains("[//VALUE]"))
-                        {
-                            this.controller.ValidationError = ActivitySettings.LdapQueryDefinitionValueLookupValidationError;
-                            return false;
-                        }
-
-                        // If it's an expression, make sure it's properly formatted
-                        if (ExpressionEvaluator.IsExpression(query.Definition.Left))
-                        {
-                            try
-                            {
-                                evaluator.ParseExpression(query.Definition.Left);
-                            }
-                            catch (WorkflowActivityLibraryException ex)
-                            {
-                                this.controller.ValidationError = ex.Message;
-                                return false;
-                            }
-                        }
-                    }
-                }
-
-                // Count the active value expressions
-                int count = this.valueExpressions.DefinitionListings.Count(valueExpression => valueExpression.Active);
-
-                // Loop through all active update listings and make sure they are valid
-                int i = 1;
-                foreach (DefinitionListing valueExpression in this.valueExpressions.DefinitionListings.Where(valueExpression => valueExpression.Active))
-                {
-                    if (string.IsNullOrEmpty(valueExpression.State.Left))
-                    {
-                        // If a value is missing for the expression, fail validation
-                        this.controller.ValidationError = ActivitySettings.ValueExpressionValidationError;
-                        return false;
-                    }
-
-                    // Attempt to parse the value expression
-                    try
-                    {
-                        evaluator.ParseExpression(valueExpression.State.Left);
-                    }
-                    catch (WorkflowActivityLibraryException ex)
-                    {
-                        this.controller.ValidationError = ex.Message;
-                        return false;
-                    }
-
-                    // Verify that the [//UniquenessKey] lookup is only present in the last value expression
-                    bool containsKey = valueExpression.State.Left.ToUpperInvariant().Contains("[//UNIQUENESSKEY]");
-                    if (i < count && containsKey)
-                    {
-                        this.controller.ValidationError = ActivitySettings.ValueExpressionUniquenessKeyValidationError;
-                        return false;
-                    }
-
-                    if (i == count && !containsKey)
-                    {
-                        this.controller.ValidationError = ActivitySettings.ValueExpressionMissingUniquenessKeyValidationError;
-                        return false;
-                    }
-
-                    i += 1;
-                }
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
-                    {
-                        evaluator.ParseExpression(this.activityExecutionCondition.Value);
-
-                        // Verify that the activity execution condition resolves to a Boolean value
-                        if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
-                        {
-                            this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
-                            return false;
-                        }
-                    }
-                }
-                catch (WorkflowActivityLibraryException ex)
-                {
-                    this.controller.ValidationError = ex.Message;
+                    this.controller.ValidationError = ActivitySettings.LdapFilterValidationError;
                     return false;
                 }
 
+                if (!ValidateValueExpressions(evaluator))
+                    return false;
+
+                if (!ValidateExecutionCondition(evaluator))
+                {
+                    this.controller.ValidationError = ActivitySettings.ExecutionConditionValidationError;
+                    return false;
+                }
                 // If no errors were found, clear any validation error and return true
                 this.controller.ValidationError = string.Empty;
                 return true;
@@ -484,6 +402,120 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             {
                 Logger.Instance.WriteMethodExit();
             }
+        }
+
+        private bool ValidateExecutionCondition(ExpressionEvaluator evaluator)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
+                {
+                    evaluator.ParseExpression(this.activityExecutionCondition.Value);
+
+                    // Verify that the activity execution condition resolves to a Boolean value
+                    if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
+                    {
+                        this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
+                        return false;
+                    }
+                }
+            }
+            catch (WorkflowActivityLibraryException ex)
+            {
+                this.controller.ValidationError = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        [SuppressMessage("SonarAnalyzer.CSharp", "S3267", Justification = "Avoid null-checking on State in LINQ expression")]
+        private bool ValidateValueExpressions(ExpressionEvaluator evaluator)
+        {
+            // Count the active value expressions
+            int count = this.valueExpressions.DefinitionListings.Count(valueExpression => valueExpression.Active);
+
+            // Loop through all active update listings and make sure they are valid
+            int i = 1;
+            foreach (var state in this.valueExpressions.DefinitionListings.Where(valueExpression => valueExpression.Active).Select(valueExpression => valueExpression.State))
+            {
+                if((state == null) ||  (string.IsNullOrEmpty(state.Left)))
+                {
+                    // If a value is missing for the expression, fail validation
+                    this.controller.ValidationError = ActivitySettings.ValueExpressionValidationError;
+                    return false;
+                }
+
+                // Attempt to parse the value expression
+                try
+                {
+                    evaluator.ParseExpression(state.Left);
+                }
+                catch (WorkflowActivityLibraryException ex)
+                {
+                    this.controller.ValidationError = ex.Message;
+                    return false;
+                }
+
+                // Verify that the [//UniquenessKey] lookup is only present in the last value expression
+                bool containsKey = state.Left.ToUpperInvariant().Contains("[//UNIQUENESSKEY]");
+                if (i < count && containsKey)
+                {
+                    this.controller.ValidationError = ActivitySettings.ValueExpressionUniquenessKeyValidationError;
+                    return false;
+                }
+
+                if (i == count && !containsKey)
+                {
+                    this.controller.ValidationError = ActivitySettings.ValueExpressionMissingUniquenessKeyValidationError;
+                    return false;
+                }
+
+                i += 1;
+            }
+
+            return true;
+        }
+
+        private bool ValidateLdapQuery(ExpressionEvaluator evaluator)
+        {            
+            // Loop through all active query listings and make sure they are valid
+            foreach (var definition in this.ldapQueries.DefinitionListings.Where(query => query.Active).Select(query => query.Definition))
+            {
+                // If a value is missing for key or query, the definition
+                // will be null and the listing fails validation
+                if (definition == null)
+                {
+                    this.controller.ValidationError = ActivitySettings.LdapQueryDefinitionValidationError;
+                    return false;
+                }
+
+                // Make sure that the specified XPath filter is properly formatted
+                if (!definition.Right.ToUpperInvariant().Contains("[//VALUE]"))
+                {
+                    this.controller.ValidationError = ActivitySettings.LdapQueryDefinitionValueLookupValidationError;
+                    return false;
+                }
+
+                // If it's an expression, make sure it's properly formatted
+                if (ExpressionEvaluator.IsExpression(definition.Left))
+                {
+                    try
+                    {
+                        evaluator.ParseExpression(definition.Left);
+                    }
+                    catch (WorkflowActivityLibraryException ex)
+                    {
+                        this.controller.ValidationError = ex.Message;
+                        return false;
+                    }
+                }
+
+                if (!definition.Left.StartsWith("LDAP://", StringComparison.CurrentCultureIgnoreCase))
+                    return false;
+            }            
+
+            return true;
         }
 
         /// <summary>

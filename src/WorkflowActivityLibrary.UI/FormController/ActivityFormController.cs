@@ -895,23 +895,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
 
                 // For activity text box, text box multiline, drop down list, and radio button list,
                 // perform a simple null or empty string check to determine if a value has been supplied
-                bool valueMissing = false;
-                if (control.GetType() == typeof(ActivityTextBox) && string.IsNullOrEmpty(((ActivityTextBox)control).Value.Trim()))
-                {
-                    valueMissing = true;
-                }
-                else if (control.GetType() == typeof(ActivityTextBoxMultiline) && string.IsNullOrEmpty(((ActivityTextBoxMultiline)control).Value.Trim()))
-                {
-                    valueMissing = true;
-                }
-                else if (control.GetType() == typeof(ActivityDropDownList) && string.IsNullOrEmpty(((ActivityDropDownList)control).Value.Trim()))
-                {
-                    valueMissing = true;
-                }
-                else if (control.GetType() == typeof(ActivityRadioButtonList) && string.IsNullOrEmpty(((ActivityRadioButtonList)control).Value.Trim()))
-                {
-                    valueMissing = true;
-                }
+                bool valueMissing = CheckMissingValue(control);
+
 
                 // If the control is required and no value has been supplied,
                 // assign a validation error and return false
@@ -920,46 +905,23 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
                     this.validationError.Text = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.RequiredFieldValidationError, label);
                     return false;
                 }
+                               
 
-                if (control.GetType() == typeof(ActivityTextBoxNumeric))
-                {
-                    // If the control is a numeric text box, attempt to parse the value to verify that a valid integer was supplied
-                    // Also apply a required field check to make sure a value was supplied if the control is required
-                    int parsedInt;
-                    string text = ((ActivityTextBoxNumeric)control).TextBoxControl.Text.Trim();
-
-                    if ((control.Required && string.IsNullOrEmpty(text)) ||
-                        (!string.IsNullOrEmpty(text) && !int.TryParse(text, out parsedInt)))
-                    {
-                        this.validationError.Text = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.NumericFieldValidationError, label);
-                        return false;
-                    }
+                if (control.GetType() == typeof(ActivityTextBoxNumeric) && 
+                    !ValidActivityTextBoxNumeric(control))
+                {   
+                    this.validationError.Text = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.NumericFieldValidationError, label);
+                    return false;
                 }
 
-                if (control.GetType() == typeof(ActivityTextBoxGuid))
-                {
-                    // If the control is a Guid check box, attempt to parse the value to verify that a valid Guid was supplied
-                    // Also apply a required field check to make sure a value was supplied if the control is required
-                    Guid parsedGuid = new Guid();
-                    string text = ((ActivityTextBoxGuid)control).TextBoxControl.Text.Trim();
-
-                    try
-                    {
-                        parsedGuid = new Guid(text);
-                    }
-                    catch (ArgumentNullException)
-                    {
-                    }
-                    catch (FormatException)
-                    {
-                    }
-
-                    if ((control.Required && string.IsNullOrEmpty(text)) ||
-                        (!string.IsNullOrEmpty(text) && parsedGuid == Guid.Empty))
-                    {
-                        this.validationError.Text = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.GuidFieldValidationError, label);
-                        return false;
-                    }
+                if (control.GetType() == typeof(ActivityTextBoxGuid)  &&
+                    !ValidActivityTextBoxGuid(control))
+                {   
+                    this.validationError.Text = string.Format(
+                        CultureInfo.CurrentUICulture,
+                        ActivitySettings.GuidFieldValidationError,
+                        label);
+                    return false;
                 }
             }
 
@@ -967,6 +929,51 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
             // and return a true value to indicate validity
             this.validationError.Text = string.Empty;
             return true;
+        }
+
+        private static bool ValidActivityTextBoxGuid(ActivityControl control)
+        {
+            // If the control is a Guid check box, attempt to parse the value to verify that a valid Guid was supplied
+            // Also apply a required field check to make sure a value was supplied if the control is required
+            ActivityTextBoxGuid guidControl = (ActivityTextBoxGuid)control;
+            string text = guidControl.TextBoxControl.Text.Trim();
+
+            if ((control.Required && string.IsNullOrEmpty(text)) ||
+                (!string.IsNullOrEmpty(text) && guidControl.Value == Guid.Empty))
+            {                
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidActivityTextBoxNumeric(ActivityControl control)
+        {
+            // If the control is a numeric text box, attempt to parse the value to verify that a valid integer was supplied
+            // Also apply a required field check to make sure a value was supplied if the control is required
+            int parsedInt;
+            string text = ((ActivityTextBoxNumeric)control).TextBoxControl.Text.Trim();
+
+            if ((control.Required && string.IsNullOrEmpty(text)) ||
+                (!string.IsNullOrEmpty(text) && !int.TryParse(text, out parsedInt)))
+            {                
+                return false;
+            }
+            return true;
+        }
+
+        private static bool CheckMissingValue(ActivityControl control)
+        {
+            return (control.GetType() == typeof(ActivityTextBox) &&
+                                    string.IsNullOrEmpty(((ActivityTextBox)control).Value.Trim()))
+                                ||
+                                (control.GetType() == typeof(ActivityTextBoxMultiline) &&
+                                    string.IsNullOrEmpty(((ActivityTextBoxMultiline)control).Value.Trim()))
+                                ||
+                                (control.GetType() == typeof(ActivityDropDownList) &&
+                                    string.IsNullOrEmpty(((ActivityDropDownList)control).Value.Trim()))
+                                ||
+                                (control.GetType() == typeof(ActivityRadioButtonList) &&
+                                    string.IsNullOrEmpty(((ActivityRadioButtonList)control).Value.Trim()));
         }
 
         #endregion

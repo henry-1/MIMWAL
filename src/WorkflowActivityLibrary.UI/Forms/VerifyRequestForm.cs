@@ -354,73 +354,28 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             {
                 // Use the controller to validate standard activity controls
                 // and return false if a problem was identified
-                if (!this.controller.ValidateInputs())
-                {
+                if (!this.controller.ValidateInputs())                
                     return false;
-                }
-
+                
                 // If standard activity controls are valid,
                 // loop through all active definition listings and make sure they are valid
                 ExpressionEvaluator evaluator = new ExpressionEvaluator();
-                foreach (DefinitionListing condition in this.conditions.DefinitionListings.Where(condition => condition.Active))
-                {
-                    if (condition.Definition == null)
-                    {
-                        // If a value is missing for the left or right listing fields, the definition
-                        // will be null and the listing fails validation
-                        // Because the activity allows for verification of uniqueness only without additional conditions,
-                        // we need to check if this is the only active listing for the form and, if so, 
-                        // verify that all fields have been left blank before failing validation
-                        int countActive = this.conditions.DefinitionListings.Count(l => l.Active);
-                        if (countActive != 1 ||
-                            !string.IsNullOrEmpty(condition.State.Left) ||
-                            !string.IsNullOrEmpty(condition.State.Right))
-                        {
-                            this.controller.ValidationError = ActivitySettings.ConditionDefinitionValidationError;
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        // Attempt to parse the condition and fail validation
-                        // if an exception is thrown by the expression evaluator
-                        try
-                        {
-                            evaluator.ParseExpression(condition.Definition.Left);
-                        }
-                        catch (WorkflowActivityLibraryException ex)
-                        {
-                            this.controller.ValidationError = ex.Message;
-                            return false;
-                        }
-
-                        // Verify that the condition resolves to a Boolean value
-                        bool parseBoolean;
-                        if (!evaluator.IsBooleanExpression(condition.Definition.Left) &&
-                            !bool.TryParse(condition.Definition.Left, out parseBoolean))
-                        {
-                            this.controller.ValidationError = ActivitySettings.ConditionEvaluationValidationError;
-                            return false;
-                        }
-                    }
-                }
+                if (!ValidateConditions(evaluator))
+                    return false;
 
                 try
                 {
-                    if (this.advanced.Value)
+                    if ((this.advanced.Value) && (!string.IsNullOrEmpty(this.activityExecutionCondition.Value)))
                     {
-                        if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
-                        {
-                            evaluator.ParseExpression(this.activityExecutionCondition.Value);
+                        evaluator.ParseExpression(this.activityExecutionCondition.Value);
 
-                            // Verify that the activity execution condition resolves to a Boolean value
-                            if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
-                            {
-                                this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
-                                return false;
-                            }
+                        // Verify that the activity execution condition resolves to a Boolean value
+                        if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
+                        {
+                            this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
+                            return false;
                         }
-                    }
+                    }                    
                 }
                 catch (WorkflowActivityLibraryException ex)
                 {
@@ -441,6 +396,56 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             {
                 Logger.Instance.WriteMethodExit();
             }
+        }
+
+        private bool ValidateConditions(ExpressionEvaluator evaluator)
+        {
+            int countActive = this.conditions.DefinitionListings.Count(l => l.Active);
+
+            foreach (DefinitionListing condition in this.conditions.DefinitionListings.Where(condition => condition.Active))
+            {
+                if (condition.Definition == null)
+                {
+                    // If a value is missing for the left or right listing fields, the definition
+                    // will be null and the listing fails validation
+                    // Because the activity allows for verification of uniqueness only without additional conditions,
+                    // we need to check if this is the only active listing for the form and, if so, 
+                    // verify that all fields have been left blank before failing validation
+
+                    if (countActive != 1 ||
+                        !string.IsNullOrEmpty(condition.State.Left) ||
+                        !string.IsNullOrEmpty(condition.State.Right))
+                    {
+                        this.controller.ValidationError = ActivitySettings.ConditionDefinitionValidationError;
+                        return false;
+                    }
+
+                    continue;
+                }
+
+                // Attempt to parse the condition and fail validation
+                // if an exception is thrown by the expression evaluator
+                try
+                {
+                    evaluator.ParseExpression(condition.Definition.Left);
+
+                    // Verify that the condition resolves to a Boolean value
+                    bool parseBoolean;
+                    if (!evaluator.IsBooleanExpression(condition.Definition.Left) &&
+                        !bool.TryParse(condition.Definition.Left, out parseBoolean))
+                    {
+                        this.controller.ValidationError = ActivitySettings.ConditionEvaluationValidationError;
+                        return false;
+                    }
+                }
+                catch (WorkflowActivityLibraryException ex)
+                {
+                    this.controller.ValidationError = ex.Message;
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

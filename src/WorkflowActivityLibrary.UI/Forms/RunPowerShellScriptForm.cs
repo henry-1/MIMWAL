@@ -27,6 +27,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Exceptions;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Definitions;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormController;
+    using System.Globalization;
 
     #endregion
 
@@ -37,6 +38,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
     internal class RunPowerShellScriptForm : ActivitySettingsPart
     {
         #region Declarations
+
+        private const string strArguments = "Arguments";
 
         /// <summary>
         /// The activity display name textbox
@@ -123,6 +126,16 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
         /// </summary>
         private readonly ActivityTextBox powerShellUserPassword;
 
+        /// <summary>
+        /// The PowerShell user password textbox
+        /// </summary>
+        private readonly ActivityTextBox powerShellExecutionTimeout;
+
+        /// <summary>
+        /// Windows Powershell (5.x) or Powershell (7.x)
+        /// </summary>
+        private readonly ActivityDropDownList powershellVersion;
+
         #endregion
 
         /// <summary>
@@ -137,6 +150,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 // Add standard controls to the form via the activity form controller
                 this.activityDisplayName = this.controller.AddDisplayNameTextBox(ActivitySettings.ActivityDisplayName);
 
+                this.powershellVersion = this.controller.AddDropDownList(ActivitySettings.PowershellVersion, ActivitySettings.PowershellVersionHelpText);
+                this.powerShellExecutionTimeout = this.controller.AddTextBox(ActivitySettings.PowershellRequestTimeout, ActivitySettings.PowershellRequestTimeoutHelpText, false, true);
+
                 this.advanced = this.controller.AddCheckBox(ActivitySettings.AdvancedFeatures, ActivitySettings.AdvancedFeaturesHelpText);
                 this.advanced.CheckBoxControl.CheckedChanged += this.Advanced_CheckedChanged;
                 this.advanced.CheckBoxControl.AutoPostBack = true;
@@ -145,7 +161,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
 
                 this.powerShellUser = this.controller.AddTextBox(ActivitySettings.PowerShellUser, ActivitySettings.PowerShellUserHelpText, false, false);
                 this.powerShellUserPassword = this.controller.AddTextBox(ActivitySettings.PowerShellUserPassword, ActivitySettings.PowerShellUserPasswordHelpText, false, false);
-
                 this.impersonatePowerShellUser = this.controller.AddCheckBox(ActivitySettings.ImpersonatePowerShellUser, ActivitySettings.ImpersonatePowerShellUserHelpText, false, false);
                 this.impersonatePowerShellUser.CheckBoxControl.CheckedChanged += this.ImpersonatePowerShellUser_CheckedChanged;
                 this.impersonatePowerShellUser.CheckBoxControl.AutoPostBack = true;
@@ -174,7 +189,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
 
                 // Create a new instance of the definitions controller to capture arguments
                 // The visibility of the arguments control will be based on the input type selection
-                this.arguments = new DefinitionsController("Arguments", 500, 0, 0)
+                this.arguments = new DefinitionsController(strArguments, 500, 0, 0)
                 {
                     DisplayName = ActivitySettings.ScriptArguments,
                     Description = ActivitySettings.ScriptArgumentsHelpText,
@@ -191,12 +206,18 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 this.returnValueLookup = this.controller.AddTextBox(ActivitySettings.ScriptReturnValueLookup, ActivitySettings.ScriptReturnValueLookupHelpText, false, false);
 
                 // Configure controls
+
+                this.powershellVersion.AddListItem(ActivitySettings.Powershell5, PowershellVersion.WindowsPowershell.ToString());
+                this.powershellVersion.AddListItem(ActivitySettings.Powershell7, PowershellVersion.Powershell.ToString());
+
+                this.powerShellExecutionTimeout.TextBoxControl.TextMode = TextBoxMode.SingleLine;
+
                 this.script.TextBoxControl.TextMode = TextBoxMode.MultiLine;
                 this.script.TextBoxControl.Wrap = false;
                 this.script.TextBoxControl.Width = 300;
                 this.script.TextBoxControl.Rows = 10;
 
-                this.failOnMissing.Value = true;
+                this.failOnMissing.Value = true;                      
 
                 this.scriptLocation.AddListItem(ActivitySettings.ScriptLocationWorkflowDefinition, PowerShellScriptLocation.WorkflowDefinition.ToString());
                 this.scriptLocation.AddListItem(ActivitySettings.ScriptLocationDisk, PowerShellScriptLocation.Disk.ToString());
@@ -267,19 +288,21 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 RunPowerShellScript wfa = new RunPowerShellScript
                 {
                     ActivityDisplayName = this.activityDisplayName.Value,
+                    PowerShellVersion = this.powershellVersion.Value,
+                    PowerShellTimeout = string.IsNullOrEmpty(this.powerShellExecutionTimeout.Value) ? 0 : System.Convert.ToInt16(this.powerShellExecutionTimeout.Value),
                     Advanced = this.advanced.Value,
                     ActivityExecutionCondition = this.activityExecutionCondition.Value,
                     PowerShellUser = this.powerShellUser.Value,
                     PowerShellUserPassword = this.powerShellUserPassword.Value,
                     ImpersonatePowerShellUser = this.impersonatePowerShellUser.Value,
                     ImpersonatePowerShellUserLoadUserProfile = this.loadUserProfile.Value,
-                    ImpersonatePowerShellUserLogOnType = this.impersonatePowerShellUser.Value ? GetImpersonationLogOnType(this.impersonationLogOnType.Value) : LogOnType.None,
+                    ImpersonatePowerShellUserLogOnType = this.impersonatePowerShellUser.Value ? GetImpersonationLogOnType(this.impersonationLogOnType.Value) : LogOnType.None,                    
                     ScriptLocation = GetScriptLocation(this.scriptLocation.Value),
                     Script = this.script.Value,
                     FailOnMissing = this.failOnMissing.Value,
                     InputType = GetInputType(this.inputType.Value),
                     ReturnType = GetReturnType(this.returnType.Value),
-                    ReturnValueLookup = this.returnValueLookup.Value
+                    ReturnValueLookup = this.returnValueLookup.Value                    
                 };
 
                 // Depending on the input type selection,
@@ -338,6 +361,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 this.powerShellUser.Value = wfa.PowerShellUser;
                 this.powerShellUserPassword.Value = wfa.PowerShellUserPassword;
                 this.impersonatePowerShellUser.Value = wfa.ImpersonatePowerShellUser;
+                this.powershellVersion.Value = wfa.PowerShellVersion;                
+                this.powerShellExecutionTimeout.Value = wfa.PowerShellTimeout.ToString();                
                 this.loadUserProfile.Value = wfa.ImpersonatePowerShellUserLoadUserProfile;
                 this.impersonationLogOnType.Value = wfa.ImpersonatePowerShellUser ? wfa.ImpersonatePowerShellUserLogOnType.ToString() : null;
                 this.scriptLocation.Value = wfa.ScriptLocation.ToString();
@@ -379,7 +404,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 // but arguments implement custom logic because we're only interested in an array list of values
                 ActivitySettingsPartData data = this.controller.PersistSettings();
                 this.parameters.PersistSettings(data);
-                data["Arguments"] = this.FetchArguments();
+                data[strArguments] = this.FetchArguments();
                 return data;
             }
             catch (Exception e)
@@ -407,9 +432,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 // manages the control visibility and configuration
                 this.controller.RestoreSettings(data);
                 this.parameters.RestoreSettings(data);
-                if (data != null && data["Arguments"] != null)
+                if (data != null && data[strArguments] != null)
                 {
-                    this.LoadArguments((ArrayList)data["Arguments"]);
+                    this.LoadArguments((ArrayList)data[strArguments]);
                 }
 
                 this.ManageScriptControl();
@@ -428,6 +453,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 Logger.Instance.WriteMethodExit();
             }
         }
+
+        
 
         /// <summary>
         /// Switches the activity UI between read only mode and edit mode.
@@ -455,6 +482,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             }
         }
 
+        
+
         /// <summary>
         /// Validates the inputs. Returns true if all of the UI controls contain valid values. Otherwise, returns false.
         /// </summary>
@@ -471,117 +500,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 }
 
                 ExpressionEvaluator evaluator = new ExpressionEvaluator();
-                switch (GetInputType(this.inputType.Value))
-                {
-                    case PowerShellInputType.Parameters:
-                        foreach (DefinitionListing parameter in this.parameters.DefinitionListings.Where(parameter => parameter.Active))
-                        {
-                            if (parameter.Definition == null)
-                            {
-                                // If a value is missing for parameter name or value expression, the definition
-                                // will be null and the listing fails validation
-                                this.controller.ValidationError = ActivitySettings.ScriptParameterDefintionValidationError;
-                                return false;
-                            }
-
-                            // Attempt to parse the value expression
-                            try
-                            {
-                                evaluator.ParseExpression(parameter.Definition.Right);
-                            }
-                            catch (WorkflowActivityLibraryException ex)
-                            {
-                                this.controller.ValidationError = ex.Message;
-                                return false;
-                            }
-                        }
-
-                        break;
-                    case PowerShellInputType.Arguments:
-                        foreach (DefinitionListing argument in this.arguments.DefinitionListings.Where(argument => argument.Active))
-                        {
-                            if (string.IsNullOrEmpty(argument.State.Left))
-                            {
-                                // If a value is missing for the expression, fail validation
-                                this.controller.ValidationError = ActivitySettings.ScriptArgumentValidationError;
-                                return false;
-                            }
-
-                            // Attempt to parse the value expression
-                            try
-                            {
-                                evaluator.ParseExpression(argument.State.Left);
-                            }
-                            catch (WorkflowActivityLibraryException ex)
-                            {
-                                this.controller.ValidationError = ex.Message;
-                                return false;
-                            }
-                        }
-
-                        break;
-                }
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
-                    {
-                        evaluator.ParseExpression(this.activityExecutionCondition.Value);
-
-                        // Verify that the activity execution condition resolves to a Boolean value
-                        if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
-                        {
-                            this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
-                            return false;
-                        }
-                    }
-                }
-                catch (WorkflowActivityLibraryException ex)
-                {
-                    this.controller.ValidationError = ex.Message;
+                var powershellInputType = GetInputType(this.inputType.Value);
+                if (powershellInputType == PowerShellInputType.Parameters && !ValidatePowershellParameters(evaluator))
                     return false;
-                }
 
-                if (this.impersonatePowerShellUser.Value)
+                if (powershellInputType == PowerShellInputType.Arguments && !ValidatePowershellArguments(evaluator))
+                    return false;
+
+                if (!ValidateTimeoutValue())
+                    return false;
+                
+
+                if (this.advanced.Value)
                 {
-                    if (string.IsNullOrEmpty(this.powerShellUser.Value) ||
-                        string.IsNullOrEmpty(this.powerShellUserPassword.Value))
-                    {
-                        this.controller.ValidationError = ActivitySettings.PowerShellImpersonationSettingsValidationError;
+                    if (!ValidateExecutionCondition(evaluator))
                         return false;
-                    }
-                }
 
-                if (!string.IsNullOrEmpty(this.powerShellUser.Value))
-                {
-                    var powerShellUserIsExpression = evaluator.ParseIfExpression(this.powerShellUser.Value);
-
-                    if (this.impersonatePowerShellUser.Value && !powerShellUserIsExpression)
-                    {
-                        if (!this.powerShellUser.Value.Contains(@"\") && !this.powerShellUser.Value.Contains("@"))
-                        {
-                            this.controller.ValidationError = ActivitySettings.PowerShellUserFormatValidationError;
-                            return false;
-                        }
-                    }
-
-                    if (string.IsNullOrEmpty(this.powerShellUserPassword.Value))
-                    {
-                        this.controller.ValidationError = ActivitySettings.PowerShellUserPasswordValidationError;
+                    if (!ValidateCredential(evaluator))
                         return false;
-                    }
-
-                    // Limited value in this check as the code runs under the context of submitter instead of FIMService plus
-                    // code run on the Portal Server which may not be co-located with FIMService server.
-                    ////try
-                    ////{
-                    ////    ProtectedData.DecryptData(this.powerShellUserPassword.Value);
-                    ////}
-                    ////catch (WorkflowActivityLibraryException ex)
-                    ////{
-                    ////    this.controller.ValidationError = ex.Message;
-                    ////    return false;
-                    ////}
                 }
 
                 // If no errors were found, clear any validation error and return true
@@ -597,6 +533,141 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             {
                 Logger.Instance.WriteMethodExit();
             }
+        }
+
+        private bool ValidateTimeoutValue()
+        {
+            int value;
+
+            // no input will be replaced in the activity by 0
+            // which is then interpreted as "no timeout"
+            if (string.IsNullOrEmpty(this.powerShellExecutionTimeout.Value))
+                this.powerShellExecutionTimeout.Value = "0";
+
+            // replace comma
+            string normalizedInput = this.powerShellExecutionTimeout.Value.Trim().Replace(',', '.');
+                        
+            bool parsed = Int32.TryParse(
+                normalizedInput,
+                NumberStyles.Float,
+                CultureInfo.InvariantCulture,
+                out value);
+
+            if (parsed && value >= 0)
+                return true;            
+
+            this.controller.ValidationError = ActivitySettings.PowershellTimeoutValidationError;
+            return false;
+        }
+
+        private bool ValidateCredential(ExpressionEvaluator evaluator)
+        {
+            if ((this.impersonatePowerShellUser.Value) &&
+                         (string.IsNullOrEmpty(this.powerShellUser.Value) || string.IsNullOrEmpty(this.powerShellUserPassword.Value)))
+            {
+                this.controller.ValidationError = ActivitySettings.PowerShellImpersonationSettingsValidationError;
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(this.powerShellUser.Value))
+            {
+                var powerShellUserIsExpression = evaluator.ParseIfExpression(this.powerShellUser.Value);
+
+                if (this.impersonatePowerShellUser.Value
+                    && !powerShellUserIsExpression
+                    && !this.powerShellUser.Value.Contains(@"\")
+                    && !this.powerShellUser.Value.Contains("@"))
+                {
+                    this.controller.ValidationError = ActivitySettings.PowerShellUserFormatValidationError;
+                    return false;
+                }
+
+                if (string.IsNullOrEmpty(this.powerShellUserPassword.Value))
+                {
+                    this.controller.ValidationError = ActivitySettings.PowerShellUserPasswordValidationError;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool ValidateExecutionCondition(ExpressionEvaluator evaluator)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
+                {
+                    evaluator.ParseExpression(this.activityExecutionCondition.Value);
+
+                    // Verify that the activity execution condition resolves to a Boolean value
+                    if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
+                    {
+                        this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
+                        return false;
+                    }
+                }
+            }
+            catch (WorkflowActivityLibraryException ex)
+            {
+                this.controller.ValidationError = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidatePowershellArguments(ExpressionEvaluator evaluator)
+        {
+            foreach (var left in this.arguments.DefinitionListings.Where(argument => argument.Active)
+                            .Select(state => state.State.Left))
+            {
+                if (string.IsNullOrEmpty(left))
+                {
+                    // If a value is missing for the expression, fail validation
+                    this.controller.ValidationError = ActivitySettings.ScriptArgumentValidationError;
+                    return false;
+                }
+
+                // Attempt to parse the value expression
+                try
+                {
+                    evaluator.ParseExpression(left);
+                }
+                catch (WorkflowActivityLibraryException ex)
+                {
+                    this.controller.ValidationError = ex.Message;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool ValidatePowershellParameters(ExpressionEvaluator evaluator)
+        {
+            foreach (var definition in this.parameters.DefinitionListings.Where(parameter => parameter.Active)
+                            .Select(def => def.Definition))
+            {
+                if (definition == null)
+                {
+                    // If a value is missing for parameter name or value expression, the definition
+                    // will be null and the listing fails validation
+                    this.controller.ValidationError = ActivitySettings.ScriptParameterDefintionValidationError;
+                    return false;
+                }
+
+                // Attempt to parse the value expression
+                try
+                {
+                    evaluator.ParseExpression(definition.Right);
+                }
+                catch (WorkflowActivityLibraryException ex)
+                {
+                    this.controller.ValidationError = ex.Message;
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -731,9 +802,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             try
             {
                 // Fetch the enumeration value which corresponds to the supplied string
-                foreach (FieldInfo fi in typeof(PowerShellScriptLocation).GetFields().Where(fi => fi.Name.Equals(value)))
+                FieldInfo field = typeof(PowerShellScriptLocation)
+                    .GetFields()
+                    .FirstOrDefault(fi => fi.Name.Equals(value));
+
+                if (field != null)
                 {
-                    return (PowerShellScriptLocation)fi.GetValue(null);
+                    return (PowerShellScriptLocation)field.GetValue(null);
                 }
 
                 throw Logger.Instance.ReportError(new InvalidPowerShellScriptLocationException(ActivitySettings.InvalidPowerShellScriptLocation));
@@ -756,10 +831,14 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             try
             {
                 // Fetch the enumeration value which corresponds to the supplied string
-                foreach (FieldInfo fi in typeof(PowerShellInputType).GetFields().Where(fi => fi.Name.Equals(value)))
+                FieldInfo field = typeof(PowerShellInputType)
+                    .GetFields()
+                    .FirstOrDefault(fi => fi.Name.Equals(value));
+
+                if (field != null)
                 {
-                    return (PowerShellInputType)fi.GetValue(null);
-                }
+                    return (PowerShellInputType)field.GetValue(null);
+                }                
 
                 throw Logger.Instance.ReportError(new InvalidPowerShellInputTypeException(ActivitySettings.InvalidPowerShellInputType));
             }
@@ -781,9 +860,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             try
             {
                 // Fetch the enumeration value which corresponds to the supplied string
-                foreach (FieldInfo fi in typeof(PowerShellReturnType).GetFields().Where(fi => fi.Name.Equals(value)))
+                FieldInfo field = typeof(PowerShellReturnType)
+                    .GetFields()
+                    .FirstOrDefault(fi => fi.Name.Equals(value));
+
+                if (field != null)
                 {
-                    return (PowerShellReturnType)fi.GetValue(null);
+                    return (PowerShellReturnType)field.GetValue(null);
                 }
 
                 throw Logger.Instance.ReportError(new InvalidPowerShellReturnTypeException(ActivitySettings.InvalidPowerShellReturnType));
@@ -806,10 +889,14 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             try
             {
                 // Fetch the enumeration value which corresponds to the supplied string
-                foreach (FieldInfo fi in typeof(LogOnType).GetFields().Where(fi => fi.Name.Equals(value)))
+                FieldInfo field = typeof(LogOnType)
+                    .GetFields()
+                    .FirstOrDefault(fi => fi.Name.Equals(value));
+
+                if (field != null)
                 {
-                    return (LogOnType)fi.GetValue(null);
-                }
+                    return (LogOnType)field.GetValue(null);
+                }                
 
                 throw Logger.Instance.ReportError(new InvalidPowerShellReturnTypeException(ActivitySettings.InvalidLogOnType));
             }
@@ -959,17 +1046,14 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 switch (GetReturnType(this.returnType.Value))
                 {
                     case PowerShellReturnType.None:
+                    case PowerShellReturnType.Table:
                         this.returnValueLookup.Visible = false;
                         this.returnValueLookup.Required = false;
                         break;
                     case PowerShellReturnType.Explicit:
                         this.returnValueLookup.Visible = true;
                         this.returnValueLookup.Required = true;
-                        break;
-                    case PowerShellReturnType.Table:
-                        this.returnValueLookup.Visible = false;
-                        this.returnValueLookup.Required = false;
-                        break;
+                        break;                   
                 }
             }
             finally

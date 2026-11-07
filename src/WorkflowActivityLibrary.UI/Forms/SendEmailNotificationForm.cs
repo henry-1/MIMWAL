@@ -375,10 +375,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             }
         }
 
+        
+
         /// <summary>
         /// Validates the inputs. Returns true if all of the UI controls contain valid values. Otherwise, returns false.
         /// </summary>
         /// <returns>true if all of the UI controls contain valid values. Otherwise, false.</returns>
+        
         public override bool ValidateInputs()
         {
             Logger.Instance.WriteMethodEntry();
@@ -388,10 +391,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 // Use the controller to validate standard activity controls
                 // and return false if a problem was identified
                 if (!this.controller.ValidateInputs())
-                {
                     return false;
-                }
-
+                
                 if (string.IsNullOrEmpty(this.to.Value))
                 {
                     this.controller.ValidationError = ActivitySettings.SendEmailNotificationRecipientFieldValidationError;
@@ -405,144 +406,27 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 try
                 {
                     ParseEmailTemplate(this.emailTemplate.Value);
+                    ParseRecipient(this.to.Value);
 
                     if (this.advanced.Value)
                     {
-                        if (this.queryResources.Value)
-                        {
-                            // Loop through all active query listings and make sure they are valid
-                            foreach (DefinitionListing query in this.queries.DefinitionListings.Where(query => query.Active))
-                            {
-                                // If a value is missing for key or query, the definition
-                                // will be null and the listing fails validation
-                                if (query.Definition == null)
-                                {
-                                    this.controller.ValidationError = ActivitySettings.QueryDefinitionValidationError;
-                                    return false;
-                                }
-
-                                // Make sure that the specified query key is properly formatted
-                                if (!Regex.Match(query.Definition.Left, RegexPattern).Success)
-                                {
-                                    this.controller.ValidationError = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.QueryDefintionLeftValidationError, query.Definition.Left);
-                                    return false;
-                                }
-
-                                // Make sure that the specified XPath filter is properly formatted
-                                if (!ExpressionEvaluator.IsXPath(query.Definition.Right))
-                                {
-                                    this.controller.ValidationError = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.QueryDefintionRightValidationError, query.Definition.Left);
-                                    return false;
-                                }
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
-                        {
-                            evaluator.ParseExpression(this.activityExecutionCondition.Value);
-
-                            // Verify that the activity execution condition resolves to a Boolean value
-                            if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
-                            {
-                                this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
+                        if (this.queryResources.Value && !ValidateQueryDefinitions())
                                 return false;
-                            }
-                        }
 
-                        if (!string.IsNullOrEmpty(this.iteration.Value))
-                        {
+                        if (!ValidateExecutionConditionInput(evaluator) || !ValidateDefinition(evaluator))
+                            return false;
+
+                        if(!string.IsNullOrEmpty(this.iteration.Value))
                             evaluator.ParseExpression(this.iteration.Value);
-                        }
-
+                        
                         ParseRecipient(this.cc.Value);
                         ParseRecipient(this.bcc.Value);
 
-                        // Loop through all active workflow data listings and make sure they are valid
-                        var activeListings = this.workflowDataVariables.DefinitionListings.Where(workflowDataVariable => workflowDataVariable.Active);
-                        var activeListingsCount = activeListings.Count();
-                        foreach (DefinitionListing workflowDataVariable in activeListings)
-                        {
-                            if (workflowDataVariable.Definition == null)
-                            {
-                                // Allow the listing to be null if the count is only one as it's optional in this activity
-                                if (activeListingsCount == 1)
-                                {
-                                    continue;
-                                }
-
-                                // If a value is missing for source or target, the definition
-                                // will be null and the listing fails validation
-                                this.controller.ValidationError = ActivitySettings.WorkflowDataVariablesDefinitionValidationError;
-                                return false;
-                            }
-
-                            // Attempt to parse the source expression and target lookup or variable
-                            // Fail validation if an exception is thrown for either
-                            try
-                            {
-                                evaluator.ParseExpression(workflowDataVariable.Definition.Left);
-                                ParameterType targetType = ParameterType.Lookup;
-                                try
-                                {
-                                    targetType = ExpressionEvaluator.DetermineParameterType(workflowDataVariable.Definition.Right);
-                                }
-                                catch (WorkflowActivityLibraryException)
-                                {
-                                }
-
-                                // Target variables are valid
-                                // Target lookups require further evaluation to determine if they represent a valid target
-                                if (targetType != ParameterType.Variable)
-                                {
-                                    LookupEvaluator lookup = new LookupEvaluator(workflowDataVariable.Definition.Right);
-                                    if (!lookup.IsValidTarget)
-                                    {
-                                        this.controller.ValidationError = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.TargetLookupValidationError, workflowDataVariable.Definition.Right);
-                                        return false;
-                                    }
-                                }
-                            }
-                            catch (WorkflowActivityLibraryException ex)
-                            {
-                                this.controller.ValidationError = ex.Message;
-                                return false;
-                            }
-                        }
-
                         // Verify that no [//Query/...] or [//Value/...] expressions exist
                         // if the query resources or iteration options are not enabled, respectively
-                        bool containsQueryExpressions = false;
-                        bool containsValueExpressions = false;
-
-                        foreach (LookupEvaluator lookup in evaluator.LookupCache.Keys.Select(key => new LookupEvaluator(key)))
-                        {
-                            if (lookup.Parameter == LookupParameter.Queries)
-                            {
-                                containsQueryExpressions = true;
-                            }
-
-                            if (lookup.Parameter == LookupParameter.Value)
-                            {
-                                containsValueExpressions = true;
-                            }
-                        }
-
-                        if (!this.queryResources.Value && containsQueryExpressions)
-                        {
-                            this.controller.ValidationError = ActivitySettings.QueryResourcesValidationError;
-                            return false;
-                        }
-
-                        if (string.IsNullOrEmpty(this.iteration.Value) && containsValueExpressions)
-                        {
-                            this.controller.ValidationError = ActivitySettings.IterationValidationError;
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        ParseRecipient(this.to.Value);
-                    }
+                        if (!ValidateLookupCacheParameter(evaluator))
+                            return false;                        
+                    }                    
                 }
                 catch (WorkflowActivityLibraryException ex)
                 {
@@ -563,6 +447,155 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             {
                 Logger.Instance.WriteMethodExit();
             }
+        }
+
+        private bool ValidateLookupCacheParameter(ExpressionEvaluator evaluator)
+        {
+            bool containsQueryExpressions = false;
+            bool containsValueExpressions = false;
+            foreach (var parameter in evaluator.LookupCache.Keys
+                            .Select(key => new LookupEvaluator(key))
+                            .Select(item => item.Parameter))
+            {
+                if (parameter == LookupParameter.Queries)
+                    containsQueryExpressions = true;
+
+                if (parameter == LookupParameter.Value)
+                    containsValueExpressions = true;
+
+                if (containsQueryExpressions && containsValueExpressions)
+                    break;
+            }
+
+            if (!this.queryResources.Value && containsQueryExpressions)
+            {
+                this.controller.ValidationError = ActivitySettings.QueryResourcesValidationError;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(this.iteration.Value) && containsValueExpressions)
+            {
+                this.controller.ValidationError = ActivitySettings.IterationValidationError;
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidateDefinition(ExpressionEvaluator evaluator)
+        {
+            // Loop through all active workflow data listings and make sure they are valid
+            var activeListings = this.workflowDataVariables.DefinitionListings.Where(workflowDataVariable => workflowDataVariable.Active);
+            var activeListingsCount = activeListings.Count();
+            foreach (var definition in activeListings.Select(listing => listing.Definition))
+            {
+                if (definition == null)
+                {
+                    // Allow the listing to be null if the count is only one as it's optional in this activity
+                    if (activeListingsCount == 1)
+                    {
+                        continue;
+                    }
+
+                    // If a value is missing for source or target, the definition
+                    // will be null and the listing fails validation
+                    this.controller.ValidationError = ActivitySettings.WorkflowDataVariablesDefinitionValidationError;
+                    return false;
+                }
+
+                // Attempt to parse the source expression and target lookup or variable
+                // Fail validation if an exception is thrown for either
+                try
+                {
+                    evaluator.ParseExpression(definition.Left);
+                    ParameterType targetType = ParameterType.Lookup;
+                    try
+                    {
+                        targetType = ExpressionEvaluator.DetermineParameterType(definition.Right);
+                    }
+                    catch (WorkflowActivityLibraryException)
+                    {
+                        // silently drop this exception
+                    }
+
+                    // Target variables are valid
+                    // Target lookups require further evaluation to determine if they represent a valid target
+                    if (targetType != ParameterType.Variable)
+                    {
+                        LookupEvaluator lookup = new LookupEvaluator(definition.Right);
+                        if (!lookup.IsValidTarget)
+                        {
+                            this.controller.ValidationError = string.Format(CultureInfo.CurrentUICulture, ActivitySettings.TargetLookupValidationError, definition.Right);
+                            return false;
+                        }
+                    }
+                }
+                catch (WorkflowActivityLibraryException ex)
+                {
+                    this.controller.ValidationError = ex.Message;
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool ValidateExecutionConditionInput(ExpressionEvaluator evaluator)
+        {
+            if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
+            {
+                evaluator.ParseExpression(this.activityExecutionCondition.Value);
+
+                // Verify that the activity execution condition resolves to a Boolean value
+                if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
+                {
+                    this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        [SuppressMessage("SonarAnalyzer.CSharp", "S6444", Justification = "Regex is constrained to a simple, bounded pattern.")]
+        private bool ValidateQueryDefinitions()
+        {
+            // Loop through all active query listings and make sure they are valid
+            foreach (var definition in this.queries.DefinitionListings
+                .Where(query => query.Active)
+                .Select(query => query.Definition))
+            {
+                // If a value is missing for key or query, the definition
+                // will be null and the listing fails validation
+                if (definition == null)
+                {
+                    this.controller.ValidationError = ActivitySettings.QueryDefinitionValidationError;
+                    return false;
+                }
+
+                // Make sure that the specified query key is properly formatted
+                if (!Regex.Match(definition.Left, RegexPattern).Success)
+                {
+                    this.controller.ValidationError = string.Format(
+                        CultureInfo.CurrentUICulture,
+                        ActivitySettings.QueryDefintionLeftValidationError,
+                        definition.Left);
+
+                    return false;
+                }
+
+                // Make sure that the specified XPath filter is properly formatted
+                if (!ExpressionEvaluator.IsXPath(definition.Right))
+                {
+                    this.controller.ValidationError = string.Format(
+                        CultureInfo.CurrentUICulture,
+                        ActivitySettings.QueryDefintionRightValidationError,
+                        definition.Left);
+
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -661,6 +694,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
         /// Parses email template
         /// </summary>
         /// <param name="template">The XPath search filter or lookup expression for the email template</param>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S1481", Justification = "Guid.TryParse() not available in .Net Framework 3.5")]
         private static void ParseEmailTemplate(string template)
         {
             Logger.Instance.WriteMethodEntry();

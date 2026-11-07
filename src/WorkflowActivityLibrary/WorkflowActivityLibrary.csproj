@@ -24,7 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!-- <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,27 +40,24 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\WAL.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>MIMWAL.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <DelaySign>true</DelaySign>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.ResourceManagement, Version=4.1.2273.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencedAssemblies\4.1.3496.0\Microsoft.ResourceManagement.dll</HintPath>
+      <HintPath>..\ReferencedAssemblies\4.7.6.0\Microsoft.ResourceManagement.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ResourceManagement.WorkflowContract">
-      <HintPath>..\ReferencedAssemblies\4.1.3496.0\Microsoft.ResourceManagement.WorkflowContract.dll</HintPath>
+	<Reference Include="Microsoft.ResourceManagement.WorkflowContract">
+      <HintPath>..\ReferencedAssemblies\4.7.6.0\Microsoft.ResourceManagement.WorkflowContract.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Management.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReferencedAssemblies\System.Management.Automation.dll</HintPath>
-    </Reference>
     <Reference Include="System.Security" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Workflow.Activities" />
     <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Workflow.Runtime" />
@@ -130,9 +127,95 @@
     </Compile>
     <Compile Include="Common\ContextItems.cs" />
     <Compile Include="Common\EventIdentifier.cs" />
+    <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.And.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeAfter.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeBefore.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.Contains.cs" />
+    <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.Eq.cs" />
+    <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.GreaterThan.cs" />
+    <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.IsPresent.cs" />
+    <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.LessThan.cs" />
+    <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.Not.cs" />
+    <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.Or.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.RegexMatch.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertNumberToList.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertStringToGuid.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertToBase64.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertToBoolean.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertToNumber.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertToString.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertSidToString.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeAdd.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeFormat.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeFromFileTimeUtc.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeFromString.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeNow.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeSubtract.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeToFileTimeUtc.cs" />
+    <Compile Include="Common\ExpressionFunction\DateTime\ExpressionFunction.DateTimeUtcToLocalTime.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.First.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.FormatMultivaluedList.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.IndexByValue.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.InsertValues.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.Last.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.RemoveValues.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.SortList.cs" />
+    <Compile Include="Common\ExpressionFunction\Logic\ExpressionFunction.BitAnd.cs" />
+    <Compile Include="Common\ExpressionFunction\Logic\ExpressionFunction.BitNot.cs" />
+    <Compile Include="Common\ExpressionFunction\Logic\ExpressionFunction.BitOr.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.Add.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.Count.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.Mod.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.Multiply.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.Null.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.RandomNum.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.Subtract.cs" />
+    <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParametersContain.cs" />
+    <Compile Include="Common\ExpressionFunction\Math\ExpressionFunction.Devide.cs" />
+    <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParametersList.cs" />
+    <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParametersTable.cs" />
+    <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParameterValue.cs" />
+    <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParameterValueAdded.cs" />
+    <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParameterValueRemoved.cs" />
+    <Compile Include="Common\ExpressionFunction\Shared\ExpressionFunction.Shared.Helper.cs" />
+    <Compile Include="Common\ExpressionFunction\SQL\ExpressionFunction.SQL.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunctio.TitleCase.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Concatenate.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.ConcatenateMultivaluedString.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertFromBase64.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.CR.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.CRLF.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Left.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.LeftPad.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Length.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.LowerCase.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.LTrim.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Mid.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.NormalizeString.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.ProperCase.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.RegexReplace.cs" />
+    <Compile Include="Common\ExpressionFunction\Collection\ExpressionFunction.RemoveDuplicates.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.ReplaceString.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Right.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.RightPad.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.RTrim.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.SplitString.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Trim.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.UpperCase.cs" />
+    <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertToUniqueIdentifier.cs" />
+    <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Word.cs" />
+    <Compile Include="Common\ExpressionFunction\Unsorted\ExpressionFunction.EscapeDNComponent.cs" />
+    <Compile Include="Common\ExpressionFunction\Unsorted\ExpressionFunction.GenerateRandomPassword.cs" />
+    <Compile Include="Common\ExpressionFunction\Unsorted\ExpressionFunction.IIF.cs" />
+    <Compile Include="Common\ExpressionFunction\Unsorted\ExpressionFunction.WrapXPathFilter.cs" />
+    <Compile Include="Common\ExpressionFunction\Value\ExpressionFunction.ValueByIndex.cs" />
+    <Compile Include="Common\ExpressionFunction\Value\ExpressionFunction.ValueByKey.cs" />
+    <Compile Include="Common\ExpressionFunction\Value\ExpressionFunction.ValueType.cs" />
     <Compile Include="Common\Logger.cs" />
-    <Compile Include="Common\LogonUser.cs" />
+    <Compile Include="Common\MimProcessLauncher.cs" />
     <Compile Include="Common\NativeMethods.cs" />
+    <Compile Include="Common\PowerShellErrorParser.cs" />
+    <Compile Include="Common\PowerShellResult.cs" />
     <Compile Include="Common\ProtectedData.cs" />
     <Compile Include="Common\SafeRegistryHandle.cs" />
     <Compile Include="Common\SafeTokenHandle.cs" />
@@ -145,7 +228,13 @@
     <Compile Include="Enumerations\ActorType.cs" />
     <Compile Include="Enumerations\DeleteResourcesTargetType.cs" />
     <Compile Include="Enumerations\EvaluationMode.cs" />
+    <Compile Include="Enumerations\PowershellVersions.cs" />
+    <Compile Include="Enumerations\SecurityImpersonationLevel.cs" />
+    <Compile Include="Enumerations\TokenEvaluationType.cs" />
+    <Compile Include="Enumerations\TokenInformationClass.cs" />
+    <Compile Include="Enumerations\TokenType.cs" />
     <Compile Include="Exceptions\CryptographicException.cs" />
+    <Compile Include="Exceptions\InvalidArgumentException.cs" />
     <Compile Include="Exceptions\InvalidExpressionException.cs" />
     <Compile Include="Exceptions\InvalidFunctionFormatException.cs" />
     <Compile Include="Exceptions\InvalidFunctionOperationException.cs" />
@@ -225,6 +314,7 @@
     <Compile Include="Exceptions\InvalidPowerShellInputTypeException.cs" />
     <Compile Include="Exceptions\InvalidPowerShellReturnTypeException.cs" />
     <Compile Include="Exceptions\InvalidPowerShellScriptLocationException.cs" />
+    <Compile Include="Exceptions\OverflowNotAllowedException.cs" />
     <Compile Include="Exceptions\WorkflowActivityLibraryException.cs" />
     <Compile Include="Common\ExpressionEvaluator.cs" />
     <Compile Include="Common\ExpressionFunction.cs" />
@@ -241,12 +331,14 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <None Include="..\WAL.snk">
-      <Link>WAL.snk</Link>
-    </None>
+    <!-- HS -->
+    <!--
     <None Include="..\Settings.StyleCop">
       <Link>Settings.StyleCop</Link>
     </None>
+	-->
+    <Compile Include="Common\ExpressionFunction\Shared\ExpressionFunction.Shared.Strings.cs" />
+    <None Include="MIMWAL.snk" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -256,8 +348,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -266,11 +358,15 @@
       <SubType>Designer</SubType>
     </CodeAnalysisDictionary>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
   <Import Project="$(MSBuildToolsPath)\Workflow.Targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /I /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)SolutionOutput"
 xcopy /I /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)SolutionOutput"
 xcopy /I /Y "$(SolutionDir)Scripts\*.*" "$(SolutionDir)SolutionOutput"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>1502,5122</NoWarn>
   </PropertyGroup>
 </Project>

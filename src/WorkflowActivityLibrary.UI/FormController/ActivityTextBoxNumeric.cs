@@ -31,10 +31,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
         /// </summary>
         private readonly TextBox textBoxControl = new TextBox();
 
-        /// <summary>
-        /// The display zero value indicator
-        /// </summary>
-        private bool displayZeroValue;
 
         #endregion
 
@@ -72,18 +68,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
         /// <summary>
         /// Gets or sets a value indicating whether to display zero value or not.
         /// </summary>
-        public bool DisplayZeroValue
-        {
-            get
-            {
-                return this.displayZeroValue;
-            }
+        public bool DisplayZeroValue { get; set; }
 
-            set
-            {
-                this.displayZeroValue = value;
-            }
-        }
 
         /// <summary>
         /// Gets or sets the numeric value of the textbox.
@@ -97,7 +83,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
                 int parsed;
                 if (!int.TryParse(this.textBoxControl.Text, out parsed))
                 {
-                    // TODO: Trace 
+                    // Add Tracing 
                 }
 
                 return parsed;
@@ -106,7 +92,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
             set
             {
                 // When setting a value for the control, only display a zero when the control is configured to do so
-                if (this.displayZeroValue || value != 0)
+                if (this.DisplayZeroValue || value != 0)
                 {
                     this.textBoxControl.Text = value.ToString(CultureInfo.CurrentCulture);
                 }

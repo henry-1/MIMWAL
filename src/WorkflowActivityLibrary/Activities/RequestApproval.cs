@@ -29,6 +29,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// RequestApproval Activity. This activity adapts and decorates the FIM Approval activity.
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
     public partial class RequestApproval : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -85,59 +88,56 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
         /// The approval complete email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public int ThresholdNumber;
 
         /// <summary>
         /// The approval complete email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public TimeSpan DurationTimeSpan;
 
         /// <summary>
         /// The approval complete email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid ApprovalCompleteEmailTemplateGuid;
 
         /// <summary>
         /// The approval denied email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid ApprovalDeniedEmailTemplateGuid;
 
         /// <summary>
         /// The approval email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid ApprovalEmailTemplateGuid;
 
         /// <summary>
         /// The approval timeout email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid ApprovalTimeoutEmailTemplateGuid;
 
         /// <summary>
         /// The escalation email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid EscalationEmailTemplateGuid;
 
         #endregion
+
+        private const string ConditionTemplate = "Condition: '{0}'.";
+        private const string ConditionEvaluatedTemplate = "Condition: '{0}'. Condition evaluated '{1}'.";
+        private const string ConditionEmailTemplate = "Email template: '{0}'.";
+        private const string ConditionEmailTemplateWithGuid = "Email template: '{0}'. Guid: '{1}'.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestApproval"/> class.
@@ -472,7 +472,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void ActivityExecutionConditionSatisfied_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalActivityExecutionConditionSatisfiedCondition, "Condition: '{0}'.", this.ActivityExecutionCondition);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalActivityExecutionConditionSatisfiedCondition, ConditionTemplate, this.ActivityExecutionCondition);
 
             try
             {
@@ -493,7 +493,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalActivityExecutionConditionSatisfiedCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.ActivityExecutionCondition, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalActivityExecutionConditionSatisfiedCondition, ConditionEvaluatedTemplate, this.ActivityExecutionCondition, e.Result);
             }
         }
 
@@ -504,7 +504,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void ApproversIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApproversIsXPathCondition, "Condition: '{0}'.", this.Approvers);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApproversIsXPathCondition, ConditionTemplate, this.Approvers);
 
             try
             {
@@ -512,7 +512,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApproversIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.Approvers, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApproversIsXPathCondition, ConditionEvaluatedTemplate, this.Approvers, e.Result);
             }
         }
 
@@ -569,7 +569,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void EscalationIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalEscalationIsXPathCondition, "Condition: '{0}'.", this.Escalation);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalEscalationIsXPathCondition, ConditionTemplate, this.Escalation);
 
             try
             {
@@ -577,7 +577,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalEscalationIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.Escalation, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalEscalationIsXPathCondition, ConditionEvaluatedTemplate, this.Escalation, e.Result);
             }
         }
 
@@ -634,7 +634,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void ApprovalEmailTemplateIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalEmailTemplateIsXPathCondition, "Condition: '{0}'.", this.ApprovalEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalEmailTemplateIsXPathCondition, ConditionTemplate, this.ApprovalEmailTemplate);
 
             try
             {
@@ -642,7 +642,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalEmailTemplateIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.ApprovalEmailTemplate, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalEmailTemplateIsXPathCondition, ConditionEvaluatedTemplate, this.ApprovalEmailTemplate, e.Result);
             }
         }
 
@@ -653,7 +653,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CheckApprovalEmailTemplateResource_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.ApprovalEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.ApprovalEmailTemplate);
 
             try
             {
@@ -671,7 +671,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalEmailTemplateResourceExecuteCode, "Email template: '{0}'. Guid: '{0}'.", this.ApprovalEmailTemplate, this.ApprovalEmailTemplateGuid);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalEmailTemplateResourceExecuteCode, ConditionEmailTemplateWithGuid, this.ApprovalEmailTemplate, this.ApprovalEmailTemplateGuid);
             }
         }
 
@@ -682,7 +682,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ResolveApprovalEmailTemplate_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalEmailTemplateExecuteCode, "Email template: '{0}'.", this.ApprovalEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalEmailTemplateExecuteCode, ConditionEmailTemplate, this.ApprovalEmailTemplate);
 
             try
             {
@@ -690,7 +690,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalEmailTemplateExecuteCode, "Email template: '{0}'. Guid: '{0}'.", this.ApprovalEmailTemplate, this.ApprovalEmailTemplateGuid);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalEmailTemplateExecuteCode, ConditionEmailTemplateWithGuid, this.ApprovalEmailTemplate, this.ApprovalEmailTemplateGuid);
             }
         }
 
@@ -701,7 +701,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void EscalationEmailTemplateIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalEscalationEmailTemplateIsXPathCondition, "Condition: '{0}'.", this.EscalationEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalEscalationEmailTemplateIsXPathCondition, ConditionTemplate, this.EscalationEmailTemplate);
 
             try
             {
@@ -709,7 +709,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalEscalationEmailTemplateIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.EscalationEmailTemplate, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalEscalationEmailTemplateIsXPathCondition, ConditionEvaluatedTemplate, this.EscalationEmailTemplate, e.Result);
             }
         }
 
@@ -720,7 +720,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CheckEscalationEmailTemplateResource_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckEscalationEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.EscalationEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckEscalationEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.EscalationEmailTemplate);
 
             try
             {
@@ -738,7 +738,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckEscalationEmailTemplateResourceExecuteCode, "Email template: '{0}'. Guid: '{0}'.", this.EscalationEmailTemplate, this.EscalationEmailTemplateGuid);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckEscalationEmailTemplateResourceExecuteCode, ConditionEmailTemplateWithGuid, this.EscalationEmailTemplate, this.EscalationEmailTemplateGuid);
             }
         }
 
@@ -749,7 +749,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ResolveEscalationEmailTemplate_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveEscalationEmailTemplateExecuteCode, "Email template: '{0}'.", this.EscalationEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveEscalationEmailTemplateExecuteCode, ConditionEmailTemplate, this.EscalationEmailTemplate);
 
             try
             {
@@ -760,7 +760,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveEscalationEmailTemplateExecuteCode, "Email template: '{0}'. Guid: '{0}'.", this.EscalationEmailTemplate, this.EscalationEmailTemplateGuid);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveEscalationEmailTemplateExecuteCode, ConditionEmailTemplateWithGuid, this.EscalationEmailTemplate, this.EscalationEmailTemplateGuid);
             }
         }
 
@@ -771,7 +771,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void ApprovalCompleteEmailTemplateIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalCompleteEmailTemplateIsXPathCondition, "Condition: '{0}'.", this.ApprovalCompleteEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalCompleteEmailTemplateIsXPathCondition, ConditionTemplate, this.ApprovalCompleteEmailTemplate);
 
             try
             {
@@ -779,7 +779,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalCompleteEmailTemplateIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.ApprovalCompleteEmailTemplate, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalCompleteEmailTemplateIsXPathCondition, ConditionEvaluatedTemplate, this.ApprovalCompleteEmailTemplate, e.Result);
             }
         }
 
@@ -790,7 +790,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CheckApprovalCompleteEmailTemplateResource_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalCompleteEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.ApprovalCompleteEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalCompleteEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.ApprovalCompleteEmailTemplate);
 
             try
             {
@@ -808,7 +808,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalCompleteEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.ApprovalCompleteEmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalCompleteEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.ApprovalCompleteEmailTemplate);
             }
         }
 
@@ -819,7 +819,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ResolveApprovalCompleteEmailTemplate_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalCompleteEmailTemplateExecuteCode, "Email template: '{0}'.", this.ApprovalCompleteEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalCompleteEmailTemplateExecuteCode, ConditionEmailTemplate, this.ApprovalCompleteEmailTemplate);
 
             try
             {
@@ -827,7 +827,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalCompleteEmailTemplateExecuteCode, "Email template: '{0}'.", this.ApprovalCompleteEmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalCompleteEmailTemplateExecuteCode, ConditionEmailTemplate, this.ApprovalCompleteEmailTemplate);
             }
         }
 
@@ -838,7 +838,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void ApprovalDeniedEmailTemplateIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalDeniedEmailTemplateIsXPathCondition, "Condition: '{0}'.", this.ApprovalDeniedEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalDeniedEmailTemplateIsXPathCondition, ConditionTemplate, this.ApprovalDeniedEmailTemplate);
 
             try
             {
@@ -846,7 +846,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalDeniedEmailTemplateIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.ApprovalDeniedEmailTemplate, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalDeniedEmailTemplateIsXPathCondition, ConditionEvaluatedTemplate, this.ApprovalDeniedEmailTemplate, e.Result);
             }
         }
 
@@ -857,7 +857,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CheckApprovalDeniedEmailTemplateResource_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalDeniedEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.ApprovalDeniedEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalDeniedEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.ApprovalDeniedEmailTemplate);
 
             try
             {
@@ -875,7 +875,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalDeniedEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.ApprovalDeniedEmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalDeniedEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.ApprovalDeniedEmailTemplate);
             }
         }
 
@@ -886,7 +886,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ResolveApprovalDeniedEmailTemplate_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalDeniedEmailTemplateExecuteCode, "Email template: '{0}'.", this.ApprovalDeniedEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalDeniedEmailTemplateExecuteCode, ConditionEmailTemplate, this.ApprovalDeniedEmailTemplate);
 
             try
             {
@@ -894,7 +894,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalDeniedEmailTemplateExecuteCode, "Email template: '{0}'.", this.ApprovalDeniedEmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalDeniedEmailTemplateExecuteCode, ConditionEmailTemplate, this.ApprovalDeniedEmailTemplate);
             }
         }
 
@@ -905,7 +905,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void ApprovalTimeoutEmailTemplateIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalTimeoutEmailTemplateIsXPathCondition, "Condition: '{0}'.", this.ApprovalTimeoutEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalApprovalTimeoutEmailTemplateIsXPathCondition, ConditionTemplate, this.ApprovalTimeoutEmailTemplate);
 
             try
             {
@@ -913,7 +913,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalTimeoutEmailTemplateIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.ApprovalTimeoutEmailTemplate, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalApprovalTimeoutEmailTemplateIsXPathCondition, ConditionEvaluatedTemplate, this.ApprovalTimeoutEmailTemplate, e.Result);
             }
         }
 
@@ -924,7 +924,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CheckApprovalTimeoutEmailTemplateResource_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalTimeoutEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.ApprovalTimeoutEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalCheckApprovalTimeoutEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.ApprovalTimeoutEmailTemplate);
 
             try
             {
@@ -942,7 +942,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalTimeoutEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.ApprovalTimeoutEmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalCheckApprovalTimeoutEmailTemplateResourceExecuteCode, ConditionEmailTemplate, this.ApprovalTimeoutEmailTemplate);
             }
         }
 
@@ -953,7 +953,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ResolveApprovalTimeoutEmailTemplate_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalTimeoutEmailTemplateExecuteCode, "Email template: '{0}'.", this.ApprovalTimeoutEmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveApprovalTimeoutEmailTemplateExecuteCode, ConditionEmailTemplate, this.ApprovalTimeoutEmailTemplate);
 
             try
             {
@@ -961,7 +961,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalTimeoutEmailTemplateExecuteCode, "Email template: '{0}'.", this.ApprovalTimeoutEmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveApprovalTimeoutEmailTemplateExecuteCode, ConditionEmailTemplate, this.ApprovalTimeoutEmailTemplate);
             }
         }
 
@@ -996,6 +996,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S6580", Justification = "IFormatProvider overload of TimeSpan.TryParse not available in .NET 3.5")]
         private void ResolveDuration_ExecuteCode(object sender, EventArgs e)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalResolveDurationExecuteCode, "Duration: '{0}'.", this.Duration);
@@ -1030,7 +1031,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveThresholdExecuteCode, "Duration: '{0}'. Resolved Duration: '{1}'.", this.Duration, this.DurationTimeSpan);
+                Logger.Instance.WriteMethodExit(EventIdentifier.RequestApprovalResolveDurationExecuteCode, "Duration: '{0}'. Resolved Duration: '{1}'.", this.Duration, this.DurationTimeSpan);
             }
         }
 
@@ -1084,7 +1085,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "Reviewed.")]
         private Guid GetEmailTemplateGuid(string emailTemplate)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalGetEmailTemplateGuid, "Email Template: '{0}'.", emailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.RequestApprovalGetEmailTemplateGuid, ConditionEmailTemplate, emailTemplate);
 
             Guid templateGuid = Guid.Empty;
 
@@ -1102,7 +1103,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 }
                 else if (templateObject is string && !string.IsNullOrEmpty(templateObject as string))
                 {
-                    templateGuid = new Guid(emailTemplate);
+                    templateGuid = new Guid(templateObject as string);
                 }
                 else
                 {

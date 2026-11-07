@@ -61,3 +61,20 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+
+###############################################################################
+# SonarQube
+# 
+# Files required for code analysis
+###############################################################################
+.sonarqube/
+sonarqube.txt
+
+###############################################################################
+# MSTest test Results
+# 
+# Files produced by MSTest
+###############################################################################
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*

@@ -209,56 +209,40 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
                 return false;
             }
 
-            bool activityTracing = (this.currentSourceLevel & SourceLevels.ActivityTracing) == SourceLevels.ActivityTracing;
-            bool critical = (this.currentSourceLevel & SourceLevels.Critical) == SourceLevels.Critical;
-            bool error = critical || (this.currentSourceLevel & SourceLevels.Error) == SourceLevels.Error;
-            bool warning = error || (this.currentSourceLevel & SourceLevels.Warning) == SourceLevels.Warning;
-            bool info = warning || (this.currentSourceLevel & SourceLevels.Information) == SourceLevels.Information;
-            bool verbose = info || (this.currentSourceLevel & SourceLevels.Verbose) == SourceLevels.Verbose;
+            bool activityTracing = (this.currentSourceLevel & SourceLevels.ActivityTracing) != 0;
+            bool critical = (this.currentSourceLevel & SourceLevels.Critical) != 0;
+            bool error = critical || (this.currentSourceLevel & SourceLevels.Error) != 0;
+            bool warning = error || (this.currentSourceLevel & SourceLevels.Warning) != 0;
+            bool information = warning || (this.currentSourceLevel & SourceLevels.Information) != 0;
+            bool verbose = information || (this.currentSourceLevel & SourceLevels.Verbose) != 0;
 
-            if (traceEventType <= TraceEventType.Start)
+            switch (traceEventType)
             {
-                if (traceEventType > TraceEventType.Information)
-                {
-                    if (traceEventType == TraceEventType.Verbose)
-                    {
-                        return verbose;
-                    }
+                case TraceEventType.Critical:
+                case TraceEventType.Error:
+                    return error;
 
-                    if (traceEventType == TraceEventType.Start)
-                    {
-                        return activityTracing;
-                    }
-                }
-                else
-                {
-                    switch (traceEventType)
-                    {
-                        case TraceEventType.Critical:
-                        case TraceEventType.Error:
-                            return error;
-                        case TraceEventType.Warning:
-                            return warning;
-                        case TraceEventType.Information:
-                            return info;
-                    }
-                }
-            }
-            else if (traceEventType <= TraceEventType.Suspend)
-            {
-                if (traceEventType == TraceEventType.Stop || traceEventType == TraceEventType.Suspend)
-                {
+                case TraceEventType.Warning:
+                    return warning;
+
+                case TraceEventType.Information:
+                    return information;
+
+                case TraceEventType.Verbose:
+                    return verbose;
+
+                case TraceEventType.Start:
+                case TraceEventType.Stop:
+                case TraceEventType.Suspend:
+                case TraceEventType.Resume:
+                case TraceEventType.Transfer:
                     return activityTracing;
-                }
-            }
-            else if (traceEventType == TraceEventType.Resume || traceEventType == TraceEventType.Transfer)
-            {
-                return activityTracing;
-            }
 
-            return false;
+                default:
+                    return false;
+            }
         }
-
+        
         /// <summary>
         /// Writes the method entry event.
         /// </summary>
@@ -466,33 +450,27 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         private static string MethodName()
         {
             string methodName = "UnknownMethodName";
-            try
+            
+            StackFrame[] frames = (new StackTrace()).GetFrames();
+            if (frames == null)
             {
-                StackFrame[] frames = (new StackTrace()).GetFrames();
-                string loggerTypeFullName = Convert.ToString(logInstance, CultureInfo.InvariantCulture);
-                for (int i = 1; frames != null && i < frames.Length; ++i)
-                {
-                    Type reflectedType = frames[i].GetMethod().ReflectedType;
-                    if (reflectedType != null)
-                    {
-                        if (reflectedType.FullName.Equals(loggerTypeFullName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            continue;
-                        }
+                return methodName;
+            }
 
-                        string methodType = reflectedType.Name;
-                        string name = frames[i].GetMethod().Name;
-                        methodName = string.Format(CultureInfo.InvariantCulture, "{0} : {1}", new object[] { methodType, name });
-                    }
+            string loggerTypeFullName = Convert.ToString(logInstance, CultureInfo.InvariantCulture);
 
+            for (int i = 1; frames != null && i < frames.Length; ++i)
+            {
+                var method = frames[i].GetMethod();
+                Type reflectedType = method == null ? null : method.ReflectedType;
+
+                if (reflectedType != null)
                     break;
-                }
-            }
-            catch (ArgumentNullException)
-            {
-            }
-            catch (NullReferenceException)
-            {
+
+                if (string.Equals(reflectedType.FullName, loggerTypeFullName, StringComparison.OrdinalIgnoreCase))                    
+                    continue;
+
+                return string.Format(CultureInfo.InvariantCulture, "{0} : {1}", reflectedType.Name, method.Name);
             }
 
             return methodName;

@@ -29,6 +29,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Definitio
         /// <param name="targetLookup">The target lookup.</param>
         /// <param name="value">The target value.</param>
         /// <param name="mode">The update mode.</param>
+        [CLSCompliant(false)]
         public UpdateLookupDefinition(string targetLookup, object value, UpdateMode mode)
         {
             this.TargetLookup = targetLookup;
@@ -51,6 +52,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Definitio
         /// <summary>
         /// Gets the update mode.
         /// </summary>
+        [CLSCompliant(false)]
         public UpdateMode Mode { get; private set; }
         
         #endregion

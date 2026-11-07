@@ -298,37 +298,37 @@
     <value>A 'To' email address must be specified.</value>
   </data>
   <data name="RequestApproval_MissingApprovalEmailTemplateError" xml:space="preserve">
-    <value>Pending approval email template '{1}' not found.</value>
+    <value>Pending approval email template '{0}' not found.</value>
   </data>
   <data name="RequestApproval_MissingEscalationEmailTemplateError" xml:space="preserve">
-    <value>Approval escalation email template '{1}' not found.</value>
+    <value>Approval escalation email template '{0}' not found.</value>
   </data>
   <data name="RequestApproval_MultipleApprovalEmailTemplatesError" xml:space="preserve">
-    <value>More than one pending approval email templates '{1}' found.</value>
+    <value>More than one pending approval email templates '{0}' found.</value>
   </data>
   <data name="RequestApproval_MultipleEscalationEmailTemplatesError" xml:space="preserve">
-    <value>More than one approval escalation email templates '{1}' found.</value>
+    <value>More than one approval escalation email templates '{0}' found.</value>
   </data>
   <data name="SendEmailNotification_InvalidEmailTemplateFormatError" xml:space="preserve">
     <value>Email template '{0}' is not a GUID value.</value>
   </data>
   <data name="RequestApproval_MissingApprovalCompleteEmailTemplateError" xml:space="preserve">
-    <value>Approval complete email template '{1}' not found.</value>
+    <value>Approval complete email template '{0}' not found.</value>
   </data>
   <data name="RequestApproval_MissingApprovalDeniedEmailTemplateError" xml:space="preserve">
-    <value>Approval denied email template '{1}' not found.</value>
+    <value>Approval denied email template '{0}' not found.</value>
   </data>
   <data name="RequestApproval_MultipleApprovalCompleteEmailTemplatesError" xml:space="preserve">
-    <value>More than one approval complete email templates '{1}' found.</value>
+    <value>More than one approval complete email templates '{0}' found.</value>
   </data>
   <data name="RequestApproval_MultipleApprovalDeniedEmailTemplatesError" xml:space="preserve">
-    <value>More than one approval denied email templates '{1}' found.</value>
+    <value>More than one approval denied email templates '{0}' found.</value>
   </data>
   <data name="RequestApproval_MissingApprovalTimeoutEmailTemplateError" xml:space="preserve">
-    <value>Approval timeout email template '{1}' not found.</value>
+    <value>Approval timeout email template '{0}' not found.</value>
   </data>
   <data name="RequestApproval_MultipleApprovalTimeoutEmailTemplatesError" xml:space="preserve">
-    <value>More than one approval timeout email templates '{1}' found.</value>
+    <value>More than one approval timeout email templates '{0}' found.</value>
   </data>
   <data name="RequestApproval_InvalidEmailTemplateFormatError" xml:space="preserve">
     <value>Email template '{0}' is not a GUID value.</value>
@@ -383,5 +383,98 @@
   </data>
   <data name="ExpressionFunction_InvalidFunctionParameterTypeError3" xml:space="preserve">
     <value>The function '{0}' expects parameter at position {1} to be of type '{2}' or '{3}' or '{4}'. It was supplied a '{5}' parameter.</value>
+  </data>
+  <data name="ExpressionFunction_MultiplyOverflowError" xml:space="preserve">
+    <value>Error in function '{0}': Multiplication caused overflow of long. Parameter 1 was '{1}' and parameter 2 was '{2}'.</value>
+  </data>
+  <data name="ExpressionFunction_RandomNumberFunctionParameterError" xml:space="preserve">
+    <value>Error in function '{0}'. Min parameter '{1}' is smaller than Max parameter '{2}'.</value>
+  </data>
+  <data name="ExpressionFunction_ReplaceStringEmptyFunctionParameterError" xml:space="preserve">
+    <value>Error in function'{0}'.Replace string parameter must not be an empty string.</value>
+  </data>
+  <data name="ExpressionFunction_InvalidFirstFunctionParameterTypeError4" xml:space="preserve">
+    <value>The function '{0}' expects first parameter to be of type '{1}' or '{2}' or '{3}' or '{4}'. It was supplied a '{5}' parameter.</value>
+  </data>
+  <data name="ExpressionFunction_InvalidFirstFunctionParameterTypeError5" xml:space="preserve">
+    <value>The function '{0}' expects first parameter to be of type '{1}' or '{2}' or '{3}' or '{4}' or '{5}'. It was supplied a '{6}' parameter.</value>
+  </data>
+  <data name="ExpressionFunction_InvalidSidError" xml:space="preserve">
+    <value>Error in function '{0}' converting SID to string: '{1}'. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_FormatMultivaluedList_InvalidParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'.An error occured formating strings. Check format string or parameter count. '{1}'</value>
+  </data>
+  <data name="ExpressionFunction_NegativeNumberAsParameterNotAllowedError" xml:space="preserve">
+    <value>The function '{0}' expects a positive number parameter at position 1 to be of type 'int'.</value>
+  </data>
+  <data name="ExpressionFunction_Right_UnableToResolveSecondParameterError" xml:space="preserve">
+    <value>Error in function '{0}'. Value of second parameter '{1}' of type '{2}' cannot be resolved.</value>
+  </data>
+  <data name="ExpressionFunction_ConvertFromBase64_InvalidFirstFunctionParameterError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' to Base64. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_ConvertStringToGuid_InvalidFirstFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Parameter '{1}' cannot be converted to GUID. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_ConvertToBoolean_InvalidFirstFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Parameter '{1}' cannot be converted to Boolean. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_Add_InvalidFunctionParameterError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to add '{1}' plus '{2}' without crossing long.MaxValue.</value>
+  </data>
+  <data name="ExpressionFunction_ConvertToNumber_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' to number. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_ConvertToUniqueIdentifier_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' to number. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_DateTimeAdd_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' to number. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_DateTimeFormat_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to format '{1}' to DateTime using fromat string'{2}' and culture '{3}'. '{4}'</value>
+  </data>
+  <data name="ExpressionFunction_DateTimeFromFileTimeUtc_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' from UTC. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_DateTimeFromString_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' to string using culture '{2}'. '{3}'</value>
+  </data>
+  <data name="ExpressionFunction_DateTimeToFileTimeUtc_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' to UTC. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_DateTimeUtcToLocalTime_InvalidFunctionParameterInvalidTimeZoneError" xml:space="preserve">
+    <value>Error in function '{0}'. Invalid TimeZone parameter provided: '{1}'. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_DateTimeUtcToLocalTime_InvalidFunctionParameterTimeZoneNotFoundError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to find TimeZone for '{1}'. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_Devide_InvalidFunctionParameterError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to devide '{1}' by '{2}'. '{3}'</value>
+  </data>
+  <data name="ExpressionFunction_RandomNumber_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to convert '{1}' to Int32. '{2}'</value>
+  </data>
+  <data name="ExpressionFunction_Substract_InvalidFunctionParameterError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to substract '{1}' from '{2}'. '{3}'</value>
+  </data>
+  <data name="ExpressionFunction_StringLeftPad_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. String '{1}' Length '{2}' Padding Char '{3}'. '{4}'</value>
+  </data>
+  <data name="ExpressionFunction_StringLeft_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. Unable to get left '{1}' part of '{2}'. '{3}'</value>
+  </data>
+  <data name="ExpressionFunction_StringMid_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. String '{1}' Start '{2}' End '{3}'. '{4}'</value>
+  </data>
+  <data name="ExpressionFunction_StringRegexMatch_InvalidFunctionParameterFormatError" xml:space="preserve">
+    <value>Error in function '{0}'. String '{1}' Match '{2}'. '{3}'</value>
+  </data>
+  <data name="ExpressionFunction_FunctionInvalidArgumentError" xml:space="preserve">
+    <value>The function '{0}' has one or more invalid arguments. Execution mode: {1}.</value>
+  </data>
+  <data name="ExpressionFunction_FunctionOverflowError" xml:space="preserve">
+    <value>Error in function '{0}'. An Overflow of a number happend. Execution mode: {1}.</value>
   </data>
 </root>

@@ -33,6 +33,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// SendEmailNotification Activity. This activity adapts and decorates the FIM Notification activity.
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
     public partial class SendEmailNotification : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -93,7 +96,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
@@ -101,28 +103,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Definition> Queries;
 
         /// <summary>
         /// The value.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public object Value;
 
         /// <summary>
         /// The value expressions.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Dictionary<string, object> ValueExpressions;
 
         /// <summary>
         /// The email template Guid.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid EmailTemplateGuid;
 
         /// <summary>
@@ -130,7 +128,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Guid> EmailTemplateFoundIds;
 
         /// <summary>
@@ -138,7 +135,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Guid> EmailToRecipientsFoundIds;
 
         /// <summary>
@@ -146,7 +142,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Guid> EmailCcRecipientsFoundIds;
 
         /// <summary>
@@ -154,7 +149,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Guid> EmailBccRecipientsFoundIds;
 
         /// <summary>
@@ -162,7 +156,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public string EmailNotificationToRecipients;
 
         /// <summary>
@@ -170,7 +163,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public string EmailNotificationCcRecipients;
 
         /// <summary>
@@ -178,7 +170,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public string EmailNotificationBccRecipients;
 
         /// <summary>
@@ -186,7 +177,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<UpdateLookupDefinition> LookupUpdates;
 
         /// <summary>
@@ -194,7 +184,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Dictionary<string, List<Guid>> QueryResults;
 
         /// <summary>
@@ -213,6 +202,10 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         private bool breakIteration;
 
         #endregion
+
+        private const string ConditionTemplate = "Condition: '{0}'.";
+        private const string EmailNotificationTemplate = "Email Template: '{0}'.";
+        private const string EmailNotificationTemplateWithCondition = "Condition: '{0}'. Condition evaluated '{1}'.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendEmailNotification"/> class.
@@ -562,7 +555,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "Reviewed.")]
         private Guid GetEmailTemplateGuid(string emailTemplate)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationGetEmailTemplateGuid, "Email Template: '{0}'.", emailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationGetEmailTemplateGuid, EmailNotificationTemplate, emailTemplate);
 
             Guid templateGuid = Guid.Empty;
 
@@ -578,9 +571,19 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 {
                     templateGuid = (Guid)templateObject;
                 }
-                else if (templateObject is string && !string.IsNullOrEmpty(templateObject as string))
+                else if (templateObject is string)
                 {
-                    templateGuid = new Guid(emailTemplate);
+                    string templateValue = templateObject as string;
+                    if (!string.IsNullOrEmpty(templateValue))
+                    {
+
+                        templateGuid = new Guid(templateObject as string);
+                    }
+                    else
+                    {
+                        throw Logger.Instance.ReportError(EventIdentifier.SendEmailNotificationGetEmailTemplateGuidError,
+                            new WorkflowActivityLibraryException(Messages.SendEmailNotification_InvalidEmailTemplateFormatError, emailTemplate));
+                    }
                 }
                 else if (templateObject != null && templateObject.GetType() == typeof(List<Guid>))
                 {
@@ -590,6 +593,10 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 {
                     throw Logger.Instance.ReportError(EventIdentifier.SendEmailNotificationGetEmailTemplateGuidError, new WorkflowActivityLibraryException(Messages.SendEmailNotification_InvalidEmailTemplateFormatError, emailTemplate));
                 }
+            }
+            catch (WorkflowActivityLibraryException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -701,19 +708,34 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 this.ActivityExpressionEvaluator.ParseIfExpression(this.Bcc);
                 this.ActivityExpressionEvaluator.ParseIfExpression(this.EmailTemplate);
 
-                ////if (string.IsNullOrEmpty(this.To) && string.IsNullOrEmpty(this.CC) && string.IsNullOrEmpty(this.Bcc))
-                if (string.IsNullOrEmpty(this.To))
+                if (string.IsNullOrEmpty(this.To) && !this.SuppressException)
                 {
-                    if (!this.SuppressException)
-                    {
-                        throw Logger.Instance.ReportError(EventIdentifier.SendEmailNotificationParseExpressionsExecuteCodeError, new WorkflowActivityLibraryException(Messages.SendEmailNotification_RecipientValidationError));
-                    }
-                }
+                    throw Logger.Instance.ReportError(EventIdentifier.SendEmailNotificationParseExpressionsExecuteCodeError, new WorkflowActivityLibraryException(Messages.SendEmailNotification_RecipientValidationError));
+                }                
             }
             finally
             {
                 Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationParseExpressionsExecuteCode);
             }
+        }
+
+
+        private bool TestSubmitRequests(bool submitRequests)
+        {
+            if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
+            {
+                submitRequests = true;
+            }
+            else
+            {
+                object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
+                if (resolved is bool && (bool)resolved)
+                {
+                    submitRequests = true;
+                }
+            }
+
+            return submitRequests;
         }
 
         /// <summary>
@@ -727,27 +749,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             bool submitRequests = false;
             List<object> iterationValues = new List<object>();
+                        
             try
             {
-                // Determine if requests should be submitted based on the configuration for conditional execution
-                // If a condition was specified and that condition resolves to false, no values will be added for iteration
-                if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
-                {
-                    submitRequests = true;
-                }
-                else
-                {
-                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
-                    if (resolved is bool && (bool)resolved)
-                    {
-                        submitRequests = true;
-                    }
-                }
-
-                if (!submitRequests)
-                {
+                // Determine if requests should be submitted based on whether or not a condition was supplied
+                // and if that condition resolves to true
+                if (!TestSubmitRequests(submitRequests))
                     return;
-                }
 
                 // If the activity is not configured for iteration, a null value is added to the list
                 // to ensure a single email is sent
@@ -845,6 +853,94 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
+        private void LoadValueExpressionsIntoCache()
+        {
+            foreach (string key in this.ValueExpressions.Keys)
+            {
+                this.ActivityExpressionEvaluator.LookupCache[key] = this.ValueExpressions[key];
+            }
+        }
+
+        private void ClearVariableCache()
+        {
+            // Copy the keys first: assigning during enumeration of the dictionary would throw
+            List<string> variables = this.ActivityExpressionEvaluator.VariableCache.Keys.ToList();
+            foreach (string variable in variables)
+            {
+                this.ActivityExpressionEvaluator.VariableCache[variable] = null;
+            }
+        }
+
+        private void ApplyUpdate(string target, object value, bool targetIsVariable, UpdateMode mode)
+        {            
+            if (targetIsVariable)
+            {
+                this.ActivityExpressionEvaluator.PublishVariable(target, value, mode);
+            }
+            else
+            {
+                this.LookupUpdates.Add(new UpdateLookupDefinition(target, value, mode));
+            }
+        }
+
+        private void ProcessUpdateDefinition(Definition workflowDataVariableDefinition)
+        {
+            // Resolve the source expression, including any functions or concatenation,
+            // to retrieve the typed value that should be assigned to the target attribute
+            object resolved = null;
+            if (!ExpressionEvaluator.IsExpression(workflowDataVariableDefinition.Left))
+            {
+                // This is a dynamic string for resolution already resolved
+                // so just retrive the value from cache directly
+                resolved = this.ActivityExpressionEvaluator.LookupCache[workflowDataVariableDefinition.Left];
+            }
+            else
+            {
+                resolved = this.ActivityExpressionEvaluator.ResolveExpression(workflowDataVariableDefinition.Left);
+            }
+
+            // Determine if we are targeting a variable
+            // If not, assume we are targeting an expression which should result in requests or update
+            // to the workflow dictionary
+            bool targetIsVariable = ExpressionEvaluator.DetermineParameterType(workflowDataVariableDefinition.Right) == ParameterType.Variable;
+
+            // Only create an update lookup definition if the value is not null, or if the
+            // update definition is configured to allow null values to be transferred to the target(s)
+            if (resolved == null)
+            {
+                if (workflowDataVariableDefinition.Check)
+                {
+                    this.ApplyUpdate(workflowDataVariableDefinition.Right, null, targetIsVariable, UpdateMode.Modify);
+                }
+                return;
+            }
+
+            if (resolved.GetType() == typeof(InsertedValuesCollection))
+            {
+                // If the resolved object is an InsertedValues collection, the source for the update definition includes the InsertValues function
+                // All associated values should be added to the target
+                foreach (object o in (InsertedValuesCollection)resolved)
+                {
+                    this.ApplyUpdate(workflowDataVariableDefinition.Right, o, targetIsVariable, UpdateMode.Insert);
+                }
+                return;
+            }
+
+            if (resolved.GetType() == typeof(RemovedValuesCollection))
+            {
+                // If the resolved object is a RemovedValues collection, the source for the update definition includes the RemoveValues function
+                // All associated values should be removed from the target
+                foreach (object o in (RemovedValuesCollection)resolved)
+                {
+                    this.ApplyUpdate(workflowDataVariableDefinition.Right, o, targetIsVariable, UpdateMode.Remove);
+                }
+                return;
+            }
+
+            // For all other conditions, update the variable or build a new update request parameter for the target attribute
+            this.ApplyUpdate(workflowDataVariableDefinition.Right, resolved, targetIsVariable, UpdateMode.Modify);
+        }
+
         /// <summary>
         /// Handles the ExecuteCode event of the PrepareMailTemplate CodeActivity.
         /// </summary>
@@ -858,102 +954,18 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             try
             {
                 // Load resolved value expressions to the expression evaluator
-                foreach (string key in this.ValueExpressions.Keys)
-                {
-                    this.ActivityExpressionEvaluator.LookupCache[key] = this.ValueExpressions[key];
-                }
+                this.LoadValueExpressionsIntoCache();
 
                 // Clear the variable cache for the expression evaluator
-                List<string> variables = this.ActivityExpressionEvaluator.VariableCache.Keys.ToList();
-                foreach (string variable in variables)
-                {
-                    this.ActivityExpressionEvaluator.VariableCache[variable] = null;
-                }
+                this.ClearVariableCache();
+
 
                 // Loop through each workflow data variable definition to build the
                 // update resource parameters which will be used to update each target resource
                 this.LookupUpdates = new List<UpdateLookupDefinition>();
                 foreach (Definition workflowDataVariableDefinition in this.workflowDataVariables)
                 {
-                    // Resolve the source expression, including any functions or concatenation,
-                    // to retrieve the typed value that should be assigned to the target attribute
-                    object resolved = null;
-                    if (!ExpressionEvaluator.IsExpression(workflowDataVariableDefinition.Left))
-                    {
-                        // This is a dynamic string for resolution already resolved
-                        // so just retrive the value from cache directly
-                        resolved = this.ActivityExpressionEvaluator.LookupCache[workflowDataVariableDefinition.Left];
-                    }
-                    else
-                    {
-                        resolved = this.ActivityExpressionEvaluator.ResolveExpression(workflowDataVariableDefinition.Left);
-                    }
-
-                    // Determine if we are targeting a variable
-                    // If not, assume we are targeting an expression which should result in requests or update
-                    // to the workflow dictionary
-                    bool targetVariable = ExpressionEvaluator.DetermineParameterType(workflowDataVariableDefinition.Right) == ParameterType.Variable;
-
-                    // Only create an update lookup definition if the value is not null, or if the
-                    // update definition is configured to allow null values to be transferred to the target(s)
-                    if (resolved == null && workflowDataVariableDefinition.Check)
-                    {
-                        if (targetVariable)
-                        {
-                            this.ActivityExpressionEvaluator.PublishVariable(workflowDataVariableDefinition.Right, null, UpdateMode.Modify);
-                        }
-                        else
-                        {
-                            this.LookupUpdates.Add(new UpdateLookupDefinition(workflowDataVariableDefinition.Right, null, UpdateMode.Modify));
-                        }
-                    }
-                    else if (resolved != null)
-                    {
-                        if (resolved.GetType() == typeof(InsertedValuesCollection))
-                        {
-                            // If the resolved object is an InsertedValues collection, the source for the update definition includes the InsertValues function
-                            // All associated values should be added to the target
-                            foreach (object o in (InsertedValuesCollection)resolved)
-                            {
-                                if (targetVariable)
-                                {
-                                    this.ActivityExpressionEvaluator.PublishVariable(workflowDataVariableDefinition.Right, o, UpdateMode.Insert);
-                                }
-                                else
-                                {
-                                    this.LookupUpdates.Add(new UpdateLookupDefinition(workflowDataVariableDefinition.Right, o, UpdateMode.Insert));
-                                }
-                            }
-                        }
-                        else if (resolved.GetType() == typeof(RemovedValuesCollection))
-                        {
-                            // If the resolved object is a RemovedValues collection, the source for the update definition includes the RemoveValues function
-                            // All associated values should be removed from the target
-                            foreach (object o in (RemovedValuesCollection)resolved)
-                            {
-                                if (targetVariable)
-                                {
-                                    this.ActivityExpressionEvaluator.PublishVariable(workflowDataVariableDefinition.Right, o, UpdateMode.Remove);
-                                }
-                                else
-                                {
-                                    this.LookupUpdates.Add(new UpdateLookupDefinition(workflowDataVariableDefinition.Right, o, UpdateMode.Remove));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // For all other conditions, update the variable or build a new update request parameter for the target attribute
-                            if (targetVariable)
-                            {
-                                this.ActivityExpressionEvaluator.PublishVariable(workflowDataVariableDefinition.Right, resolved, UpdateMode.Modify);
-                            }
-                            else
-                            {
-                                this.LookupUpdates.Add(new UpdateLookupDefinition(workflowDataVariableDefinition.Right, resolved, UpdateMode.Modify));
-                            }
-                        }
-                    }
+                    this.ProcessUpdateDefinition(workflowDataVariableDefinition);                    
                 }
             }
             finally
@@ -969,7 +981,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void CheckEmailTemplateResource_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationCheckEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.EmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationCheckEmailTemplateResourceExecuteCode, EmailNotificationTemplate, this.EmailTemplate);
 
             try
             {
@@ -977,8 +989,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 {
                     throw Logger.Instance.ReportError(EventIdentifier.SendEmailNotificationCheckEmailTemplateResourceExecuteCodeError, new WorkflowActivityLibraryException(Messages.SendEmailNotification_MissingEmailTemplateError, this.EmailTemplate));
                 }
-
-                if (this.EmailTemplateFoundIds.Count > 1)
+                else if (this.EmailTemplateFoundIds.Count > 1)
                 {
                     throw Logger.Instance.ReportError(EventIdentifier.SendEmailNotificationCheckEmailTemplateResourceExecuteCodeError, new WorkflowActivityLibraryException(Messages.SendEmailNotification_MultipleEmailTemplatesError, this.EmailTemplate));
                 }
@@ -987,7 +998,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationCheckEmailTemplateResourceExecuteCode, "Email template: '{0}'.", this.EmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationCheckEmailTemplateResourceExecuteCode, EmailNotificationTemplate, this.EmailTemplate);
             }
         }
 
@@ -998,7 +1009,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ResolveEmailTemplate_ExecuteCode(object sender, EventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationResolveEmailTemplateExecuteCode, "Email template: '{0}'.", this.EmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationResolveEmailTemplateExecuteCode, EmailNotificationTemplate, this.EmailTemplate);
 
             try
             {
@@ -1006,7 +1017,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationResolveEmailTemplateExecuteCode, "Email template: '{0}'.", this.EmailTemplate);
+                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationResolveEmailTemplateExecuteCode, EmailNotificationTemplate, this.EmailTemplate);
             }
         }
 
@@ -1233,7 +1244,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void EmailTemplateIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailTemplateIsXPathCondition, "Condition: '{0}'.", this.EmailTemplate);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailTemplateIsXPathCondition, ConditionTemplate, this.EmailTemplate);
 
             try
             {
@@ -1241,7 +1252,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailTemplateIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.EmailTemplate, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailTemplateIsXPathCondition, EmailNotificationTemplateWithCondition, this.EmailTemplate, e.Result);
             }
         }
 
@@ -1252,7 +1263,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void EmailToIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailToIsXPathCondition, "Condition: '{0}'.", this.To);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailToIsXPathCondition, ConditionTemplate, this.To);
 
             try
             {
@@ -1260,7 +1271,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailToIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.To, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailToIsXPathCondition, EmailNotificationTemplateWithCondition, this.To, e.Result);
             }
         }
 
@@ -1271,7 +1282,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void EmailCcIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailCcIsXPathCondition, "Condition: '{0}'.", this.CC);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailCcIsXPathCondition, ConditionTemplate, this.CC);
 
             try
             {
@@ -1279,7 +1290,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailCcIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.CC, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailCcIsXPathCondition, EmailNotificationTemplateWithCondition, this.CC, e.Result);
             }
         }
 
@@ -1290,7 +1301,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <param name="e">The <see cref="ConditionalEventArgs"/> instance containing the event data.</param>
         private void EmailBccIsXPath_Condition(object sender, ConditionalEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailBccIsXPathCondition, "Condition: '{0}'.", this.Bcc);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.SendEmailNotificationEmailBccIsXPathCondition, ConditionTemplate, this.Bcc);
 
             try
             {
@@ -1298,7 +1309,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailBccIsXPathCondition, "Condition: '{0}'. Condition evaluated '{1}'.", this.Bcc, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.SendEmailNotificationEmailBccIsXPathCondition, EmailNotificationTemplateWithCondition, this.Bcc, e.Result);
             }
         }
 

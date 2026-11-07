@@ -19,7 +19,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ActivitySettings {
@@ -340,7 +340,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Supply the XPath filter which will identify conflicts for the generated value. The [//Value] lookup should be used in the filter to represent the value being evaluated for uniqueness. Example: /Person[AccountName = &apos;[//Value]&apos;]..
+        ///   Looks up a localized string similar to Supply the XPath filter which will identify conflicts for the generated value. The [//Value] lookup must be used in the filter to represent the value being evaluated for uniqueness. Example: /Person[AccountName = &apos;[//Value]&apos;]..
         /// </summary>
         internal static string ConflictFilterHelpText {
             get {
@@ -426,6 +426,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         internal static string DeleteResources {
             get {
                 return ResourceManager.GetString("DeleteResources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation of Activity Execution Condition failed..
+        /// </summary>
+        internal static string ExecutionConditionValidationError {
+            get {
+                return ResourceManager.GetString("ExecutionConditionValidationError", resourceCulture);
             }
         }
         
@@ -646,6 +655,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Definition of the LDAP queries contain one or more errors..
+        /// </summary>
+        internal static string LdapFilterValidationError {
+            get {
+                return ResourceManager.GetString("LdapFilterValidationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to LDAP Queries.
         /// </summary>
         internal static string LdapQueries {
@@ -655,7 +673,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify one or more LDAP queries which should be run by the activity to identify conflicts. The [//Value] lookup should be used in each LDAP filter to represent the value being evaluated for uniqueness. All queries will be executed under the context of the FIM Service account..
+        ///   Looks up a localized string similar to Specify one or more LDAP queries which should be run by the activity to identify conflicts. The [//Value] lookup must be used in each LDAP filter to represent the value being evaluated for uniqueness. All queries will be executed under the context of the FIM Service account. The Directory Entry Path MUST start with &apos;LDAP://&apos;..
         /// </summary>
         internal static string LdapQueriesHelpText {
             get {
@@ -745,7 +763,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load user profile when impersonating the PowerShell user..
+        ///   Looks up a localized string similar to Load user profile when impersonating the PowerShell user. This only works with log on type Interactive, Batch or Service and MIM service account must be member of local Administrators group..
         /// </summary>
         internal static string LoadUserProfileHelpText {
             get {
@@ -808,6 +826,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Windows Powershell (5.x).
+        /// </summary>
+        internal static string Powershell5 {
+            get {
+                return ResourceManager.GetString("Powershell5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powershell (7.x).
+        /// </summary>
+        internal static string Powershell7 {
+            get {
+                return ResourceManager.GetString("Powershell7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify UserName and Password of the impersonated user..
         /// </summary>
         internal static string PowerShellImpersonationSettingsValidationError {
@@ -840,6 +876,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         internal static string PowerShellInputTypeNone {
             get {
                 return ResourceManager.GetString("PowerShellInputTypeNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script ExecutionTimeout.
+        /// </summary>
+        internal static string PowershellRequestTimeout {
+            get {
+                return ResourceManager.GetString("PowershellRequestTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify a value (ms) MIM workflow will wait for script execution to complete. 0 (zero) meaning, wait without limit. Setting no limit could result in a script running forever and blocking the Workflow..
+        /// </summary>
+        internal static string PowershellRequestTimeoutHelpText {
+            get {
+                return ResourceManager.GetString("PowershellRequestTimeoutHelpText", resourceCulture);
             }
         }
         
@@ -961,6 +1015,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Timeout must be an integer number greater then or equal to zero..
+        /// </summary>
+        internal static string PowershellTimeoutValidationError {
+            get {
+                return ResourceManager.GetString("PowershellTimeoutValidationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PowerShell Script User.
         /// </summary>
         internal static string PowerShellUser {
@@ -979,7 +1042,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify the user to be used to construct PowerShell Credential object. When impersonating, the user name must be in the domain\userName or UPN format or must be a valid WAL Lookup expression..
+        ///   Looks up a localized string similar to Specify the user to be used to construct PowerShell Credential object. When impersonating, the user name must be in the domain\userName or UPN format or must be a valid WAL Lookup expression. Username is populated in $env:CredentialUser..
         /// </summary>
         internal static string PowerShellUserHelpText {
             get {
@@ -997,7 +1060,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify the password to be used to construct PowerShell Credential object. The expected format is: [base64EncodedEncryptedData] | [app:\appSettings\[key],[LocalMachine|CurrentUser]] | [cert:\[LocalMachine|CurrentUser]\my\[thumbprint],base64EncodedEncryptedData]]. It can also be a valid WAL Lookup expression returing data in any one of these formats..
+        ///   Looks up a localized string similar to Specify the password to be used to construct PowerShell Credential object. The expected format is: [base64EncodedEncryptedData] | [app:\appSettings\[key],[LocalMachine|CurrentUser]] | [cert:\[LocalMachine|CurrentUser]\my\[thumbprint],base64EncodedEncryptedData]]. It can also be a valid WAL Lookup expression returning data in any one of these formats. Password is populated in $env:CredentialPassword..
         /// </summary>
         internal static string PowerShellUserPasswordHelpText {
             get {
@@ -1011,6 +1074,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         internal static string PowerShellUserPasswordValidationError {
             get {
                 return ResourceManager.GetString("PowerShellUserPasswordValidationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powershell Version.
+        /// </summary>
+        internal static string PowershellVersion {
+            get {
+                return ResourceManager.GetString("PowershellVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify the Powershell Version to be used with this Workflow.
+        /// </summary>
+        internal static string PowershellVersionHelpText {
+            get {
+                return ResourceManager.GetString("PowershellVersionHelpText", resourceCulture);
             }
         }
         
@@ -1222,7 +1303,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify a lookup expression or a number for the approval duration..
+        ///   Looks up a localized string similar to Duration field must be a lookup expression or a number greater than 0..
         /// </summary>
         internal static string RequestApprovalDurationFieldValidationError {
             get {
@@ -1321,7 +1402,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Threshold field must be a lookup expression or a number..
+        ///   Looks up a localized string similar to Threshold field must be a lookup expression or a number greater than 0..
         /// </summary>
         internal static string RequestApprovalThresholdFieldValidationError {
             get {
@@ -1609,7 +1690,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The activity can capture a return value from the PowerShell script and publish it to a lookup. Alternatively, the PowerShell script may return a table of named values which can be published to the workflow dictionary using corresponding key names..
+        ///   Looks up a localized string similar to The activity can capture simple return values from the PowerShell script like [bool[, [string] or [int] and publish it to a lookup. Alternatively, the PowerShell script may return a table of named values which can be published to the workflow dictionary using corresponding key names. Third option is to return a list of simple types like [int] or [string]..
         /// </summary>
         internal static string ScriptReturnTypeHelpText {
             get {

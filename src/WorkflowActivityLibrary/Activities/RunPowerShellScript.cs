@@ -15,18 +15,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
-    using System.Management.Automation;
-    using System.Management.Automation.Runspaces;
-    using System.Reflection;
+    using System.Linq;    
     using System.Security;
-    using System.Security.Principal;
     using System.Text;
     using System.Workflow.Activities;
     using System.Workflow.ComponentModel;
@@ -35,15 +30,30 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Definitions;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Enumerations;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Exceptions;
+    using System.Net;
+    using System.Web.Script.Serialization;
+    using System.Security.Cryptography;
+
+    using System.Runtime.InteropServices;
 
     #endregion
 
     /// <summary>
     /// Runs PowerShell Script
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
     public partial class RunPowerShellScript : SequenceActivity
     {
         #region Windows Workflow Designer generated code
+
+        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
+        public static DependencyProperty PowerShellTimeoutProperty =
+            DependencyProperty.Register("PowerShellTimeout", typeof(int), typeof(RunPowerShellScript));
+
+        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
+        public static DependencyProperty PowerShellVersionProperty =
+            DependencyProperty.Register("PowerShellVersion", typeof(string), typeof(RunPowerShellScript));
 
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ActivityDisplayNameProperty =
@@ -92,34 +102,34 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// <summary>
         /// DependencyProperty for PowerShell User
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
+        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty PowerShellUserProperty = DependencyProperty.Register("PowerShellUser", typeof(string), typeof(RunPowerShellScript));
 
         /// <summary>
         /// DependencyProperty for PowerShell Password
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
+        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty PowerShellUserPasswordProperty = DependencyProperty.Register("PowerShellUserPassword", typeof(string), typeof(RunPowerShellScript));
 
         /// <summary>
         /// DependencyProperty for Impersonate PowerShell User
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
+        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ImpersonatePowerShellUserProperty = DependencyProperty.Register("ImpersonatePowerShellUser", typeof(bool), typeof(RunPowerShellScript));
 
         /// <summary>
         /// DependencyProperty for Impersonate PowerShell User Logon Type
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
+        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ImpersonatePowerShellUserLogOnTypeProperty = DependencyProperty.Register("ImpersonatePowerShellUserLogOnType", typeof(LogOnType), typeof(RunPowerShellScript));
 
         /// <summary>
         /// DependencyProperty for Impersonate PowerShell User Load User Profile
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
+        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ImpersonatePowerShellUserLoadUserProfileProperty = DependencyProperty.Register("ImpersonatePowerShellUserLoadUserProfile", typeof(bool), typeof(RunPowerShellScript));
 
-        #endregion
+        #endregion Windows Workflow Designer generated code
 
         #region Declarations
 
@@ -127,7 +137,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
@@ -160,6 +169,37 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         }
 
         #region Dependancy Property Properties
+
+        [Description("Timeout value for the powershell script")]
+        [Category("Settings")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true)]
+        public int PowerShellTimeout
+        {
+            get
+            {
+                return ((int)(this.GetValue(PowerShellTimeoutProperty)));
+            }
+
+            set
+            {
+                this.SetValue(PowerShellTimeoutProperty, value);
+            }
+        }
+
+        [Description("Determines whether to run the script using Windows PowerShell or PowerShell 7.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true)]
+        public string PowerShellVersion
+        {
+            get {
+                return ((string)(this.GetValue(PowerShellVersionProperty)));
+            }
+
+            set {
+                this.SetValue(PowerShellVersionProperty, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the display name of the activity.
@@ -483,7 +523,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
-        #endregion
+        #endregion Dependancy Property Properties
+
 
         #region Methods
 
@@ -543,80 +584,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             finally
             {
                 Logger.Instance.WriteMethodExit(EventIdentifier.RunPowerShellScriptOnSequenceComplete);
-            }
-        }
-
-        /// <summary>
-        /// Sets up the PowerShell shell stream event handlers.
-        /// </summary>
-        /// <param name="shell">The PowerShell shell.</param>
-        private static void SetupStreamEventHandlers(PowerShell shell)
-        {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.RunPowerShellScriptSetupStreamEventHandlers);
-
-            try
-            {
-                shell.Streams.ClearStreams();
-                shell.Streams.Error.DataAdded += delegate(object sender, DataAddedEventArgs e)
-                {
-                    PSDataCollection<ErrorRecord> errorStream = (PSDataCollection<ErrorRecord>)sender;
-                    ErrorRecord record = errorStream[e.Index];
-                    if (record == null)
-                    {
-                        return;
-                    }
-
-                    StringBuilder builder = new StringBuilder();
-                    builder.AppendLine(record.ToString());
-
-                    if (record.InvocationInfo != null)
-                    {
-                        builder.AppendLine();
-                        builder.AppendLine(record.InvocationInfo.PositionMessage);
-                    }
-
-                    Logger.Instance.WriteError(EventIdentifier.RunPowerShellScriptSetupStreamEventHandlersErrorEvents, builder.ToString());
-                };
-                shell.Streams.Warning.DataAdded += delegate(object sender, DataAddedEventArgs e)
-                {
-                    PSDataCollection<WarningRecord> warningStream = (PSDataCollection<WarningRecord>)sender;
-                    WarningRecord record = warningStream[e.Index];
-                    if (record != null)
-                    {
-                        Logger.Instance.WriteWarning(EventIdentifier.RunPowerShellScriptSetupStreamEventHandlersWarningEvents, record.ToString());
-                    }
-                };
-                shell.Streams.Debug.DataAdded += delegate(object sender, DataAddedEventArgs e)
-                {
-                    PSDataCollection<DebugRecord> debugStream = (PSDataCollection<DebugRecord>)sender;
-                    DebugRecord record = debugStream[e.Index];
-                    if (record != null)
-                    {
-                        Logger.Instance.WriteInfo(EventIdentifier.RunPowerShellScriptSetupStreamEventHandlersDebugEvents, record.ToString());
-                    }
-                };
-                shell.Streams.Verbose.DataAdded += delegate(object sender, DataAddedEventArgs e)
-                {
-                    PSDataCollection<VerboseRecord> versboseStream = (PSDataCollection<VerboseRecord>)sender;
-                    VerboseRecord record = versboseStream[e.Index];
-                    if (record != null)
-                    {
-                        Logger.Instance.WriteVerbose(EventIdentifier.RunPowerShellScriptSetupStreamEventHandlersEvents, record.ToString());
-                    }
-                };
-                shell.Streams.Progress.DataAdded += delegate(object sender, DataAddedEventArgs e)
-                {
-                    PSDataCollection<ProgressRecord> progressStream = (PSDataCollection<ProgressRecord>)sender;
-                    ProgressRecord record = progressStream[e.Index];
-                    if (record != null)
-                    {
-                        Logger.Instance.WriteInfo(EventIdentifier.RunPowerShellScriptSetupStreamEventHandlersProgressEvents, record.ToString());
-                    }
-                };
-            }
-            finally
-            {
-                Logger.Instance.WriteMethodExit(EventIdentifier.RunPowerShellScriptSetupStreamEventHandlers);
             }
         }
 
@@ -708,50 +675,12 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 // The value supplied for the script property may represent a number of things
                 // Depending on the supplied script location, determine if the value represents a path to a script file,
                 // a lookup to be resolved, or the script itself stored in the workflow definition
-                string script = string.Empty;
-                switch (this.ScriptLocation)
-                {
-                    case PowerShellScriptLocation.Resource:
-                        // If the script needs to be resolved, the supplied script value will be the lookup from which the script should be read
-                        // Resolve it using the expression evaluator and throw an error, if configured to do so, when it resolves to null
-                        object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.Script);
-                        if (resolved != null)
-                        {
-                            script = resolved.ToString();
-                        }
-                        else if (this.FailOnMissing)
-                        {
-                            throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunExecuteCodeScriptNotFoundError, new WorkflowActivityLibraryException(Messages.RunPowerShellActivity_ScriptNotFoundError, this.Script));
-                        }
-
-                        break;
-                    case PowerShellScriptLocation.Disk:
-                        // If the script needs to be read from disk, the supplied script value will be the script file path
-                        // Attempt to read it and throw an error if it is not found
-                        if (File.Exists(this.Script))
-                        {
-                            using (StreamReader reader = new StreamReader(this.Script))
-                            {
-                                script = reader.ReadToEnd();
-                            }
-                        }
-                        else
-                        {
-                            throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunExecuteCodeScriptNotFoundError, new WorkflowActivityLibraryException(Messages.RunPowerShellActivity_ScriptNotFoundError, this.Script));
-                        }
-
-                        break;
-                    case PowerShellScriptLocation.WorkflowDefinition:
-                        // When the script is stored in the workflow definition, the supplied script value will be the script itself
-                        script = this.Script;
-                        break;
-                }
+                
+                var script = GetPowershellScript();
 
                 if (string.IsNullOrEmpty(script))
-                {
                     return;
-                }
-
+                
                 ArrayList arguments = null;
                 Dictionary<string, object> scriptParameters = null;
                 switch (this.InputType)
@@ -759,26 +688,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                     case PowerShellInputType.Parameters:
                         // If named parameters were supplied as input, resolve each value expression
                         // and add them to the PowerShell instance
-                        scriptParameters = new Dictionary<string, object>();
-                        foreach (Definition parameter in this.parameters)
-                        {
-                            object resolved = this.ActivityExpressionEvaluator.ResolveExpression(parameter.Right);
-                            if (resolved != null)
-                            {
-                                scriptParameters.Add(parameter.Left, resolved);
-                            }
-                        }
-
+                        scriptParameters = GetScriptParameters();
                         break;
+
                     case PowerShellInputType.Arguments:
                         // If arguments were supplied as input, resolve each argument value
                         // and add them to the PowerShell instance in the order in which they were supplied
-                        arguments = new ArrayList();
-                        foreach (string s in this.Arguments)
-                        {
-                            arguments.Add(this.ActivityExpressionEvaluator.ResolveExpression(s));
-                        }
-
+                        arguments = GetScriptArguments();
                         break;
                 }
 
@@ -802,17 +718,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                         if (result != null && result.GetType() == typeof(Hashtable))
                         {
                             Hashtable results = (Hashtable)result;
-                            foreach (string s in results.Keys)
+                            foreach (string key in results.Keys)
                             {
-                                object value = results[s];
+                                object value = results[key];
 
-                                // Values may come as PSObject types. In that case, read the base object.
-                                if (value != null && value.GetType() == typeof(PSObject))
-                                {
-                                    value = ((PSObject)results[s]).BaseObject;
-                                }
-
-                                this.PublishOutput.UpdateLookupDefinitions.Add(new UpdateLookupDefinition(string.Format(CultureInfo.InvariantCulture, "[//WorkflowData/{0}]", s), value, UpdateMode.Modify));
+                                this.PublishOutput.UpdateLookupDefinitions.Add(new UpdateLookupDefinition(string.Format(CultureInfo.InvariantCulture, "[//WorkflowData/{0}]", key), value, UpdateMode.Modify));
                             }
                         }
                         else
@@ -829,298 +739,500 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
+        private ArrayList GetScriptArguments()
+        {
+            var arguments = new ArrayList();
+            foreach (string s in this.Arguments)
+            {
+                arguments.Add(this.ActivityExpressionEvaluator.ResolveExpression(s));
+            }
+
+            return arguments;
+        }
+
+        private Dictionary<string, object> GetScriptParameters()
+        {
+            var scriptParameters = new Dictionary<string, object>();
+            foreach (Definition parameter in this.parameters)
+            {
+                object resolved = this.ActivityExpressionEvaluator.ResolveExpression(parameter.Right);
+                if (resolved != null)
+                {
+                    scriptParameters.Add(parameter.Left, resolved);
+                }
+            }
+
+            return scriptParameters;
+        }
+
+        private string GetPowershellScript()
+        {
+            var script = string.Empty;
+
+            switch (this.ScriptLocation)
+            {
+                case PowerShellScriptLocation.Resource:
+                    // If the script needs to be resolved, the supplied script value will be the lookup from which the script should be read
+                    // Resolve it using the expression evaluator and throw an error, if configured to do so, when it resolves to null
+                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.Script);
+                    if (resolved != null)
+                    {
+                        script = resolved.ToString();
+                    }
+                    else if (this.FailOnMissing)
+                    {
+                        throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunExecuteCodeScriptNotFoundError, new WorkflowActivityLibraryException(Messages.RunPowerShellActivity_ScriptNotFoundError, this.Script));
+                    }
+
+                    break;
+                case PowerShellScriptLocation.Disk:
+                    // If the script needs to be read from disk, the supplied script value will be the script file path
+                    // Attempt to read it and throw an error if it is not found
+                    if (File.Exists(this.Script))
+                    {
+                        using (StreamReader reader = new StreamReader(this.Script))
+                        {
+                            script = reader.ReadToEnd();
+                        }
+                    }
+                    else
+                    {
+                        throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunExecuteCodeScriptNotFoundError, new WorkflowActivityLibraryException(Messages.RunPowerShellActivity_ScriptNotFoundError, this.Script));
+                    }
+
+                    break;
+                case PowerShellScriptLocation.WorkflowDefinition:
+                    // When the script is stored in the workflow definition, the supplied script value will be the script itself
+                    script = this.Script;
+                    break;
+            }
+
+            return script;
+        }
+
+        private static bool IsConsistentType(
+            List<object> resultValues)
+        {
+            Type type = null;
+            bool typeInitialized = false;
+
+            foreach (object item in resultValues)
+            {
+                Type itemType =
+                    item == null
+                        ? null
+                        : item.GetType();
+
+                if (!typeInitialized)
+                {
+                    type = itemType;
+                    typeInitialized = true;
+                }
+                else if (itemType != type)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static object GetListResults(object results)
+        {
+            var objectArray = results as object[];
+            List<object> valueList = new List<object>(objectArray);
+
+            var consistentType = IsConsistentType(valueList);
+
+            // If we have multiple values of an inconsistent type, there is a problem
+            // which needs to be addressed by the administrator
+            if (!consistentType)
+            {
+                throw new FormatException("Inconsistent Type");
+            }
+
+            return valueList;
+        }
+
+        private static object GetDictionaryResults(object results)
+        {
+            var dictionary = (Dictionary<string, object>)results;
+            Hashtable table = new Hashtable();
+
+            foreach (string key in dictionary.Keys)
+            {
+                table.Add(key, dictionary[key]);
+            }
+
+            return table;
+        }
+
+
+        private NetworkCredential GetCredential()
+        {
+            if (string.IsNullOrEmpty(this.PowerShellUser) ||
+                string.IsNullOrEmpty(this.PowerShellUserPassword))
+            {
+                return null;
+            }
+
+            string userName = this.PowerShellUser;
+            string domain = string.Empty;
+
+            if (userName.Contains('\\'))
+            {
+                var parts = userName.Split('\\');
+                userName = parts[1];
+                domain = parts[0];
+            }
+            string password = GetPowershellUserPassword();
+
+            if (!string.IsNullOrEmpty(domain))
+                return new NetworkCredential(userName, password, domain);
+
+            return new NetworkCredential(userName, password);
+        }
+
+        private string GetPowershellUserPassword()
+        {
+            if (string.IsNullOrEmpty(this.PowerShellUserPassword))
+                return string.Empty;
+
+            // 1. Base64 decode
+            byte[] encryptedBytes = Convert.FromBase64String(this.PowerShellUserPassword);
+
+            // 2. DPAPI decrypt (MIMWAL uses LocalMachine)
+            byte[] decryptedBytes = System.Security.Cryptography.ProtectedData.Unprotect(
+                encryptedBytes,
+                null,
+                DataProtectionScope.LocalMachine);
+
+            // 3. Convert bytes → plain password (Unicode = UTF-16LE)
+            string password = Encoding.Unicode.GetString(decryptedBytes);
+
+            return password;
+        }
+
         /// <summary>
         /// Runs the PowerShell script.
         /// </summary>
         /// <param name="script">The script.</param>
         /// <param name="scriptArguments">The PowerShell script arguments.</param>
         /// <param name="scriptParameters">The PowerShell script parameters.</param>
-        /// <returns>The output of the script.</returns>
+        /// <returns>The output of the script.</returns>        
         private object RunScript(string script, IEnumerable scriptArguments, Dictionary<string, object> scriptParameters)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.RunPowerShellScriptRunScript);
 
-            WindowsImpersonationContext context = null;
-            LogOnUser logOnUser = null;
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+
+            NetworkCredential credential = null;
+            var psExeName = GetPSExecutableName();
+            var psExePath = GetPSExePath(psExeName);
+
+            LogOnType logonType = this.ImpersonatePowerShellUserLogOnType;
+            bool loadUserProfile = this.ImpersonatePowerShellUserLoadUserProfile;
 
             try
             {
-                PSCredential credential = this.GetPowerShellCredential();
-
-                logOnUser = this.LogOnUser(credential);
-
-                if (logOnUser != null)
+                if (this.ImpersonatePowerShellUser)
                 {
-                    context = logOnUser.Impersonate();
+                    credential = this.GetCredential();
                 }
 
-                // Establish a new runspace for the Powershell script
-                InitialSessionState initialSessionState = InitialSessionState.CreateDefault();
+                string programDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
-                bool progressPreference = Logger.Instance.ShouldTrace(TraceEventType.Information);
-                bool debugPreference = Logger.Instance.ShouldTrace(TraceEventType.Information);
-                bool verbosePreference = Logger.Instance.ShouldTrace(TraceEventType.Verbose);
+                // ------------------------------------------------------------
+                // Build environment (replacement for InitialSessionState)
+                // ------------------------------------------------------------
 
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("ProgressPreference", progressPreference ? "Continue" : "SilentlyContinue", string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("DebugPreference", debugPreference ? "Continue" : "SilentlyContinue", string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("VerbosePreference", verbosePreference ? "Continue" : "SilentlyContinue", string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("AECWorkflowInstanceId", Logger.GetContextItem("WorkflowInstanceId"), string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("AECRequestId", Logger.GetContextItem("RequestId"), string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("AECActorId", Logger.GetContextItem("ActorId"), string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("AECTargetId", Logger.GetContextItem("TargetId"), string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("AECWorkflowDefinitionId", Logger.GetContextItem("WorkflowDefinitionId"), string.Empty));
-                initialSessionState.Variables.Add(new SessionStateVariableEntry("Credential", credential, null));
+                /*
+                   Values are set in Microsoft.ResourceManagement.Service.exe.config
+                   <system.diagnostics><switches>
+                        <add name="AllSwitch" value="Information" />
+                        Information: Evaluates Logger.Instance.ShouldTrace(TraceEventType.Information) to true. This sets your progressPreference to Continue.
+                        Verbose: Evaluates TraceEventType.Verbose to true. This sets both debugPreference and verbosePreference to Continue.
+                        Warning / Error / Critical: Evaluates Information and Verbose to false. This sets those preferences back to SilentlyContinue, hiding trace progression logs.
+                */
+                var pwd = GetPowershellUserPassword();
+                var preferences = CreatePreferences();
+                var environment = CreateEnvironment(pwd);    
+                var finalScriptToExecute = CreatePowershellExecutionString(script, scriptArguments, scriptParameters, environment, preferences);
 
-                using (Runspace runspace = RunspaceFactory.CreateRunspace(initialSessionState))
+                // 5. Convert to Base64 (Unicode)
+                var bytes = System.Text.Encoding.Unicode.GetBytes(finalScriptToExecute);
+                var encodedCommand = Convert.ToBase64String(bytes);
+
+                PowerShellResult powerShellResult;
+
+                if (this.ImpersonatePowerShellUser)
                 {
-                    runspace.Open();
-                    using (PowerShell shell = PowerShell.Create())
-                    {
-                        shell.Runspace = runspace;
+                    // ------------------------------------------------------------
+                    // Impersonate a user and run a process executing Powershell
+                    // ------------------------------------------------------------
 
-                        SetupStreamEventHandlers(shell);
+                    powerShellResult = MimProcessLauncher.RunPowerShellAsUser(credential.UserName, credential.Domain, pwd,
+                       psExePath, encodedCommand,
+                       logonType, loadUserProfile,
+                       environment, this.PowerShellTimeout);
+                }
+                else
+                {
+                    // ------------------------------------------------------------
+                    // Run Powershell as service account
+                    // ------------------------------------------------------------
+                    powerShellResult = MimProcessLauncher.RunPowershellAsService(psExePath, programDataFolder, encodedCommand, this.PowerShellTimeout);
+                }
 
-                        // Add the script to the PowerShell instance to prepare for execution
-                        shell.AddScript(script);
+                //Handle possible errors
+                if (powerShellResult.TimedOut)
+                    throw new ExternalException(powerShellResult.StandardError);
 
-                        StringBuilder scriptParams = new StringBuilder();
+                if (powerShellResult.ExitCode != 0)
+                {
+                    var msg = string.Format("Powershell script ended with one or more error(s): {0}", powerShellResult.StandardError);
+                    throw new ExternalException(msg);
+                }
 
-                        if (scriptParameters != null)
-                        {
-                            foreach (string s in scriptParameters.Keys)
-                            {
-                                shell.AddParameter(s, scriptParameters[s]);
+                // Handle possible results
+                if (string.IsNullOrEmpty(powerShellResult.StandardOutput))
+                {
+                    return null;
+                }
+                else
+                {
+                    object results = serializer.DeserializeObject(powerShellResult.StandardOutput);
 
-                                scriptParams.AppendFormat(CultureInfo.InvariantCulture, "-{0} '{1}' ", s, scriptParameters[s]);
-                            }
-                        }
-                        else if (scriptArguments != null)
-                        {
-                            foreach (object o in scriptArguments)
-                            {
-                                shell.AddArgument(o);
-                                scriptParams.AppendFormat(CultureInfo.InvariantCulture, "'{0}' ", o);
-                            }
-                        }
+                    if (results == null)
+                        return results;
 
-                        if (this.InputType != PowerShellInputType.None)
-                        {
-                            Logger.Instance.WriteVerbose(EventIdentifier.RunPowerShellScriptRunScript, "The PowerShell script parameters are: '{0}'.", scriptParams);
-                        }
+                    if (results.GetType().ToString().Contains("Dictionary"))
+                        return GetDictionaryResults(results);
 
-                        // Execute the script and identify if any errors occurred
-                        // In most circumstances, errors will not be raised as exceptions but will instead
-                        // be presented in the Error collection for the PowerShell instance
-                        Collection<PSObject> results;
+                    if (results.GetType().ToString().Contains("Object[]"))
+                        return GetListResults(results);
 
-                        try
-                        {
-                            results = shell.Invoke();
-                        }
-                        catch (Exception ex)
-                        {
-                            throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunScriptInvocationError, new WorkflowActivityLibraryException(Messages.RunPowerShellScript_ScriptInvocationError, ex, ex.Message));
-                        }
-
-                        // Let's go soft on the the non-terminating errors and trapped exceptions.
-                        // We'll just log the error streams.
-                        // If script wants to kill the activity, it should throw an exception.
-                        if (shell.Streams.Error.Count != 0)
-                        {
-                            StringBuilder message = new StringBuilder();
-                            message.AppendFormat(Messages.RunPowerShellScript_ScriptExecutionFailedError, shell.Streams.Error.Count);
-                            foreach (ErrorRecord error in shell.Streams.Error)
-                            {
-                                message.AppendFormat("{0}\n", error);
-                            }
-
-                            Logger.Instance.WriteError(EventIdentifier.RunPowerShellScriptRunScriptExecutionFailedError, message.ToString());
-                        }
-
-                        if (this.ReturnType == PowerShellReturnType.None)
-                        {
-                            return null;
-                        }
-
-                        if (results != null && results.Count == 1)
-                        {
-                            return results[0].BaseObject;
-                        }
-
-                        if (results == null || results.Count < 1)
-                        {
-                            return null;
-                        }
-
-                        // If multiple values were found for the lookup, verify that they are of a consistent type
-                        Type type = null;
-                        bool consistentType = true;
-                        foreach (PSObject pso in results)
-                        {
-                            if (type == null)
-                            {
-                                type = pso.BaseObject.GetType();
-
-                                Logger.Instance.WriteVerbose(EventIdentifier.RunPowerShellScriptRunScript, "The PowerShell script returned type: '{0}'.", type);
-                            }
-                            else if (pso.BaseObject.GetType() != type)
-                            {
-                                consistentType = false;
-                                Logger.Instance.WriteError(EventIdentifier.RunPowerShellScriptRunScriptInconsistentScriptReturnTypeError, Messages.RunPowerShellScript_InconsistentScriptReturnTypeError, pso.BaseObject.GetType(), type);
-                            }
-                        }
-
-                        // If we have multiple values of an inconsistent type, there is a problem
-                        // which needs to be addressed by the administrator
-                        if (!consistentType)
-                        {
-                            throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunScriptInconsistentScriptReturnTypeError, new WorkflowActivityLibraryException(Messages.RunPowerShellScript_InvalidReturnTypeError));
-                        }
-
-                        // Because we have multiple values returned for the PowerShell script, 
-                        // we want to return them in the form of a strongly-typed list
-                        // For example: List<string> instead of List<object>
-                        // Use reflection to create a new strongly-typed list
-                        Type listType = typeof(List<>).MakeGenericType(new Type[] { type });
-                        var typedList = Activator.CreateInstance(listType);
-
-                        // Using reflection, fetch the add method for the new list
-                        // and invoke it to add each value from the original PSobject collection to the new collection
-                        // Return the strongly-typed list
-                        MethodInfo add = listType.GetMethod("Add");
-                        foreach (PSObject pso in results)
-                        {
-                            add.Invoke(typedList, new object[] { pso.BaseObject });
-                        }
-
-                        return typedList;
-                    }
+                    return results;
                 }
             }
             catch (Exception ex)
             {
-                throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunScriptExecutionFailedError, ex);
+                throw Logger.Instance.ReportError(
+                    EventIdentifier.RunPowerShellScriptRunScriptExecutionFailedError,
+                    ex);
             }
             finally
             {
-                if (context != null)
-                {
-                    context.Undo();
-                }
-
-                if (logOnUser != null)
-                {
-                    logOnUser.Dispose();
-                }
-
                 Logger.Instance.WriteMethodExit(EventIdentifier.RunPowerShellScriptRunScript);
             }
         }
 
-        /// <summary>
-        /// Gets the PowerShell credential.
-        /// </summary>
-        /// <returns>The PowerShell credential object.</returns>
-        private PSCredential GetPowerShellCredential()
+        private static Dictionary<string, string> CreatePreferences()
         {
-            if (string.IsNullOrEmpty(this.PowerShellUser) || string.IsNullOrEmpty(this.PowerShellUserPassword))
-            {
-                return null;
-            }
+            var preferences = new Dictionary<string, string>();
 
-            var userName = this.PowerShellUser;
-            var userPassword = this.PowerShellUserPassword;
+            bool progressPreference = Logger.Instance.ShouldTrace(TraceEventType.Information);
+            bool debugPreference = Logger.Instance.ShouldTrace(TraceEventType.Information);
+            bool verbosePreference = Logger.Instance.ShouldTrace(TraceEventType.Verbose);
 
-            if (ExpressionEvaluator.IsExpression(userName))
-            {
-                try
-                {
-                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(userName);
-                    if (resolved != null)
-                    {
-                        userName = resolved.ToString();
-                    }
-                }
-                catch (WorkflowActivityLibraryException)
-                {
-                    // This may happen if the design time username starts with a $
-                    // Do nothing. Any valid error should already be reported.
-                }
-            }
+            // When using ErrorActionPreference Stop, Powershell always returns an error code 
+            // other then zero to the calling process also for non-terminating errors.
+            // Users can always overwrite the preference in their scripts.
+            preferences["ErrorActionPreference"] = "Stop";
+            preferences["ProgressPreference"] = progressPreference ? "Continue" : "SilentlyContinue";
+            preferences["DebugPreference"] = debugPreference ? "Continue" : "SilentlyContinue";
+            preferences["VerbosePreference"] = verbosePreference ? "Continue" : "SilentlyContinue";
 
-            if (ExpressionEvaluator.IsExpression(userPassword))
-            {
-                try
-                {
-                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(userPassword);
-                    if (resolved != null)
-                    {
-                        userPassword = resolved.ToString();
-                    }
-                }
-                catch (WorkflowActivityLibraryException)
-                {
-                    // Do nothing. Any valid error should already be reported.
-                }
-            }
-
-            if (this.ImpersonatePowerShellUser)
-            {
-                string[] userParts = userName.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries);
-                if (userParts.Length != 2 && !userName.Contains("@"))
-                {
-                    throw Logger.Instance.ReportError(EventIdentifier.RunPowerShellScriptRunScriptExecutionFailedError, new WorkflowActivityLibraryException(Messages.RunPowerShellActivity_InvalidUserFormat, userName));
-                }
-            }
-
-            SecureString password = ProtectedData.DecryptData(userPassword);
-
-            return new PSCredential(userName, password);
+            return preferences;
         }
 
-        /// <summary>
-        /// Logs on the user.
-        /// </summary>
-        /// <param name="credential">The credential.</param>
-        /// <returns>The LogOnUser object.</returns>
-        private LogOnUser LogOnUser(PSCredential credential)
+        private Dictionary<string, string> CreateEnvironment(string pwd)
         {
-            LogOnUser logOnUser = null;
+            // ------------------------------------------------------------
+            // Build Powershell Environment
+            // ------------------------------------------------------------
 
-            if (this.ImpersonatePowerShellUser)
+            var env = new Dictionary<string, string>();            
+
+            env["AECWorkflowInstanceId"] = Logger.GetContextItem("WorkflowInstanceId");
+            env["AECRequestId"] = Logger.GetContextItem("RequestId");
+            env["AECActorId"] = Logger.GetContextItem("ActorId");
+            env["AECTargetId"] = Logger.GetContextItem("TargetId");
+            env["AECWorkflowDefinitionId"] = Logger.GetContextItem("WorkflowDefinitionId");
+
+            // Credential cannot be passed directly → pass as placeholder
+            env["CredentialUser"] = string.IsNullOrEmpty(this.PowerShellUser) ? string.Empty : this.PowerShellUser;
+            env["CredentialPassword"] = pwd;
+
+            return env;
+        }
+
+        [SuppressMessage("SonarAnalyzer.CSharp", "S125", Justification = "Provide a comment which includes Powershell")]
+        private static string CreatePowershellExecutionString(string script, IEnumerable scriptArguments, Dictionary<string, object> scriptParameters, Dictionary<string, string> env, Dictionary<string, string> preferences)
+        {   
+            StringBuilder scriptBuilder = new StringBuilder();
+            
+
+            foreach (KeyValuePair<string, string> p in preferences)
             {
-                LogOnType logonType = this.ImpersonatePowerShellUserLogOnType;
-                bool loadUserProfile = this.ImpersonatePowerShellUserLoadUserProfile;
+                string preferenceValue = p.Value ?? string.Empty;
+                string safeValue = preferenceValue.Replace("'", "''");  // Escape single quotes
+                scriptBuilder.AppendLine(string.Format("${0} = '{1}';", p.Key, safeValue));
+            }
 
-                WindowsIdentity windowsIdentity = WindowsIdentity.GetCurrent();
-                if (windowsIdentity != null)
+            foreach (KeyValuePair<string, string> e in env)
+            {
+                string environmentValue = e.Value ?? string.Empty;
+                string safeValue = environmentValue.Replace("'", "''");  // Escape single quotes
+                                                                            // Generates: $env:AECWorkflowInstanceId = 'WF-99999';
+                scriptBuilder.AppendLine(string.Format("$env:{0} = '{1}';", e.Key, safeValue));
+            }
+
+            if (scriptArguments != null && scriptArguments.Cast<object>().Any())
+            {
+                // ------------------------------------------------------------
+                //  Powershell Arguments
+                // ------------------------------------------------------------
+                scriptBuilder.AppendLine("$args = @(");
+                foreach (object arg in scriptArguments)
                 {
-                    string currentUserLogonName = windowsIdentity.Name;
-                    if (!this.PowerShellUser.Equals(currentUserLogonName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        logOnUser = new LogOnUser(
-                            credential.GetNetworkCredential().UserName,
-                            credential.GetNetworkCredential().Domain,
-                            credential.GetNetworkCredential().Password,
-                            logonType,
-                            LogOnProvider.ProviderWinNT50,
-                            loadUserProfile);
-                    }
+                    scriptBuilder.AppendLine(string.Format("    {0}", ToPowerShellLiteral(arg)));
                 }
-                else
+                scriptBuilder.AppendLine(");");
+            }
+            else if (scriptParameters != null && scriptParameters.Count > 0)
+            {
+                // ------------------------------------------------------------
+                //  Powershell Parameters
+                // ------------------------------------------------------------
+                scriptBuilder.AppendLine("$params = @{");
+                foreach (KeyValuePair<string, object> param in scriptParameters)
                 {
-                    logOnUser = new LogOnUser(
-                        credential.GetNetworkCredential().Domain,
-                        credential.GetNetworkCredential().UserName,
-                        credential.GetNetworkCredential().Password,
-                        logonType,
-                        LogOnProvider.ProviderWinNT50,
-                        loadUserProfile);
+                    scriptBuilder.AppendLine(string.Format("    {0} = {1}", param.Key, ToPowerShellLiteral(param.Value)));
+                }
+                scriptBuilder.AppendLine("};");
+            }
+
+
+            // 2. Define an inline ScriptBlock wrapper that receives the splatted parameters
+            scriptBuilder.AppendLine("$scriptBlock = {");
+            scriptBuilder.AppendLine(script);
+            scriptBuilder.AppendLine("}");
+
+            // 4. Capture execution to $result and implement a wrapper for JSON serialization logic
+            if (scriptArguments != null && scriptArguments.Cast<object>().Any())
+            {
+                scriptBuilder.AppendLine("$result = & $scriptBlock @args;");
+            }
+            else if (scriptParameters != null && scriptParameters.Count > 0)
+            {
+                scriptBuilder.AppendLine("$result = & $scriptBlock @params;");
+            }            
+            else
+            {
+                scriptBuilder.AppendLine("$result = & $scriptBlock;");
+            }
+            scriptBuilder.AppendLine("if ($null -eq $result) { return $null };");
+
+            // to get a predictable result, I convert it into JSON
+            scriptBuilder.AppendLine("return ($result | ConvertTo-Json -Compress);");
+
+            return scriptBuilder.ToString();
+        }
+
+
+        private static string ToPowerShellLiteral(object value)
+        {
+            if (value == null)
+                return "$null";
+
+            Type type = value.GetType();
+
+            if (type == typeof(string))
+            {
+                return "'" + ((string)value).Replace("'", "''") + "'";
+            }
+
+            if (type == typeof(bool))
+            {
+                return ((bool)value) ? "$true" : "$false";
+            }
+
+            if (type == typeof(char))
+            {
+                return "'" + value.ToString().Replace("'", "''") + "'";
+            }
+
+            if (type.IsEnum)
+            {
+                return Convert.ToInt32(value, CultureInfo.InvariantCulture)
+                    .ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (type == typeof(byte) ||
+                type == typeof(sbyte) ||
+                type == typeof(short) ||
+                type == typeof(ushort) ||
+                type == typeof(int) ||
+                type == typeof(uint) ||
+                type == typeof(long) ||
+                type == typeof(ulong) ||
+                type == typeof(float) ||
+                type == typeof(double) ||
+                type == typeof(decimal))
+            {
+                return Convert.ToString(value, CultureInfo.InvariantCulture);
+            }
+
+            if (type == typeof(DateTime))
+            {
+                return "[datetime]'" +
+                    ((DateTime)value).ToString("o", CultureInfo.InvariantCulture) +
+                    "'";
+            }
+
+            if (type == typeof(Guid))
+            {
+                return "[guid]'" + value.ToString() + "'";
+            }
+
+            if (value is IEnumerable && !(value is string))
+            {
+                IEnumerable enumerable = (IEnumerable)value;
+                var items = enumerable.Cast<object>().Select(item => ToPowerShellLiteral(item));
+                return "@(" + string.Join(", ", items.ToArray()) + ")";
+            }
+
+            throw new NotSupportedException(
+                "Unsupported parameter type: " + type.FullName);
+        }
+                
+        private string GetPSExecutableName()
+        {
+            var selectedVersion = string.IsNullOrEmpty(this.PowerShellVersion) ? PowershellVersion.WindowsPowershell.ToString() : this.PowerShellVersion;
+            return selectedVersion == PowershellVersion.Powershell.ToString() ? "pwsh.exe" : "powershell.exe";
+        }
+
+        private static string GetPSExePath(string psExeName)
+        {
+            string fullPath = string.Empty;
+            string pathEnv = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+
+            foreach (var path in pathEnv.Split(Path.PathSeparator))
+            {
+                fullPath = Path.Combine(path, psExeName);
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;                    
                 }
             }
 
-            return logOnUser;
+            var msg = string.Format("Unable to find path to {0}", psExeName);
+            throw new FileNotFoundException(msg);
         }
+
+        #endregion Methods
 
         #region Conditions
 
@@ -1156,8 +1268,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
-        #endregion
+        #endregion Conditions
 
-        #endregion
     }
 }

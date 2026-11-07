@@ -13,13 +13,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Definitio
     #region Namespaces Declarations
 
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     #endregion
 
     /// <summary>
     /// Defines the equation for task to be performed.
     /// </summary>
-    [Serializable]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S5766", Justification = "The constructor doesn't really perform strict validation. It only trims strings.")]
+    [Serializable]    
     public class Definition
     {
         /// <summary>
@@ -33,6 +35,19 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Definitio
             this.Left = !string.IsNullOrEmpty(left) ? left.Trim() : left;
             this.Right = !string.IsNullOrEmpty(right) ? right.Trim() : right;
             this.Check = check;
+        }
+
+        public void OnDeserialization(object sender)
+        {
+            if (this.Left != null)
+            {
+                this.Left = this.Left.Trim();
+            }
+
+            if (this.Right != null)
+            {
+                this.Right = this.Right.Trim();
+            }
         }
 
         #region Properties

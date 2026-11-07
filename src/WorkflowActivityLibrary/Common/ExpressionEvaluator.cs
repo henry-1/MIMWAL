@@ -23,12 +23,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
     using Microsoft.ResourceManagement.WebServices.WSResourceManagement;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Enumerations;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Exceptions;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Net.Mail;
 
     #endregion
 
     /// <summary>
     /// Evaluates Expressions
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3776", Justification = "Approved.")]
     [Serializable]
     public class ExpressionEvaluator
     {
@@ -77,6 +80,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
 
         #endregion
 
+        private const string InputTemplate = "Input: '{0}'.";
+        private const string InputTemplateWithReturning = "Input: '{0}'. Returning: {1}.";
+        private const string ExpressionTemplate = "Expression: '{0}'.";
+        private const string ExpressionTemplateWithReturning = "Expression: '{0}'. Returning: '{1}'.";
+
         #region Methods
 
         /// <summary>
@@ -85,6 +93,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <param name="parameter">The function parameter expression.</param>
         /// <param name="suppressValidationError">Indicates whether to suppress the validation error or not.</param>
         /// <returns>The ParameterType.</returns>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S6444", Justification = "Definition of Timeout is not available in .NET 3.5")]
         public static ParameterType DetermineParameterType(string parameter, bool suppressValidationError)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorDetermineParameterType, "Parameter: '{0}'. SuppressValidationError: '{1}'.", parameter, suppressValidationError);
@@ -183,11 +192,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>True if the specified input string is XPath. Otherwise false.</returns>
         public static bool IsXPath(string input)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsXPath, "Input: '{0}'.", input);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsXPath, InputTemplate, input);
 
             bool result = !string.IsNullOrEmpty(input) && input.StartsWith("/", StringComparison.OrdinalIgnoreCase);
 
-            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsXPath, "Input: '{0}'. Returning: {1}.", input, result);
+            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsXPath, InputTemplateWithReturning, input, result);
 
             return result;
         }
@@ -199,11 +208,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>True if the specified input string is an expression. Otherwise false.</returns>
         public static bool IsExpression(string input)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsExpression, "Input: '{0}'.", input);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsExpression, InputTemplate, input);
 
             bool result = !string.IsNullOrEmpty(input) && DetermineParameterType(input, true) != ParameterType.Unknown;
 
-            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsExpression, "Input: '{0}'. Returning: {1}.", input, result);
+            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsExpression, InputTemplateWithReturning, input, result);
 
             return result;
         }
@@ -215,7 +224,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>True if the specified input string is a value expression. Otherwise false.</returns>
         public static bool IsValueExpression(string input)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsValueExpression, "Input: '{0}'.", input);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsValueExpression, InputTemplate, input);
 
             string valueLookup = string.Format(CultureInfo.InvariantCulture, "[//{0}]", LookupParameter.Value).ToUpperInvariant();
             string valueLookup2 = string.Format(CultureInfo.InvariantCulture, "[//{0}/", LookupParameter.Value).ToUpperInvariant();
@@ -223,7 +232,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             bool result = !string.IsNullOrEmpty(input) && DetermineParameterType(input, true) != ParameterType.Unknown
                 && (input.ToUpperInvariant().Contains(valueLookup) || input.ToUpperInvariant().Contains(valueLookup2));
 
-            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsValueExpression, "Input: '{0}'. Returning: {1}.", input, result);
+            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsValueExpression, InputTemplateWithReturning, input, result);
 
             return result;
         }
@@ -235,13 +244,55 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>True if the specified input string is an email address. Otherwise false.</returns>
         public static bool IsEmailAddress(string input)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsEmailAddress, "Input: '{0}'.", input);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsEmailAddress, InputTemplate, input);
 
-            bool result = !string.IsNullOrEmpty(input) && input.Contains("@");
+            bool result = false;
+            try
+            {
+                if (string.IsNullOrEmpty(input))
+                    return false;
+                
+                // for backward compatibility ',' is still allowed as email address seperator
+                // although GUI comments this input field as: 
+                //   Specify a search filter, a lookup expression or a ';' delimited list of email addresses.
+                string[] addresses =
+                    input.Split(
+                        new char[] { ';', ',' },
+                        StringSplitOptions.None);
 
-            Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorIsEmailAddress, "Input: '{0}'. Returning: {1}.", input, result);
+                foreach (string address in addresses)
+                {
+                    string trimmedAddress =
+                        address.Trim();
 
-            return result;
+                    if (string.IsNullOrEmpty(trimmedAddress))
+                        return false;
+                    
+                    try
+                    {
+                        MailAddress mailAddress =
+                            new MailAddress(trimmedAddress);
+
+                        if (!string.Equals(mailAddress.Address, trimmedAddress, StringComparison.OrdinalIgnoreCase))                        
+                            return false;                        
+                    }
+                    catch (FormatException)
+                    {
+                        return false;
+                    }
+                }
+
+                result = true;
+                return result;
+            }
+            finally
+            {
+                Logger.Instance.WriteMethodExit(
+                    EventIdentifier.ExpressionEvaluatorIsEmailAddress,
+                    InputTemplateWithReturning,
+                    input,
+                    result);
+            }
         }
 
         /// <summary>
@@ -251,7 +302,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>True if the expression is a boolean expression. Otherwise returns false.</returns>
         public bool IsBooleanExpression(string expression)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsBooleanExpression, "Expression: '{0}'.", expression);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIsBooleanExpression, ExpressionTemplate, expression);
 
             bool booleanExpression = false;
 
@@ -278,7 +329,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <param name="expression">The expression.</param>
         public void ParseExpression(string expression)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorParseExpression, "Expression: '{0}'.", expression);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorParseExpression, ExpressionTemplate, expression);
 
             try
             {
@@ -286,7 +337,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorParseExpression, "Expression: '{0}'.", expression);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorParseExpression, ExpressionTemplate, expression);
             }
         }
 
@@ -297,7 +348,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>True if the input is a valid expression. Otherwise returns false.</returns>
         public bool ParseIfExpression(string expression)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorParseIfExpression, "Expression: '{0}'.", expression);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorParseIfExpression, ExpressionTemplate, expression);
 
             bool isExpression = false;
 
@@ -324,7 +375,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>The result of the resolved expression.</returns>
         public object ResolveExpression(string expression)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorResolveExpression, "Expression: '{0}'.", expression);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorResolveExpression, ExpressionTemplate, expression);
 
             object result = null;
             try
@@ -335,7 +386,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorResolveExpression, "Expression: '{0}'. Returning: '{1}'.", expression, result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ExpressionEvaluatorResolveExpression, ExpressionTemplateWithReturning, expression, result);
             }
         }
 
@@ -345,6 +396,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <param name="variable">The variable.</param>
         /// <param name="value">The value.</param>
         /// <param name="mode">The mode.</param>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S3878", Justification = "Approved")]
+        [CLSCompliant(false)]
         public void PublishVariable(string variable, object value, UpdateMode mode)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorPublishVariable, "Variable: '{0}'. Value: '{1}'. Update Mode: '{2}'.", variable, value, mode);
@@ -462,7 +515,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <returns>The ArrayList of expression components.</returns>
         private static ArrayList IdentifyExpressionComponents(string expression, bool suppressValidationError)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIdentifyExpressionComponents, "Expression: '{0}'.", expression);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorIdentifyExpressionComponents, ExpressionTemplate, expression);
 
             ArrayList components = new ArrayList();
 
@@ -616,6 +669,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// Validates the parameter of type lookup.
         /// </summary>
         /// <param name="parameter">The parameter of type Lookup.</param>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S125", Justification = "Leave the commented code fragment from the original MIM WAL code as it was.")]
         private static void ValidateLookupParameterType(string parameter)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.ExpressionEvaluatorValidateLookupParameterType, "Parameter: '{0}'.", parameter);

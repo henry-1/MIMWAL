@@ -1,13 +1,74 @@
 ## MIMWAL Change Log
 
-All notable changes to MIMWAL project will be documented in this file. The "Unreleased" section at the top is for keeping track of important changes that might make it to upcoming releases.
+All notable changes to the MIMWAL project are documented in this file.
 
-### Version [Unreleased]
+### Version 3.0.0.0
+#### PowerShell
+* Removed PowerShell 2 support.
+* Added support for PowerShell 5 and PowerShell 7.
+* Added a listbox to the PowerShell Activity to choose from the two PowerShell versions.
+* Added a Timeout setting to the PowerShell activity to be able to interrupt endless loops in scripts.
+* PowerShell activity now can return a Hashtable with values of different types.
 
-* Support for multi-valued attributes in `[//Effective]` lookup in AuthZ workflows.
-* Implement Approve Request Activity.
-* Support for `[//Value]` lookups in Query definitions across rest of the activities.
-------------
+
+#### Expression Functions
+* `ConvertToBoolean()` now rejects types other than string, bool and integer.
+* `Mod()` reports a null second parameter and a zero divisor with their own error identifiers.
+* `RandomNum()` reports `start > end` as an `InvalidFunctionFormatException`.
+* `ParametersContain()` now throws for a non-string attribute name.
+* `Multiply()` now throws on overflow instead of silently wrapping.
+* `ReplaceString()` now rejects an empty search string.
+* `ConvertSidToString()` now throws `InvalidFunctionFormatException` on conversion errors instead of exposing the underlying `ArgumentException`.
+* Corrected parameter positions in error messages for example in `Mid()`.
+* Corrected the documentation for `LowerCase()` and `UpperCase()`.
+* `ParameterValueAdded()` and `ParameterValueRemoved()` now return null if the first parameter is null instead of causing a `NullReferenceException`.
+* Added `InvalidArgumentException` for arguments that pass the initial validation but cause an error later during method execution.
+* Added `OverflowNotAllowedException` for mathematical operations that cause an overflow.
+* `Add()` now throws when calculations exceed the `Int64` range instead of silently wrapping.
+* `Subtract()` now throws when calculations exceed the `Int64` range instead of silently wrapping.
+* Rewrote `PasswordGenerator` class to reliably meet the required password complexity rules.
+
+#### Workflow Activities
+* Fixed message templates in `Messages.resx` file, including `RequestApproval_MultipleEscalationEmailTemplatesError`, where incorrect placeholders could cause a secondary error and hide the original error.
+* Fixed error handling in `SendEmailNotification` where an error could be overwritten by subsequent error handling.
+* Fixed handling of `Guid` resolved as object in `SendEmailNotification`.
+* Improved email address validation used by the `RequestApproval` and `SendEmailNotification` activities. Validation now uses `System.Net.Mail.MailAddress`.
+* `AddDelay` now validates the Timeout Duration during configuration instead of failing later during workflow execution.
+* RequestApproval now validates `Approval Threshold` and `Duration` inputs, accepting positive numbers, lookup expressions, or XPath expressions.
+
+#### Testing and Code Quality
+* Removed StyleCop which is no longer maintained.
+* Added Unit Tests for Expression Function methods.
+* Added Unit Tests for Activities.
+* Added examples for Pester end-to-end tests of MIM WAL Expression Functions.
+* Added SonarQube for code quality checks.
+
+#### Powershell Error Handling
+The following error-handling strategy is used in the `Run PowerShell Script` workflow activity.
+
+RunPowerShellScript sets the following default:
+
+`$ErrorActionPreference = Stop`
+
+A PowerShell error is handled as follows:
+```
+PowerShell error
+    -> terminating error
+    -> PowerShell process returns non-zero exit code
+    -> PowerShell activity treats execution as failed
+	-> Error message is transferred to the calling activity
+```
+A successful process exit is handled as follows:
+```
+ExitCode == 0
+    -> execution is considered successful
+    -> stderr may contain PowerShell infrastructure or progress output
+    -> stderr is not interpreted as an indication of script failure
+	-> stderr is cleared and is not transferred to calling workflow activity
+```
+
+`$ErrorActionPreference` can be overridden by the script. If it is overridden, the script author is responsible for the resulting error-handling behavior.
+
 
 ### Version 2.20.0523.0
 

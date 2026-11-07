@@ -73,16 +73,18 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
                 // When evaluating the value for a Guid text box control,
                 // make sure the value specified can be parsed as a Guid and
                 // return an empty Guid if it cannot
-                Guid parsed = new Guid();
+                Guid parsed = Guid.Empty;
                 try
                 {
                     parsed = new Guid(this.textBoxControl.Text);
                 }
                 catch (ArgumentNullException)
                 {
+                    // no text was entered
                 }
                 catch (FormatException)
                 {
+                    // entered text was not a Guid
                 }
                 
                 return parsed;

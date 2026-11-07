@@ -33,22 +33,27 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
     {
         #region Windows Workflow Designer generated code
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ActorTypeProperty =
             DependencyProperty.Register("ActorType", typeof(ActorType), typeof(DetermineActor));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ActorStringProperty =
             DependencyProperty.Register("ActorString", typeof(string), typeof(DetermineActor));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ActorProperty =
             DependencyProperty.Register("Actor", typeof(Guid), typeof(DetermineActor));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty QueryResultsProperty =
             DependencyProperty.Register("QueryResults", typeof(Dictionary<string, List<Guid>>), typeof(DetermineActor));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(object), typeof(DetermineActor));
@@ -60,7 +65,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         /// <summary>
         /// The expression evaluator.
         /// </summary>
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         #endregion
@@ -317,6 +321,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "Reviewed.")]
+        [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
         private void Decide_ExecuteCode(object sender, EventArgs e)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.DetermineActorDecideExecuteCode, "ActorType: '{0}'.", this.ActorType);

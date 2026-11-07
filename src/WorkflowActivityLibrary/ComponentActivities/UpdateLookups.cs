@@ -33,25 +33,31 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
     /// <summary>
     /// Processes update lookups
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3776", Justification = "Approved.")]
     internal partial class UpdateLookups : SequenceActivity
     {
         #region Windows Workflow Designer generated code
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty UpdateLookupDefinitionsProperty =
             DependencyProperty.Register("UpdateLookupDefinitions", typeof(List<UpdateLookupDefinition>), typeof(UpdateLookups));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty QueryResultsProperty =
             DependencyProperty.Register("QueryResults", typeof(Dictionary<string, List<Guid>>), typeof(UpdateLookups));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(object), typeof(UpdateLookups));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ActorProperty = DependencyProperty.Register("Actor", typeof(Guid), typeof(UpdateLookups));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ApplyAuthorizationPolicyProperty =
             DependencyProperty.Register("ApplyAuthorizationPolicy", typeof(bool), typeof(UpdateLookups));
@@ -99,6 +105,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         public Guid ServiceActor;
 
         #endregion
+
+        private const string ResourceTemplate = "Resource: '{0}'.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateLookups"/> class.
@@ -322,6 +330,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
         private void BuildRequests_ExecuteCode(object sender, EventArgs e)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.UpdateLookupsBuildRequestsExecuteCode);
@@ -351,7 +360,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
                         {
                             // Use reflection to determine the expected List<> type based on the value
                             // Also get the Add and Remove methods for the list
-                            Type listType = typeof(List<>).MakeGenericType(new Type[] { update.Value.GetType() });
+                            Type listType = typeof(List<>).MakeGenericType(update.Value.GetType());
                             MethodInfo add = listType.GetMethod("Add");
                             MethodInfo remove = listType.GetMethod("Remove");
 
@@ -478,13 +487,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         /// <param name="e">The <see cref="ReplicatorChildEventArgs"/> instance containing the event data.</param>
         private void ForEachPending_ChildInitialized(object sender, ReplicatorChildEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.UpdateLookupsForEachPendingChildInitialized, "Resource: '{0}'.", e.InstanceData);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.UpdateLookupsForEachPendingChildInitialized, ResourceTemplate, e.InstanceData);
 
             try
             {
                 // Cast the instance data as a Guid and prepare the read resource activity
                 // by assigning a resource ID for update and the attributes to be read
-                Guid resource = new Guid();
+                Guid resource = Guid.Empty;
                 if (e.InstanceData != null)
                 {
                     resource = (Guid)((Guid?)e.InstanceData);
@@ -502,7 +511,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.UpdateLookupsForEachPendingChildInitialized, "Resource: '{0}'.", e.InstanceData);
+                Logger.Instance.WriteMethodExit(EventIdentifier.UpdateLookupsForEachPendingChildInitialized, ResourceTemplate, e.InstanceData);
             }
         }
 
@@ -513,11 +522,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         /// <param name="e">The <see cref="ReplicatorChildEventArgs"/> instance containing the event data.</param>
         private void ForEachPending_ChildCompleted(object sender, ReplicatorChildEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.UpdateLookupsForEachPendingChildCompleted, "Resource: '{0}'.", e.InstanceData);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.UpdateLookupsForEachPendingChildCompleted, ResourceTemplate, e.InstanceData);
 
             try
             {
-                Guid resource = new Guid();
+                Guid resource = Guid.Empty;
                 if (e.InstanceData != null)
                 {
                     resource = (Guid)((Guid?)e.InstanceData);
@@ -646,7 +655,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.UpdateLookupsForEachPendingChildCompleted, "Resource: '{0}'.", e.InstanceData);
+                Logger.Instance.WriteMethodExit(EventIdentifier.UpdateLookupsForEachPendingChildCompleted, ResourceTemplate, e.InstanceData);
             }
         }
 
@@ -681,13 +690,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         /// <param name="e">The <see cref="ReplicatorChildEventArgs"/> instance containing the event data.</param>
         private void ForEachRequest_ChildInitialized(object sender, ReplicatorChildEventArgs e)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.UpdateLookupsForEachRequestChildInitialized, "Resource: '{0}'.", e.InstanceData);
+            Logger.Instance.WriteMethodEntry(EventIdentifier.UpdateLookupsForEachRequestChildInitialized, ResourceTemplate, e.InstanceData);
 
             try
             {
                 // Cast the instance data as a Guid and prepare the update resource activity
                 // by assigning a resource ID for update and the array of update parameters
-                Guid resource = new Guid();
+                Guid resource = Guid.Empty;
                 if (e.InstanceData != null)
                 {
                     resource = (Guid)((Guid?)e.InstanceData);
@@ -698,7 +707,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.UpdateLookupsForEachRequestChildInitialized, "Resource: '{0}'.", e.InstanceData);
+                Logger.Instance.WriteMethodExit(EventIdentifier.UpdateLookupsForEachRequestChildInitialized, ResourceTemplate, e.InstanceData);
             }
         }
 

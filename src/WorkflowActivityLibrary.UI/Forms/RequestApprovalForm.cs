@@ -22,6 +22,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Exceptions;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormController;
+    using Enumerations;
 
     #endregion
 
@@ -334,6 +335,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
         /// Validates the inputs. Returns true if all of the UI controls contain valid values. Otherwise, returns false.
         /// </summary>
         /// <returns>true if all of the UI controls contain valid values. Otherwise, false.</returns>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S6580", Justification = "TimeSpan.TryParse() not available in .Net Framework 3.5")]
         public override bool ValidateInputs()
         {
             Logger.Instance.WriteMethodEntry();
@@ -373,34 +375,18 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
 
                     ParseApprovers(this.approvers.Value);
 
-                    if (ExpressionEvaluator.IsExpression(this.threshold.Value))
+                    if (!ValidateThreshold())
                     {
-                        evaluator.ParseExpression(this.threshold.Value);
-                    }
-                    else
-                    {
-                        int thresholdNumber;
-                        if (!int.TryParse(this.threshold.Value, out thresholdNumber))
-                        {
-                            this.controller.ValidationError = ActivitySettings.RequestApprovalThresholdFieldValidationError;
-                            return false;
-                        }
-                    }
+                        this.controller.ValidationError = ActivitySettings.RequestApprovalThresholdFieldValidationError;
+                        return false;
+                    }                        
 
-                    if (ExpressionEvaluator.IsExpression(this.duration.Value))
+                    if (!ValidateDuration())
                     {
-                        evaluator.ParseExpression(this.duration.Value);
+                        this.controller.ValidationError = ActivitySettings.RequestApprovalDurationFieldValidationError;
+                        return false;
                     }
-                    else
-                    {
-                        TimeSpan parsedTimeSpan;
-                        if (!TimeSpan.TryParse(this.duration.Value, out parsedTimeSpan))
-                        {
-                            this.controller.ValidationError = ActivitySettings.RequestApprovalDurationFieldValidationError;
-                            return false;
-                        }
-                    }
-
+                                        
                     ParseApprovers(this.escalation.Value);
 
                     if (!string.IsNullOrEmpty(this.escalation.Value) && string.IsNullOrEmpty(this.approvalEscalationEmailTemplate.Value))
@@ -434,6 +420,43 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             {
                 Logger.Instance.WriteMethodExit();
             }
+        }
+
+        private bool ValidateDuration()
+        {
+            TimeSpan parsedTimeSpan;
+            if (TimeSpan.TryParse(this.duration.Value, out parsedTimeSpan))
+            {
+                return parsedTimeSpan > TimeSpan.Zero;
+            }
+
+            if ( ExpressionEvaluator.DetermineParameterType(this.duration.Value, true) ==  Enumerations.ParameterType.Lookup)
+                return true;
+
+            if (ExpressionEvaluator.IsXPath(this.duration.Value))
+                return true;
+            
+            return false;
+        }
+
+        private bool ValidateThreshold()
+        {
+            int thresholdNumber;
+            if (int.TryParse(this.threshold.Value, out thresholdNumber))
+            {
+                if (thresholdNumber <= 0)
+                    return false;
+                
+                return true;
+            }
+
+            if (ExpressionEvaluator.IsXPath(this.threshold.Value))
+                return true;
+
+            if (ExpressionEvaluator.DetermineParameterType(this.threshold.Value, true) == ParameterType.Lookup)
+                return true;                  
+
+            return false;
         }
 
         /// <summary>
@@ -494,6 +517,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
         /// Parses email template
         /// </summary>
         /// <param name="template">The XPath search filter or lookup expression for the email template</param>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S1481", Justification = "Guid.TryParse() not available in .Net Framework 3.5")]
         private static void ParseEmailTemplate(string template)
         {
             Logger.Instance.WriteMethodEntry();

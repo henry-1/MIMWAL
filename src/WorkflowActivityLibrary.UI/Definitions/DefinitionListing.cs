@@ -25,6 +25,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Defini
     /// Task Definition UI
     /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "WebControls will be disposed when the Page is disposed")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2178", Justification = "I think the author of this control might have a reason to not use the short-circuit evaluation.")]
     public class DefinitionListing
     {
         #region Declarations

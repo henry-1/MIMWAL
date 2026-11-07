@@ -304,7 +304,7 @@
     <value>Conflict Filter</value>
   </data>
   <data name="ConflictFilterHelpText" xml:space="preserve">
-    <value>Supply the XPath filter which will identify conflicts for the generated value. The [//Value] lookup should be used in the filter to represent the value being evaluated for uniqueness. Example: /Person[AccountName = '[//Value]'].</value>
+    <value>Supply the XPath filter which will identify conflicts for the generated value. The [//Value] lookup must be used in the filter to represent the value being evaluated for uniqueness. Example: /Person[AccountName = '[//Value]'].</value>
   </data>
   <data name="QueryLdapForConflicts" xml:space="preserve">
     <value>Query LDAP for Conflicts</value>
@@ -316,7 +316,7 @@
     <value>LDAP Queries</value>
   </data>
   <data name="LdapQueriesHelpText" xml:space="preserve">
-    <value>Specify one or more LDAP queries which should be run by the activity to identify conflicts. The [//Value] lookup should be used in each LDAP filter to represent the value being evaluated for uniqueness. All queries will be executed under the context of the FIM Service account.</value>
+    <value>Specify one or more LDAP queries which should be run by the activity to identify conflicts. The [//Value] lookup must be used in each LDAP filter to represent the value being evaluated for uniqueness. All queries will be executed under the context of the FIM Service account. The Directory Entry Path MUST start with 'LDAP://'.</value>
   </data>
   <data name="LdapQueriesLeftHeader" xml:space="preserve">
     <value>Directory Entry Path</value>
@@ -424,7 +424,7 @@
     <value>Script Return Type</value>
   </data>
   <data name="ScriptReturnTypeHelpText" xml:space="preserve">
-    <value>The activity can capture a return value from the PowerShell script and publish it to a lookup. Alternatively, the PowerShell script may return a table of named values which can be published to the workflow dictionary using corresponding key names.</value>
+    <value>The activity can capture simple return values from the PowerShell script like [bool[, [string] or [int] and publish it to a lookup. Alternatively, the PowerShell script may return a table of named values which can be published to the workflow dictionary using corresponding key names. Third option is to return a list of simple types like [int] or [string].</value>
   </data>
   <data name="ScriptReturnValueLookup" xml:space="preserve">
     <value>Return Value Lookup</value>
@@ -652,19 +652,19 @@
     <value>Load user profile</value>
   </data>
   <data name="LoadUserProfileHelpText" xml:space="preserve">
-    <value>Load user profile when impersonating the PowerShell user.</value>
+    <value>Load user profile when impersonating the PowerShell user. This only works with log on type Interactive, Batch or Service and MIM service account must be member of local Administrators group.</value>
   </data>
   <data name="PowerShellUser" xml:space="preserve">
     <value>PowerShell Script User</value>
   </data>
   <data name="PowerShellUserHelpText" xml:space="preserve">
-    <value>Specify the user to be used to construct PowerShell Credential object. When impersonating, the user name must be in the domain\userName or UPN format or must be a valid WAL Lookup expression.</value>
+    <value>Specify the user to be used to construct PowerShell Credential object. When impersonating, the user name must be in the domain\userName or UPN format or must be a valid WAL Lookup expression. Username is populated in $env:CredentialUser.</value>
   </data>
   <data name="PowerShellUserPassword" xml:space="preserve">
     <value>PowerShell Script User Password</value>
   </data>
   <data name="PowerShellUserPasswordHelpText" xml:space="preserve">
-    <value>Specify the password to be used to construct PowerShell Credential object. The expected format is: [base64EncodedEncryptedData] | [app:\appSettings\[key],[LocalMachine|CurrentUser]] | [cert:\[LocalMachine|CurrentUser]\my\[thumbprint],base64EncodedEncryptedData]]. It can also be a valid WAL Lookup expression returing data in any one of these formats.</value>
+    <value>Specify the password to be used to construct PowerShell Credential object. The expected format is: [base64EncodedEncryptedData] | [app:\appSettings\[key],[LocalMachine|CurrentUser]] | [cert:\[LocalMachine|CurrentUser]\my\[thumbprint],base64EncodedEncryptedData]]. It can also be a valid WAL Lookup expression returning data in any one of these formats. Password is populated in $env:CredentialPassword.</value>
   </data>
   <data name="PowerShellImpersonationSettingsValidationError" xml:space="preserve">
     <value>Specify UserName and Password of the impersonated user.</value>
@@ -781,7 +781,7 @@
     <value>Approval Threshold</value>
   </data>
   <data name="RequestApprovalThresholdFieldValidationError" xml:space="preserve">
-    <value>Threshold field must be a lookup expression or a number.</value>
+    <value>Threshold field must be a lookup expression or a number greater than 0.</value>
   </data>
   <data name="RequestApprovalThresholdHelpText" xml:space="preserve">
     <value>Number of approvers required. Specify a lookup expression or a number.</value>
@@ -793,7 +793,7 @@
     <value>This email is sent to requestor. Specify a search filter or a lookup expression.</value>
   </data>
   <data name="RequestApprovalDurationFieldValidationError" xml:space="preserve">
-    <value>Specify a lookup expression or a number for the approval duration.</value>
+    <value>Duration field must be a lookup expression or a number greater than 0.</value>
   </data>
   <data name="RequestApprovalEscalationEmailTemplateFieldValidationError" xml:space="preserve">
     <value>Escalation email template is required when escalated approvers are specified.</value>
@@ -824,5 +824,32 @@
   </data>
   <data name="WorkflowDataVariablesDefinitionValidationError" xml:space="preserve">
     <value>One or more workflow lookup variable definitions are incomplete</value>
+  </data>
+  <data name="PowershellVersion" xml:space="preserve">
+    <value>Powershell Version</value>
+  </data>
+  <data name="PowershellVersionHelpText" xml:space="preserve">
+    <value>Specify the Powershell Version to be used with this Workflow</value>
+  </data>
+  <data name="Powershell5" xml:space="preserve">
+    <value>Windows Powershell (5.x)</value>
+  </data>
+  <data name="Powershell7" xml:space="preserve">
+    <value>Powershell (7.x)</value>
+  </data>
+  <data name="PowershellRequestTimeout" xml:space="preserve">
+    <value>Script ExecutionTimeout</value>
+  </data>
+  <data name="PowershellRequestTimeoutHelpText" xml:space="preserve">
+    <value>Specify a value (ms) MIM workflow will wait for script execution to complete. 0 (zero) meaning, wait without limit. Setting no limit could result in a script running forever and blocking the Workflow.</value>
+  </data>
+  <data name="PowershellTimeoutValidationError" xml:space="preserve">
+    <value>Timeout must be an integer number greater then or equal to zero.</value>
+  </data>
+  <data name="ExecutionConditionValidationError" xml:space="preserve">
+    <value>Validation of Activity Execution Condition failed.</value>
+  </data>
+  <data name="LdapFilterValidationError" xml:space="preserve">
+    <value>Definition of the LDAP queries contain one or more errors.</value>
   </data>
 </root>

@@ -24,6 +24,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Definitions;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormController;
+    using Enumerations;
 
     #endregion
 
@@ -246,63 +247,88 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
         /// Validates the inputs. Returns true if all of the UI controls contain valid values. Otherwise, returns false.
         /// </summary>
         /// <returns>true if all of the UI controls contain valid values. Otherwise, false.</returns>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S6580", Justification = "TimeSpan.TryParse() not available in .Net Framework 3.5")]
         public override bool ValidateInputs()
         {
             Logger.Instance.WriteMethodEntry();
 
+            // Use the controller to validate standard activity controls
+            // and return false if a problem was identified
+            if (!this.controller.ValidateInputs())
+            {
+                return false;
+            }
+
+            // If standard activity controls are valid,
+            // validate any other advanced configurations
+            ExpressionEvaluator evaluator = new ExpressionEvaluator();
+
             try
             {
-                // Use the controller to validate standard activity controls
-                // and return false if a problem was identified
-                if (!this.controller.ValidateInputs())
+
+                string timeout = this.timeoutDuration.Value;
+
+                TimeSpan parsedTimeSpan;
+
+                // First: normal TimeSpan literal, e.g. 10:00:00
+                if (TimeSpan.TryParse(
+                    timeout,
+                    out parsedTimeSpan))
                 {
-                    return false;
+                    // valid
                 }
-
-                // If standard activity controls are valid,
-                // validate any other advanced configurations
-                ExpressionEvaluator evaluator = new ExpressionEvaluator();
-
-                try
+                else
                 {
-                    if (ExpressionEvaluator.IsExpression(this.timeoutDuration.Value))
+                    try
                     {
-                        evaluator.ParseExpression(this.timeoutDuration.Value);
-                    }
-                    else
-                    {
-                        TimeSpan parsedTimeSpan;
-                        if (!TimeSpan.TryParse(this.timeoutDuration.Value, out parsedTimeSpan))
+                        ParameterType parameterType =
+                            ExpressionEvaluator.DetermineParameterType(
+                                timeout);
+
+                        if (parameterType == ParameterType.String)
                         {
-                            this.controller.ValidationError = ActivitySettings.AddDelayTimeoutDurationHelpText;
+                            object resolved =
+                                evaluator.ResolveExpression(
+                                    timeout);
+
+                            string resolvedString =
+                                resolved as string;
+
+                            if (string.IsNullOrEmpty(resolvedString) ||
+                                !TimeSpan.TryParse(
+                                    resolvedString,
+                                    out parsedTimeSpan))
+                            {
+                                this.controller.ValidationError =
+                                    ActivitySettings.AddDelayTimeoutDurationHelpText;
+
+                                return false;
+                            }
+                        }
+                        else if (parameterType == ParameterType.Lookup ||
+                                 parameterType == ParameterType.Variable ||
+                                 parameterType == ParameterType.Function)
+                        {
+                            // Dynamic value cannot be checked yet.
+                            // Ensure only that the expression itself is valid.
+                            evaluator.ParseExpression(
+                                timeout);
+                        }
+                        else
+                        {
+                            this.controller.ValidationError =
+                                ActivitySettings.AddDelayTimeoutDurationHelpText;
+
                             return false;
                         }
                     }
-                }
-                catch (WorkflowActivityLibraryException ex)
-                {
-                    this.controller.ValidationError = ex.Message;
-                    return false;
-                }
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(this.activityExecutionCondition.Value))
+                    catch (WorkflowActivityLibraryException)
                     {
-                        evaluator.ParseExpression(this.activityExecutionCondition.Value); 
+                        this.controller.ValidationError =
+                            ActivitySettings.AddDelayTimeoutDurationHelpText;
 
-                        // Verify that the activity execution condition resolves to a Boolean value
-                        if (!evaluator.IsBooleanExpression(this.activityExecutionCondition.Value))
-                        {
-                            this.controller.ValidationError = ActivitySettings.ActivityExecutionConditionValidationError;
-                            return false;
-                        }
+                        return false;
                     }
-                }
-                catch (WorkflowActivityLibraryException ex)
-                {
-                    this.controller.ValidationError = ex.Message;
-                    return false;
                 }
 
                 // If no errors were found, clear any validation error and return true

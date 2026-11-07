@@ -30,30 +30,37 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
     /// <summary>
     /// Resolves Lookup string
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3776", Justification = "Approved.")]
     internal partial class ResolveLookupString : SequenceActivity
     {
         #region Windows Workflow Designer generated code
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty StringForResolutionProperty =
             DependencyProperty.Register("StringForResolution", typeof(string), typeof(ResolveLookupString));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ResolvedProperty =
             DependencyProperty.Register("Resolved", typeof(string), typeof(ResolveLookupString));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ResolvedListProperty =
             DependencyProperty.Register("ResolvedList", typeof(List<string>), typeof(ResolveLookupString));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty QueryResultsProperty =
             DependencyProperty.Register("QueryResults", typeof(Dictionary<string, List<Guid>>), typeof(ResolveLookupString));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ComparedRequestIdProperty =
             DependencyProperty.Register("ComparedRequestId", typeof(Guid), typeof(ResolveLookupString));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(object), typeof(ResolveLookupString));
@@ -342,6 +349,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "Reviewed.")]
+        [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
+        [SuppressMessage("SonarAnalyzer.CSharp", "S3776", Justification = "Approved.")]
         private void ResolveString_ExecuteCode(object sender, EventArgs e)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.ResolveLookupStringResolveStringExecuteCode, "StringForResolution: '{0}'. Working string for resolution: '{1}'.", this.StringForResolution, this.working);

@@ -32,6 +32,10 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// Updates resources
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2325", Justification = "Properties are used like this.MethodName()")]
     public partial class UpdateResources : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -88,7 +92,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
@@ -96,7 +99,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<UpdateLookupDefinition> LookupUpdates;
 
         /// <summary>
@@ -104,28 +106,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Definition> Queries;
 
         /// <summary>
         /// The value.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public object Value;
 
         /// <summary>
         /// The value expressions.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Dictionary<string, object> ValueExpressions;
 
         /// <summary>
         /// The Dynamic Strings for Resolution
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<string> DynamicStringsForResolution = new List<string>();
 
         /// <summary>
@@ -539,18 +537,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             {
                 // Determine if requests should be submitted based on the configuration for conditional execution
                 // If a condition was specified and that condition resolves to false, no values will be added for iteration
-                if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
-                {
-                    submitRequests = true;
-                }
-                else
-                {
-                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
-                    if (resolved is bool && (bool)resolved)
-                    {
-                        submitRequests = true;
-                    }
-                }
+                submitRequests = MustSubmitRequest(submitRequests);
 
                 if (!submitRequests)
                 {
@@ -596,6 +583,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             {
                 Logger.Instance.WriteMethodExit(EventIdentifier.UpdateResourcesPrepareIterationExecuteCode, "Iteration: '{0}'. Condition: '{1}'. Submit Request: '{2}'. Total Iterations: '{3}'.", this.Iteration, this.ActivityExecutionCondition, submitRequests, iterationValues.Count);
             }
+        }
+
+        private bool MustSubmitRequest(bool submitRequests)
+        {
+            if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
+            {
+                submitRequests = true;
+            }
+            else
+            {
+                object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
+                if (resolved is bool && (bool)resolved)
+                {
+                    submitRequests = true;
+                }
+            }
+
+            return submitRequests;
         }
 
         /// <summary>
@@ -777,6 +782,96 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
+        private void LoadValueExpressionsIntoCache()
+        {
+            foreach (string key in this.ValueExpressions.Keys)
+            {
+                this.ActivityExpressionEvaluator.LookupCache[key] = this.ValueExpressions[key];
+            }
+        }
+        private void ClearVariableCache()
+        {
+            // Copy the keys first: assigning during enumeration of the dictionary would throw
+            List<string> variables = this.ActivityExpressionEvaluator.VariableCache.Keys.ToList();
+            foreach (string variable in variables)
+            {
+                this.ActivityExpressionEvaluator.VariableCache[variable] = null;
+            }
+        }
+
+        private object ResolveSourceValue(string source)
+        {
+            // An already resolved dynamic string is read directly from the cache
+            return ExpressionEvaluator.IsExpression(source)
+                ? this.ActivityExpressionEvaluator.ResolveExpression(source)
+                : this.ActivityExpressionEvaluator.LookupCache[source];
+        }
+
+        private void ApplyUpdate(string target, object value, bool targetIsVariable, UpdateMode mode)
+        {
+            if (targetIsVariable)
+            {
+                this.ActivityExpressionEvaluator.PublishVariable(target, value, mode);
+            }
+            else
+            {
+                this.LookupUpdates.Add(new UpdateLookupDefinition(target, value, mode));
+            }
+        }
+
+        private void ProcessUpdateDefinition(Definition updateDefinition)
+        {
+            // Resolve the source expression, including any functions or concatenation,
+            // to retrieve the typed value that should be assigned to the target attribute
+            object resolved = this.ResolveSourceValue(updateDefinition.Left);
+
+            // Determine if we are targeting a variable
+            // If not, assume we are targeting an expression which should result in requests or update
+            // to the workflow dictionary
+            string target = updateDefinition.Right;
+            bool targetIsVariable = ExpressionEvaluator.DetermineParameterType(target) == ParameterType.Variable;
+                        
+            // Only create an update lookup definition if the value is not null, or if the
+            // update definition is configured to allow null values to be transferred to the target(s)
+            if (resolved == null )
+            {
+                // Only transfer null if the update definition is configured to allow it
+                if (updateDefinition.Check)
+                {
+                    this.ApplyUpdate(target, null, targetIsVariable, UpdateMode.Modify);
+                }
+
+                return;
+            }
+
+            InsertedValuesCollection inserted = resolved as InsertedValuesCollection;
+            if (inserted != null)
+            {
+                // Source used InsertValues: add each value to the target
+                foreach (object value in inserted)
+                {
+                    this.ApplyUpdate(target, value, targetIsVariable, UpdateMode.Insert);
+                }
+
+                return;
+            }
+
+            RemovedValuesCollection removed = resolved as RemovedValuesCollection;
+            if (removed != null)
+            {
+                // Source used RemoveValues: remove each value from the target
+                foreach (object value in removed)
+                {
+                    this.ApplyUpdate(target, value, targetIsVariable, UpdateMode.Remove);
+                }
+
+                return;
+            }
+
+            // All other values: update the variable or queue an update for the target attribute
+            this.ApplyUpdate(target, resolved, targetIsVariable, UpdateMode.Modify);
+        }
+
         /// <summary>
         /// Handles the ExecuteCode event of the PrepareUpdate CodeActivity.
         /// </summary>
@@ -789,102 +884,17 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             try
             {
                 // Load resolved value expressions to the expression evaluator
-                foreach (string key in this.ValueExpressions.Keys)
-                {
-                    this.ActivityExpressionEvaluator.LookupCache[key] = this.ValueExpressions[key];
-                }
+                this.LoadValueExpressionsIntoCache();
 
                 // Clear the variable cache for the expression evaluator
-                List<string> variables = this.ActivityExpressionEvaluator.VariableCache.Keys.ToList();
-                foreach (string variable in variables)
-                {
-                    this.ActivityExpressionEvaluator.VariableCache[variable] = null;
-                }
+                this.ClearVariableCache();
 
                 // Loop through each attribute update definition to build the
                 // update resource parameters which will be used to update each target resource
                 this.LookupUpdates = new List<UpdateLookupDefinition>();
                 foreach (Definition updateDefinition in this.updates)
                 {
-                    // Resolve the source expression, including any functions or concatenation,
-                    // to retrieve the typed value that should be assigned to the target attribute
-                    object resolved = null;
-                    if (!ExpressionEvaluator.IsExpression(updateDefinition.Left))
-                    {
-                        // This is a dynamic string for resolution already resolved
-                        // so just retrive the value from cache directly
-                        resolved = this.ActivityExpressionEvaluator.LookupCache[updateDefinition.Left];
-                    }
-                    else
-                    {
-                        resolved = this.ActivityExpressionEvaluator.ResolveExpression(updateDefinition.Left);
-                    }
-
-                    // Determine if we are targeting a variable
-                    // If not, assume we are targeting an expression which should result in requests or update
-                    // to the workflow dictionary
-                    bool targetVariable = ExpressionEvaluator.DetermineParameterType(updateDefinition.Right) == ParameterType.Variable;
-
-                    // Only create an update lookup definition if the value is not null, or if the
-                    // update definition is configured to allow null values to be transferred to the target(s)
-                    if (resolved == null && updateDefinition.Check)
-                    {
-                        if (targetVariable)
-                        {
-                            this.ActivityExpressionEvaluator.PublishVariable(updateDefinition.Right, null, UpdateMode.Modify);
-                        }
-                        else
-                        {
-                            this.LookupUpdates.Add(new UpdateLookupDefinition(updateDefinition.Right, null, UpdateMode.Modify));
-                        }
-                    }
-                    else if (resolved != null)
-                    {
-                        if (resolved.GetType() == typeof(InsertedValuesCollection))
-                        {
-                            // If the resolved object is an InsertedValues collection, the source for the update definition includes the InsertValues function
-                            // All associated values should be added to the target
-                            foreach (object o in (InsertedValuesCollection)resolved)
-                            {
-                                if (targetVariable)
-                                {
-                                    this.ActivityExpressionEvaluator.PublishVariable(updateDefinition.Right, o, UpdateMode.Insert);
-                                }
-                                else
-                                {
-                                    this.LookupUpdates.Add(new UpdateLookupDefinition(updateDefinition.Right, o, UpdateMode.Insert));
-                                }
-                            }
-                        }
-                        else if (resolved.GetType() == typeof(RemovedValuesCollection))
-                        {
-                            // If the resolved object is a RemovedValues collection, the source for the update definition includes the RemoveValues function
-                            // All associated values should be removed from the target
-                            foreach (object o in (RemovedValuesCollection)resolved)
-                            {
-                                if (targetVariable)
-                                {
-                                    this.ActivityExpressionEvaluator.PublishVariable(updateDefinition.Right, o, UpdateMode.Remove);
-                                }
-                                else
-                                {
-                                    this.LookupUpdates.Add(new UpdateLookupDefinition(updateDefinition.Right, o, UpdateMode.Remove));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // For all other conditions, update the variable or build a new update request parameter for the target attribute
-                            if (targetVariable)
-                            {
-                                this.ActivityExpressionEvaluator.PublishVariable(updateDefinition.Right, resolved, UpdateMode.Modify);
-                            }
-                            else
-                            {
-                                this.LookupUpdates.Add(new UpdateLookupDefinition(updateDefinition.Right, resolved, UpdateMode.Modify));
-                            }
-                        }
-                    }
+                    ProcessUpdateDefinition(updateDefinition);
                 }
             }
             finally

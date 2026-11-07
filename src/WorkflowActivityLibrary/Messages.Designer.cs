@@ -277,11 +277,166 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to add &apos;{1}&apos; plus &apos;{2}&apos; without crossing long.MaxValue..
+        /// </summary>
+        internal static string ExpressionFunction_Add_InvalidFunctionParameterError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_Add_InvalidFunctionParameterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; to Base64. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_ConvertFromBase64_InvalidFirstFunctionParameterError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_ConvertFromBase64_InvalidFirstFunctionParameterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Parameter &apos;{1}&apos; cannot be converted to GUID. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_ConvertStringToGuid_InvalidFirstFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_ConvertStringToGuid_InvalidFirstFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Parameter &apos;{1}&apos; cannot be converted to Boolean. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_ConvertToBoolean_InvalidFirstFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_ConvertToBoolean_InvalidFirstFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; to number. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_ConvertToNumber_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_ConvertToNumber_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; to number. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_ConvertToUniqueIdentifier_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_ConvertToUniqueIdentifier_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; to number. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_DateTimeAdd_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_DateTimeAdd_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to format &apos;{1}&apos; to DateTime using fromat string&apos;{2}&apos; and culture &apos;{3}&apos;. &apos;{4}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_DateTimeFormat_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_DateTimeFormat_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; from UTC. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_DateTimeFromFileTimeUtc_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_DateTimeFromFileTimeUtc_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; to string using culture &apos;{2}&apos;. &apos;{3}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_DateTimeFromString_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_DateTimeFromString_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; to UTC. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_DateTimeToFileTimeUtc_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_DateTimeToFileTimeUtc_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Invalid TimeZone parameter provided: &apos;{1}&apos;. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_DateTimeUtcToLocalTime_InvalidFunctionParameterInvalidTimeZoneError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_DateTimeUtcToLocalTime_InvalidFunctionParameterInvalidTimeZone" +
+                        "Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to find TimeZone for &apos;{1}&apos;. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_DateTimeUtcToLocalTime_InvalidFunctionParameterTimeZoneNotFoundError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_DateTimeUtcToLocalTime_InvalidFunctionParameterTimeZoneNotFoun" +
+                        "dError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The function &apos;{0}&apos; is deprecated. Please use &apos;{1}&apos; instead..
         /// </summary>
         internal static string ExpressionFunction_DeprecatedFunctionWarning {
             get {
                 return ResourceManager.GetString("ExpressionFunction_DeprecatedFunctionWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to devide &apos;{1}&apos; by &apos;{2}&apos;. &apos;{3}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_Devide_InvalidFunctionParameterError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_Devide_InvalidFunctionParameterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;.An error occured formating strings. Check format string or parameter count. &apos;{1}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_FormatMultivaluedList_InvalidParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_FormatMultivaluedList_InvalidParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; has one or more invalid arguments. Execution mode: {1}..
+        /// </summary>
+        internal static string ExpressionFunction_FunctionInvalidArgumentError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_FunctionInvalidArgumentError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. An Overflow of a number happend. Execution mode: {1}..
+        /// </summary>
+        internal static string ExpressionFunction_FunctionOverflowError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_FunctionOverflowError", resourceCulture);
             }
         }
         
@@ -327,6 +482,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         internal static string ExpressionFunction_InvalidFirstFunctionParameterTypeError3 {
             get {
                 return ResourceManager.GetString("ExpressionFunction_InvalidFirstFunctionParameterTypeError3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; expects first parameter to be of type &apos;{1}&apos; or &apos;{2}&apos; or &apos;{3}&apos; or &apos;{4}&apos;. It was supplied a &apos;{5}&apos; parameter..
+        /// </summary>
+        internal static string ExpressionFunction_InvalidFirstFunctionParameterTypeError4 {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_InvalidFirstFunctionParameterTypeError4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; expects first parameter to be of type &apos;{1}&apos; or &apos;{2}&apos; or &apos;{3}&apos; or &apos;{4}&apos; or &apos;{5}&apos;. It was supplied a &apos;{6}&apos; parameter..
+        /// </summary>
+        internal static string ExpressionFunction_InvalidFirstFunctionParameterTypeError5 {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_InvalidFirstFunctionParameterTypeError5", resourceCulture);
             }
         }
         
@@ -466,6 +639,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos; converting SID to string: &apos;{1}&apos;. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_InvalidSidError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_InvalidSidError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The function &apos;{0}&apos; expects third parameter to be of type &apos;{1}&apos;. It was supplied a &apos;{2}&apos; parameter..
         /// </summary>
         internal static string ExpressionFunction_InvalidThirdFunctionParameterTypeError {
@@ -480,6 +662,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         internal static string ExpressionFunction_InvalidThirdFunctionParameterTypeError2 {
             get {
                 return ResourceManager.GetString("ExpressionFunction_InvalidThirdFunctionParameterTypeError2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;: Multiplication caused overflow of long. Parameter 1 was &apos;{1}&apos; and parameter 2 was &apos;{2}&apos;..
+        /// </summary>
+        internal static string ExpressionFunction_MultiplyOverflowError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_MultiplyOverflowError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; expects a positive number parameter at position 1 to be of type &apos;int&apos;..
+        /// </summary>
+        internal static string ExpressionFunction_NegativeNumberAsParameterNotAllowedError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_NegativeNumberAsParameterNotAllowedError", resourceCulture);
             }
         }
         
@@ -507,6 +707,87 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         internal static string ExpressionFunction_ParametersContainDeprecatedParameterWarning {
             get {
                 return ResourceManager.GetString("ExpressionFunction_ParametersContainDeprecatedParameterWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to convert &apos;{1}&apos; to Int32. &apos;{2}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_RandomNumber_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_RandomNumber_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Min parameter &apos;{1}&apos; is smaller than Max parameter &apos;{2}&apos;..
+        /// </summary>
+        internal static string ExpressionFunction_RandomNumberFunctionParameterError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_RandomNumberFunctionParameterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function&apos;{0}&apos;.Replace string parameter must not be an empty string..
+        /// </summary>
+        internal static string ExpressionFunction_ReplaceStringEmptyFunctionParameterError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_ReplaceStringEmptyFunctionParameterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Value of second parameter &apos;{1}&apos; of type &apos;{2}&apos; cannot be resolved..
+        /// </summary>
+        internal static string ExpressionFunction_Right_UnableToResolveSecondParameterError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_Right_UnableToResolveSecondParameterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to get left &apos;{1}&apos; part of &apos;{2}&apos;. &apos;{3}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_StringLeft_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_StringLeft_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. String &apos;{1}&apos; Length &apos;{2}&apos; Padding Char &apos;{3}&apos;. &apos;{4}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_StringLeftPad_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_StringLeftPad_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. String &apos;{1}&apos; Start &apos;{2}&apos; End &apos;{3}&apos;. &apos;{4}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_StringMid_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_StringMid_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. String &apos;{1}&apos; Match &apos;{2}&apos;. &apos;{3}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_StringRegexMatch_InvalidFunctionParameterFormatError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_StringRegexMatch_InvalidFunctionParameterFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in function &apos;{0}&apos;. Unable to substract &apos;{1}&apos; from &apos;{2}&apos;. &apos;{3}&apos;.
+        /// </summary>
+        internal static string ExpressionFunction_Substract_InvalidFunctionParameterError {
+            get {
+                return ResourceManager.GetString("ExpressionFunction_Substract_InvalidFunctionParameterError", resourceCulture);
             }
         }
         
@@ -601,7 +882,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Approval complete email template &apos;{1}&apos; not found..
+        ///   Looks up a localized string similar to Approval complete email template &apos;{0}&apos; not found..
         /// </summary>
         internal static string RequestApproval_MissingApprovalCompleteEmailTemplateError {
             get {
@@ -610,7 +891,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Approval denied email template &apos;{1}&apos; not found..
+        ///   Looks up a localized string similar to Approval denied email template &apos;{0}&apos; not found..
         /// </summary>
         internal static string RequestApproval_MissingApprovalDeniedEmailTemplateError {
             get {
@@ -619,7 +900,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pending approval email template &apos;{1}&apos; not found..
+        ///   Looks up a localized string similar to Pending approval email template &apos;{0}&apos; not found..
         /// </summary>
         internal static string RequestApproval_MissingApprovalEmailTemplateError {
             get {
@@ -628,7 +909,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Approval timeout email template &apos;{1}&apos; not found..
+        ///   Looks up a localized string similar to Approval timeout email template &apos;{0}&apos; not found..
         /// </summary>
         internal static string RequestApproval_MissingApprovalTimeoutEmailTemplateError {
             get {
@@ -637,7 +918,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Approval escalation email template &apos;{1}&apos; not found..
+        ///   Looks up a localized string similar to Approval escalation email template &apos;{0}&apos; not found..
         /// </summary>
         internal static string RequestApproval_MissingEscalationEmailTemplateError {
             get {
@@ -646,7 +927,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one approval complete email templates &apos;{1}&apos; found..
+        ///   Looks up a localized string similar to More than one approval complete email templates &apos;{0}&apos; found..
         /// </summary>
         internal static string RequestApproval_MultipleApprovalCompleteEmailTemplatesError {
             get {
@@ -655,7 +936,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one approval denied email templates &apos;{1}&apos; found..
+        ///   Looks up a localized string similar to More than one approval denied email templates &apos;{0}&apos; found..
         /// </summary>
         internal static string RequestApproval_MultipleApprovalDeniedEmailTemplatesError {
             get {
@@ -664,7 +945,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one pending approval email templates &apos;{1}&apos; found..
+        ///   Looks up a localized string similar to More than one pending approval email templates &apos;{0}&apos; found..
         /// </summary>
         internal static string RequestApproval_MultipleApprovalEmailTemplatesError {
             get {
@@ -673,7 +954,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one approval timeout email templates &apos;{1}&apos; found..
+        ///   Looks up a localized string similar to More than one approval timeout email templates &apos;{0}&apos; found..
         /// </summary>
         internal static string RequestApproval_MultipleApprovalTimeoutEmailTemplatesError {
             get {
@@ -682,7 +963,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one approval escalation email templates &apos;{1}&apos; found..
+        ///   Looks up a localized string similar to More than one approval escalation email templates &apos;{0}&apos; found..
         /// </summary>
         internal static string RequestApproval_MultipleEscalationEmailTemplatesError {
             get {

@@ -29,6 +29,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// Verifies request
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
     public partial class VerifyRequest : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -85,21 +87,18 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The conflicting request.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid ConflictingRequest;
 
         /// <summary>
         /// The denial message.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public string DenialMessage;
 
         /// <summary>
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
@@ -108,6 +107,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         private List<Definition> conditions = new List<Definition>();
 
         #endregion
+
+        private const string ConditionEvaluated = "Condition evaluated '{0}'.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VerifyRequest"/> class.
@@ -542,10 +543,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             {
                 // Evaluate each condition and use the denial message associated with the first which evaluates to false
                 // If no condition evaluates to false, the request is valid
-                foreach (Definition conditionDefinition in from conditionDefinition in this.conditions let resolved = this.ActivityExpressionEvaluator.ResolveExpression(conditionDefinition.Left) where resolved is bool && !(bool)resolved select conditionDefinition)
+                Definition failedCondition = this.conditions.FirstOrDefault(condition =>
                 {
-                    this.DenialMessage = conditionDefinition.Right;
-                    break;
+                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(condition.Left);
+                    return resolved is bool && !(bool)resolved;
+                });
+
+                if (failedCondition != null)
+                {
+                    this.DenialMessage = failedCondition.Right;
                 }
             }
             finally
@@ -599,7 +605,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestCheckConflictCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestCheckConflictCondition, ConditionEvaluated, e.Result);
             }
         }
 
@@ -618,7 +624,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestCheckRequestConflictCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestCheckRequestConflictCondition, ConditionEvaluated, e.Result);
             }
         }
 
@@ -637,7 +643,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestUniqueCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestUniqueCondition, ConditionEvaluated, e.Result);
             }
         }
 
@@ -656,7 +662,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestDenialPendingCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.VerifyRequestDenialPendingCondition, ConditionEvaluated, e.Result);
             }
         }
 

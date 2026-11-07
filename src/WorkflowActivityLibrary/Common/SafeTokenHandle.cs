@@ -19,11 +19,12 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
     /// <summary>
     /// Win32 safe handle implementation.
     /// </summary>
-    internal sealed class SafeTokenHandle : SafeHandleZeroOrMinusOneIsInvalid
+    [SuppressMessage("SonarAnalyzer.CSharp", "S108", Justification = "Unsure if I can remove the try catch completly.")]internal sealed class SafeTokenHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         /// <summary>
         /// Initializes a new instance of the SafeTokenHandle class
         /// </summary>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S108", Justification = "Unsure if I can remove the try catch completly.")]
         public SafeTokenHandle()
             : base(true)
         {

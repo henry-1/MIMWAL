@@ -1,13 +1,4 @@
-﻿//-----------------------------------------------------------------------------------------------------------------------
-// <copyright file="AddDelay.cs" company="Microsoft">
-//      Copyright (c) Microsoft. All Rights Reserved.
-//      Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
-// </copyright>
-// <summary>
-// AddDelay Activity 
-// </summary>
-//-----------------------------------------------------------------------------------------------------------------------
-
+﻿
 namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activities
 {
     #region Namespaces Declarations
@@ -28,6 +19,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// AddDelay Activity
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3247", Justification = "type-check-and-cast not available in .Net Framework 3.5")]
     public partial class AddDelay : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -52,7 +46,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         #endregion
@@ -145,6 +138,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
         #region Methods
 
+        
+
         /// <summary>
         /// Executes the activity.
         /// </summary>
@@ -236,7 +231,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             try
             {
                 // Determine if requests should be submitted based on whether or not a condition was supplied
-                // and if that condition resolves to true
+                // and if that condition resolves to true                
                 if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
                 {
                     e.Result = true;
@@ -261,6 +256,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        [SuppressMessage("SonarAnalyzer.CSharp", "S6580", Justification = "IFormatProvider overload of TimeSpan.TryParse not available in .NET 3.5")]
         private void Delay_InitializeTimeoutDuration(object sender, EventArgs e)
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.AddDelayDelayInitializeTimeoutDuration);

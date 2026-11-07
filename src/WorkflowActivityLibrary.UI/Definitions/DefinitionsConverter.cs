@@ -31,6 +31,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Defini
     {
         #region Declarations
 
+        private const string sCount = "Count";
+
         /// <summary>
         /// The list of definitions
         /// </summary>
@@ -98,8 +100,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Defini
 
             // Add the number of active definitions to the published hashtable and settings part data
             // so that it can be used later to reconstruct a list of definitions
-            this.definitionsTable.Add("Count", i);
-            this.settingsPartData[string.Format(CultureInfo.InvariantCulture, "{0}:Count", controllerId)] = i;
+            this.definitionsTable.Add(sCount, i);
+            this.settingsPartData[string.Format(CultureInfo.InvariantCulture, "{0}:{1}", controllerId, sCount)] = i;
         }
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Defini
             }
 
             // Throw an exception if the hashtable is missing the Count key which indicates how many definitions it stores
-            if (definitionsTable != null && !definitionsTable.ContainsKey("Count"))
+            if (definitionsTable != null && !definitionsTable.ContainsKey(sCount))
             {
                 throw Logger.Instance.ReportError(new ArgumentException(ActivitySettings.DefinitionsConverter_NullOrEmptyDefinitionsTableError, "definitionsTable"));
             }
@@ -126,7 +128,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Defini
             this.definitionsTable = definitionsTable;
 
             // Extract the number of definitions stored in the table
-            int count = (int)definitionsTable["Count"];
+            int count = (int)definitionsTable[sCount];
             for (int i = 0; i < count; i++)
             {
                 // Each value for each definition is stored independently in the hashtable
@@ -151,7 +153,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Defini
         {
             // This constructor handles activity settings part data provided by the activity settings part interface
             // Do nothing if that data is null or missing the Count key which indicates how many definitions it stores
-            if (settingsPartData == null || settingsPartData[string.Format(CultureInfo.InvariantCulture, "{0}:Count", controllerId)] == null)
+            if (settingsPartData == null || settingsPartData[string.Format(CultureInfo.InvariantCulture, "{0}:{1}", controllerId, sCount)] == null)
             {
                 return;
             }
@@ -161,8 +163,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Defini
 
             // Extract the number of definitions stored in the table
             // and publish it to the hashtable
-            int count = (int)settingsPartData[string.Format(CultureInfo.InvariantCulture, "{0}:Count", controllerId)];
-            this.definitionsTable.Add("Count", count);
+            int count = (int)settingsPartData[string.Format(CultureInfo.InvariantCulture, "{0}:{1}", controllerId, sCount)];
+            this.definitionsTable.Add(sCount, count);
 
             for (int i = 0; i < count; i++)
             {

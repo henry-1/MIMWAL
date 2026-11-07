@@ -1,49 +1,31 @@
-# MIMWAL
+# MIM WAL
 
-The MIMWAL is a Workflow Activity Library (WAL) for building complex workflows in the Microsoft Identity Manager (MIM) 2016 and Forefront Identity Manager (FIM) 2010 R2 solution.
+The MIMWAL is a Workflow Activity Library (WAL) for building complex workflows for Microsoft Identity Manager (MIM) 2016.
 
-The MIMWAL is a powerful solution accelerator for MIM / FIM that provides foundational activities which can be combined to create complex workflows to implement business processes within a MIM / FIM solution simply by configuration instead of coding for days and months.
+This project is a fork of Microsoft's MIM WAL repo which can be found [here](https://github.com/microsoft/MIMWAL).
+
+The goal of this project is to remove PowerShell 2 dependency, so that MIM WAL can run on newer operating systems as it will be supported by Microsoft.
 
 # Features
-
- * Building-block Workflow Activities
- * Conditional Execution Capability for Building-block Activities
- * Support for Iteration Over a Collection of Values in Building-block Activities
- * Deep Resolution Capability for FIM Lookup Grammar
- * Rich Library of Workflow Functions
- * UI Framework for Building Additional Custom Workflow Activities
- * Support for ETW Event Tracing
- * Optimization of Update Requests
-	 * Combining multiple updates into a single request per resource per activity
-	 * Issuing update request only when resource is actually modified.
+ * Except for PowerShell Workflow activity the library has the same feature set as before.
+ * PowerShell 2 dependency was completely removed.
+ * PowerShell 5 support has been added.
+ * PowerShell 7 support has been added.
 
 # Supported Product Versions
-
- * Forefront Identity Manager (FIM) 2010 R2 - 4.1.3496 and above.
- * Microsoft Identity Manager (MIM) 2016 - 4.3.1935 and above.
-
+* Microsoft Identity Manager (MIM) 2016 - 4.3.1935 and above (which is inherited from original MIM WAL).
+  * MIM 2016 SP3
+  	* SharePoint 2019 SE
+	* Server 2022
+	* Server 2025 (as soon as it is officially supported by Microsoft)
 
 # Release Notes
+* Release notes of this fork can be found in the [Change Log](./ChangeLog.md).
+* Version history of former releases can be found [here](https://github.com/Microsoft/MIMWAL/blob/master/ChangeLog.md)
 
-The MIMWAL releases can be downloaded from the [releases](https://github.com/Microsoft/MIMWAL/releases) tab under the Code tab. The release notes of each release can be found at [ChangeLog.md](https://github.com/Microsoft/MIMWAL/blob/master/ChangeLog.md)
 
+# Build Note
+The project targets .NET Framework 3.5 as required by the MIM/FIM workflow runtime. When building with newer versions of MSBuild, reference-resolution warnings may be reported for some Microsoft MIM assemblies because their dependency metadata references newer framework assemblies. These warnings do not prevent the project from building.
 
-# Documentation
-
-For more details and information on utilizing the MIMWAL please refer to the documentation in the [MIMWAL Wiki](https://github.com/Microsoft/MIMWAL/wiki).
-
-# Discussion
-
-For historic questions and conversations focused on MIMWAL, please visit the MIMWAL Project TechNet Forum: [http://aka.ms/MIMWAL/Forum](http://aka.ms/MIMWAL/Forum). **This TechNet forum is now read only. Microsoft products are moving to the new Microsoft Q&A platform and MIM is listed used [Azure | Identity](https://docs.microsoft.com/en-us/answers/products/azure?product=identity) with the Q&A tag of [microsoft-identity-manager](https://docs.microsoft.com/en-us/answers/topics/microsoft-identity-manager.html).** 
-
-# Support
-
-For questions on MIMWAL software / deployment / post-deployment support, please see the FAQ: [How is MIMWAL supported?](https://github.com/Microsoft/MIMWAL/wiki/FAQ#how-is-mimwal-supported)
-
-# Contributing to MIMWAL
-
-For details on how you can contribute, please check [CONTRIBUTING.md](https://github.com/Microsoft/MIMWAL/blob/master/CONTRIBUTING.md)
-
-# Code of Conduct
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+# Upgrade
+The upgrade procedure from previous MIMWAL versions remains unchanged.

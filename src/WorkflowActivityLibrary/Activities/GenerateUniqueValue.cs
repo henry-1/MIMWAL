@@ -35,6 +35,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// Generates unique value
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
     public partial class GenerateUniqueValue : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -79,7 +81,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
@@ -87,15 +88,14 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Guid> FoundIds;
 
         /// <summary>
         /// The list of matching resources found
         /// </summary>
+        [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<ResourceType> FoundResources;
 
         /// <summary>
@@ -103,7 +103,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Definition> LdapQueries;
 
         /// <summary>
@@ -111,7 +110,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "XPath", Justification = "Reviewed and overruled.")]
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public string XPathConflictFilter;
 
         /// <summary>
@@ -495,7 +493,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                     {
                         ds.SearchScope = SearchScope.Subtree;
                         ds.Filter = filter;
-
                         found = ds.FindOne() != null;
 
                         return found;
@@ -513,6 +510,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 Logger.Instance.WriteMethodExit(EventIdentifier.GenerateUniqueValueConflictExistsInLdap, "Path: '{0}'. Filter: '{1}'. Returning: '{2}'.", path, filter, found);
             }
         }
+
+        private static readonly char[] TrimChars = { ' ', '(', ',' };
 
         /// <summary>
         /// Sets the attributes to read for conflict resources if the Conflict Filter makes use of starts-with() function
@@ -540,7 +539,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                     int endIndex = filter.IndexOf(endToken, startIndex, StringComparison.OrdinalIgnoreCase);
                     if (endIndex != -1)
                     {
-                        string s = filter.Substring(startIndex + startTokenLength + 1, endIndex - (startIndex + startTokenLength + 1)).Trim(new char[] { ' ', '(', ',' });
+                        int contentStart = startIndex + startTokenLength + 1;
+                        string s = filter.Substring(contentStart, endIndex - contentStart).Trim(TrimChars);
                         attributes.Add(s);
                     }
                     else
@@ -646,7 +646,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// Repositions the UniquenessKey to the first missing value in sequence of conflicting values
         /// </summary>
         /// <returns>True if the UniquenessKey was repositioned</returns>
-        private bool RepositionUniquenessKey()
+        private void RepositionUniquenessKey()
         {
             Logger.Instance.WriteMethodEntry(EventIdentifier.GenerateUniqueValueRepositionUniquenessKey, "Resolved value: '{0}.' Conflict Resource Count: '{1}'. UniquenessKey: '{2}'.", this.resolvedValue, this.FoundResources.Count, this.uniquenessKey);
 
@@ -682,17 +682,15 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                     }
 
                     if (seed == this.uniquenessKey)
-                    {
+                    {                        
                         ++this.uniquenessKey;
-                        keyRepositioned = true;
+                        keyRepositioned = true;                       
                     }
                     else
                     {
                         break;
                     }
                 }
-
-                return keyRepositioned;
             }
             finally
             {
@@ -876,6 +874,26 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
+
+        private bool IsValueUnique()
+        {
+            // An LDAP conflict always means the value is not usable
+            if (this.ldapConflict)
+            {
+                return false;
+            }
+
+            // No existing resources found: the value is unique
+            if (this.FoundIds.Count == 0)
+            {
+                return true;
+            }
+
+            // Resources were found: with the optimization on, the value is still unique
+            // if none of them is a real conflict
+            return this.optimizeUniquenessKey && !this.CheckConflictResourceFound();
+        }
+
         /// <summary>
         /// Handles the ExecuteCode event of the Decide CodeActivity.
         /// </summary>
@@ -887,29 +905,19 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                if (!this.ldapConflict)
-                {
-                    bool conflictResourceFound = false;
+                if (this.IsValueUnique())
+                {                    
+                    // If the value is unique,
+                    // stop the loop and prepare to publish the unique value
+                    this.unique = true;
 
-                    if (this.FoundIds.Count > 0 && this.optimizeUniquenessKey)
+                    this.Publish.UpdateLookupDefinitions = new List<UpdateLookupDefinition>
                     {
-                        conflictResourceFound = this.CheckConflictResourceFound();
-                    }
+                        new UpdateLookupDefinition(this.PublicationTarget, this.resolvedValue, UpdateMode.Modify)
+                    };
 
-                    if (this.FoundIds.Count == 0 || (this.optimizeUniquenessKey && !conflictResourceFound))
-                    {
-                        // If the value is unique,
-                        // stop the loop and prepare to publish the unique value
-                        this.unique = true;
-                        List<UpdateLookupDefinition> lookupUpdates = new List<UpdateLookupDefinition>
-                        {
-                            new UpdateLookupDefinition(this.PublicationTarget, this.resolvedValue, UpdateMode.Modify)
-                        };
-                        this.Publish.UpdateLookupDefinitions = lookupUpdates;
-
-                        Logger.Instance.WriteVerbose(EventIdentifier.GenerateUniqueValueDecideExecuteCode, "No conflict found for value: '{0}'. Returning it as the unique value.", this.resolvedValue);
-                        return;
-                    }
+                    Logger.Instance.WriteVerbose(EventIdentifier.GenerateUniqueValueDecideExecuteCode, "No conflict found for value: '{0}'. Returning it as the unique value.", this.resolvedValue);
+                    return;                    
                 }
 
                 Logger.Instance.WriteVerbose(EventIdentifier.GenerateUniqueValueDecideExecuteCode, "Conflict Found for value: '{0}'. UniquenessKey: '{1}'. ValueExpression Index: '{2}'.", this.resolvedValue, this.uniquenessKey, this.valueIndex);
@@ -934,7 +942,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
                 }
                 else
                 {
-                    this.uniquenessKey += 1;
+                    this.uniquenessKey = checked(this.uniquenessKey + 1);
 
                     // if we are incrementing the last resort value expression and the XPath filter makes use of starts-with() function. 
                     // so we'll need to modify the XPath filter to be e.g. /Person[starts-with(AccountName, 'TestUser')] 

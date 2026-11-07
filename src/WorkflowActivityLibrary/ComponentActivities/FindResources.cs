@@ -31,30 +31,37 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
     {
         #region Windows Workflow Designer generated code
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty XPathFilterProperty =
             DependencyProperty.Register("XPathFilter", typeof(string), typeof(FindResources));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(object), typeof(FindResources));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty AttributesProperty =
             DependencyProperty.Register("Attributes", typeof(string[]), typeof(FindResources));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ExcludeWorkflowTargetProperty =
             DependencyProperty.Register("ExcludeWorkflowTarget", typeof(bool), typeof(FindResources));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty FoundResourcesProperty =
             DependencyProperty.Register("FoundResources", typeof(List<ResourceType>), typeof(FindResources));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty FoundIdsProperty =
             DependencyProperty.Register("FoundIds", typeof(List<Guid>), typeof(FindResources));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty QueryResultsProperty =
             DependencyProperty.Register("QueryResults", typeof(Dictionary<string, List<Guid>>), typeof(FindResources));

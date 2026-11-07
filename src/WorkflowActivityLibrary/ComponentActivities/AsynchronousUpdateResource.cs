@@ -33,18 +33,22 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
     {
         #region Windows Workflow Designer generated code
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ActorIdProperty =
             DependencyProperty.Register("ActorId", typeof(Guid), typeof(AsynchronousUpdateResource));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ResourceIdProperty =
             DependencyProperty.Register("ResourceId", typeof(Guid), typeof(AsynchronousUpdateResource));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty UpdateParametersProperty =
             DependencyProperty.Register("UpdateParameters", typeof(UpdateRequestParameter[]), typeof(AsynchronousUpdateResource));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ApplyAuthorizationPolicyProperty =
             DependencyProperty.Register("ApplyAuthorizationPolicy", typeof(bool), typeof(AsynchronousUpdateResource));

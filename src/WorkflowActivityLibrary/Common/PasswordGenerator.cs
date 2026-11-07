@@ -1,229 +1,183 @@
-﻿//-----------------------------------------------------------------------------------------------------------------------
-// <copyright file="PasswordGenerator.cs" company="Microsoft">
-//      Copyright (c) Microsoft. All Rights Reserved.
-//      Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
-// </copyright>
-// <summary>
-// PasswordGenerator class
-// </summary>
-//-----------------------------------------------------------------------------------------------------------------------
-
+﻿
 namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
 {
-    #region Namespaces Declarations
 
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Security.Cryptography;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Enumerations;
-
-    #endregion
 
     /// <summary>
-    /// Generates random password 
+    /// PasswordGenerator class
     /// </summary>
-    public class PasswordGenerator
+    /// <remarks>
+    /// 
+    /// Minimum password length: 4.
+    /// Contains at least one uppercase character,
+    /// one lowercase character, one number,
+    /// and one special character.
+    /// Remaining characters are randomly selected
+    /// from all allowed characters.
+    /// Character selection and position shuffling
+    /// use a cryptographic random number generator.
+    /// 
+    /// </remarks>    
+
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2068", Justification = "validated, not a password")]
+    public static class PasswordGenerator
     {
-        #region Declarations
 
-        /// <summary>
-        /// Max iteration count limit
-        /// </summary>
-        private const int MaxIterationLimit = 24; // even for a 4 char length password, 3 attempts seem to be enough
+        private static readonly RNGCryptoServiceProvider rng =
+            new RNGCryptoServiceProvider();
 
-        /// <summary>
-        /// The array of standard uppercase password characters
-        /// </summary>
-        private const string PwdCharsUpperCase = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+        private const int MinimumPasswordLength = 4;
 
-        /// <summary>
-        /// The array of standard lowercase password characters
-        /// </summary>
-        private const string PwdCharsLowerCase = "abcdefghjkmnpqrstuvwxyz";
+        private const string PwdCharsUpperCase =
+            "ABCDEFGHJKLMNPQRSTUVWXYZ";
 
-        /// <summary>
-        /// The array of standard alphabetic password characters
-        /// </summary>
-        private const string PwdChars = PwdCharsUpperCase + PwdCharsLowerCase;
+        private const string PwdCharsLowerCase =
+            "abcdefghjkmnpqrstuvwxyz";
 
-        /// <summary>
-        /// The array of special password characters
-        /// </summary>
-        private const string PwdSpecialChars = "!@#$&";
+        private const string PwdChars =
+            PwdCharsUpperCase + PwdCharsLowerCase;
 
-        /// <summary>
-        /// The array of numeric password characters
-        /// </summary>
-        private const string PwdNumbers = "23456789";
+        private const string PwdSpecialChars =
+            "!@#$&";
 
-        /// <summary>
-        /// Current iteration count
-        /// </summary>
-        private int currentIterationCount = 0;
+        private const string PwdNumbers =
+            "23456789";
 
-        #endregion
+        private const string PwdAllChars =
+            PwdChars +
+            PwdSpecialChars +
+            PwdNumbers;
 
-        #region Methods
-
-        /// <summary>
-        /// Generates the random password.
-        /// </summary>
-        /// <param name="length">The length of the password.</param>
-        /// <returns>The radom password string.</returns>
-        public string GenerateRandomPassword(int length)
+        public static string GenerateRandomPassword(
+            int length)
         {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.PasswordGeneratorGenerateRandomPassword, "Length: {0}.", length);
+            Logger.Instance.WriteMethodEntry(
+                EventIdentifier.PasswordGeneratorGenerateRandomPassword,
+                "Length: {0}.",
+                length);
 
             try
             {
-                StringBuilder password = new StringBuilder();
-
-                // For each available char index in the password buffer,
-                // generate a new random character
-                for (int i = 0; i < length; i++)
+                if (length < MinimumPasswordLength)
                 {
-                    char nextCharacter = GetRandomCharacter(PasswordCharType.Standard);
-                    password.Append(nextCharacter);
+                    throw Logger.Instance.ReportError(
+                        new ArgumentOutOfRangeException(
+                            "length",
+                            length,
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                "Password length must be at least {0}.",
+                                MinimumPasswordLength)));
                 }
 
-                int numberIndex = 0;
-                int specialIndex = 0;
+                char[] password =
+                    new char[length];
 
-                if (length != 1)
+                password[0] = GetRandomCharacter(PwdCharsUpperCase);
+
+                password[1] = GetRandomCharacter(PwdCharsLowerCase);
+
+                password[2] = GetRandomCharacter(PwdNumbers);
+
+                password[3] = GetRandomCharacter(PwdSpecialChars);
+
+                for (int i = 4; i < password.Length; i++)
                 {
-                    // To ensure complexity, the password must contain at least  1 number and 1 special character
-                    // Select indexes from the constructed password at random to determine which will be replaced
-                    Random randomNumber = new Random(); // OK to use simple random number generated here as GetRandomCharacter uses RNG anyway.
-
-                    numberIndex = randomNumber.Next(0, length - 1);
-                    do
-                    {
-                        // Find an index to replace with a special character
-                        // that is not the same index used for the number
-                        specialIndex = randomNumber.Next(0, length - 1);
-                    }
-                    while (numberIndex == specialIndex);
+                    password[i] = GetRandomCharacter(PwdAllChars);
                 }
 
-                // Replace the number index with a random number
-                // Replace the special char index with a random special character
-                password[numberIndex] = GetRandomCharacter(PasswordCharType.Number);
-                password[specialIndex] = GetRandomCharacter(PasswordCharType.Special);
+                Shuffle(password);            
 
-                if (length >= 4)
-                {
-                    // To ensure complexity, the password must contain at least  1 uppercase and 1 lowercase character
-                    string[] patternParts = new string[] { PwdCharsUpperCase, PwdCharsLowerCase, PwdSpecialChars, PwdNumbers, length.ToString(CultureInfo.InvariantCulture) };
-                    string pattern = string.Format(CultureInfo.InvariantCulture, "^(?=.*[{0}])(?=.*[{1}])(?=.*[{2}])(?=.*[{3}]).{{{4}}}$", patternParts);
-                    Regex pwdExpression = new Regex(pattern);
-                    if (pwdExpression.Matches(password.ToString()).Count == 0)
-                    {
-                        ++this.currentIterationCount;
-                        if (this.currentIterationCount < MaxIterationLimit)
-                        {
-                            Logger.Instance.WriteVerbose(EventIdentifier.PasswordGeneratorGenerateRandomPassword, "Length: {0}. Iteration Count: {1}.", length, this.currentIterationCount);
-                            return this.GenerateRandomPassword(length);
-                        }
-                        else
-                        {
-                            Logger.Instance.WriteWarning(EventIdentifier.PasswordGeneratorGenerateRandomPasswordWarning, Messages.PasswordGenerator_LoopCountWarning, length);
-                            return password.ToString();
-                        }
-                    }
-                }
-
-                // Return the random password
-                return password.ToString();
+                return new string(password);
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.PasswordGeneratorGenerateRandomPassword, "Length: {0}.", length);
+                Logger.Instance.WriteMethodExit(
+                    EventIdentifier.PasswordGeneratorGenerateRandomPassword,
+                    "Length: {0}.",
+                    length);
             }
         }
 
-        /// <summary>
-        /// Returns a cryptographically strong random integer that is within a specified range.
-        /// </summary>
-        /// <param name="minValue">The inclusive lower bound of the random number returned.</param>
-        /// <param name="maxValue">The exclusive upper bound of the random number returned. maxValue must be greater than minValue.</param>
-        /// <returns>A 32-bit signed integer greater than or equal to minValue and less than maxValue; </returns>
-        private static int GetNextRandomNumber(int minValue, int maxValue)
+        private static char GetRandomCharacter(
+            string characters)
         {
-            if (minValue < byte.MinValue)
-            {
-                throw Logger.Instance.ReportError(new ArgumentOutOfRangeException("minValue"));
-            }
+            int index = GetNextRandomNumber(
+                0,
+                characters.Length);
 
-            if (maxValue > byte.MaxValue)
+            return characters[index];
+        }
+
+        private static void Shuffle(char[] password)
+        {
+            for (int i = password.Length - 1; i > 0; i--)
             {
-                throw Logger.Instance.ReportError(new ArgumentOutOfRangeException("maxValue"));
+                int index = GetNextRandomNumber(
+                    0,
+                    i + 1);
+
+                char temporary = password[i];
+                password[i] = password[index];
+                password[index] = temporary;
+            }
+        }
+
+        private static int GetNextRandomNumber(
+            int minValue,
+            int maxValue)
+        {
+            if (minValue < 0)
+            {
+                throw Logger.Instance.ReportError(
+                    new ArgumentOutOfRangeException(
+                        "minValue"));
             }
 
             if (minValue >= maxValue)
             {
-                throw Logger.Instance.ReportError(new ArgumentException(Messages.PasswordGenerator_MaxValueLessThanMinValueError));
+                throw Logger.Instance.ReportError(
+                    new ArgumentException(
+                        Messages.PasswordGenerator_MaxValueLessThanMinValueError));
             }
 
-            int randomNumber;
+            uint range =
+                (uint)(maxValue - minValue);
 
-            byte[] random = new byte[1];
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            ulong availableValues =
+                (ulong)uint.MaxValue + 1UL;
+
+            ulong limit =
+                availableValues -
+                availableValues % range;
+
+            byte[] buffer =
+                new byte[4];
+
+            uint randomValue;
+
             do
             {
-                rng.GetBytes(random);
-                randomNumber = random[0];
-            }
-            while (randomNumber < minValue || randomNumber >= maxValue);
+                rng.GetBytes(buffer);
 
-            return randomNumber;
+                randomValue =
+                    BitConverter.ToUInt32(
+                        buffer,
+                        0);
+            }
+            while ((ulong)randomValue >= limit);
+
+            return minValue +
+                (int)(randomValue % range);
         }
-
-        /// <summary>
-        /// Gets the random character.
-        /// </summary>
-        /// <param name="type">One of the <see cref="PowerShellReturnType"/> enumeration value.</param>
-        /// <returns>A random character that corresponds to the specified <see cref="PowerShellReturnType"/> enumeration value.</returns>
-        private static char GetRandomCharacter(PasswordCharType type)
-        {
-            Logger.Instance.WriteMethodEntry(EventIdentifier.PasswordGeneratorGetRandomCharacter, "PasswordCharType: '{0}'.", type);
-
-            try
-            {
-                // Determine if a standard, special, or numeric character
-                // will be returned based on the supplied Boolean value
-                int randomIndex;
-                switch (type)
-                {
-                    case PasswordCharType.Special:
-
-                        // Generate a random number which represents an
-                        // index of the password special character array
-                        randomIndex = GetNextRandomNumber(0, PwdSpecialChars.Length - 1);
-                        return PwdSpecialChars[randomIndex];
-
-                    case PasswordCharType.Number:
-
-                        // Generate a random number which represents an
-                        // index of the password number array
-                        randomIndex = GetNextRandomNumber(0, PwdNumbers.Length - 1);
-                        return PwdNumbers[randomIndex];
-
-                    default:
-
-                        // Generate a random number which represents an
-                        // index of the password character array
-                        randomIndex = GetNextRandomNumber(0, PwdChars.Length - 1);
-                        return PwdChars[randomIndex];
-                }
-            }
-            finally
-            {
-                Logger.Instance.WriteMethodExit(EventIdentifier.PasswordGeneratorGetRandomCharacter, "PasswordCharType: '{0}'.", type);
-            }
-        }
-
-        #endregion
     }
+
+    
 }
+
+
+

@@ -22,9 +22,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2B90D189-D995-4304-8525-17D75B4C9907}"
 	ProjectSection(SolutionItems) = preProject
 		CodeAnalysisDictionary.xml = CodeAnalysisDictionary.xml
-		Settings.StyleCop = Settings.StyleCop
 		VersionInfo.cs = VersionInfo.cs
-		WAL.snk = WAL.snk
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LanguagePacks", "LanguagePacks", "{1829DEFF-5553-4E93-9A9B-08118F3D2225}"
@@ -43,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SrcDocs", "SrcDocs", "{112D
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowActivityLibrary.Tests", "WorkflowActivityLibrary.Test\WorkflowActivityLibrary.Tests.csproj", "{A78184AA-61F8-4FC7-A8C0-A3B66CA27FBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +57,10 @@ Global
 		{5ECC33F8-D920-47EC-AF5F-F4A11FD0A4FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ECC33F8-D920-47EC-AF5F-F4A11FD0A4FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ECC33F8-D920-47EC-AF5F-F4A11FD0A4FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A78184AA-61F8-4FC7-A8C0-A3B66CA27FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A78184AA-61F8-4FC7-A8C0-A3B66CA27FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A78184AA-61F8-4FC7-A8C0-A3B66CA27FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A78184AA-61F8-4FC7-A8C0-A3B66CA27FBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

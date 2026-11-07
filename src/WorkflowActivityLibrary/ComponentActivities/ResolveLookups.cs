@@ -37,22 +37,27 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
     /// <summary>
     /// Resolves Lookup expressions
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3776", Justification = "Approved.")]
     internal partial class ResolveLookups : SequenceActivity
     {
         #region Windows Workflow Designer generated code
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty LookupsProperty =
             DependencyProperty.Register("Lookups", typeof(Dictionary<string, object>), typeof(ResolveLookups));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty QueryResultsProperty =
             DependencyProperty.Register("QueryResults", typeof(Dictionary<string, List<Guid>>), typeof(ResolveLookups));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ComparedRequestIdProperty =
             DependencyProperty.Register("ComparedRequestId", typeof(Guid), typeof(ResolveLookups));
 
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty.")]
         [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible", Justification = "DependencyProperty")]
         public static DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(object), typeof(ResolveLookups));
@@ -158,6 +163,10 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
         private string resourceKey;
 
         #endregion
+
+        private const string ConditionEvaluatedTemplate = "Condition evaluated '{0}'.";
+        private const string LookupParameterTemplate = "[//{0}/";
+        private const string LookupParameterAndComponentTemplate = "{0}/{1}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResolveLookups"/> class.
@@ -376,7 +385,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
 
                         // When resolving a [//Target/...] or [//Effective/...] lookup during authZ on a create request,
                         // we will always pull the value from the request delta because the target resource will not yet be available for read
-                        string lookupString = s.Replace(string.Format(CultureInfo.InvariantCulture, "[//{0}/", s.Substring(3, originalLookup.Parameter.ToString().Length)), string.Format(CultureInfo.InvariantCulture, "[//{0}/", LookupParameter.Delta));
+                        string lookupString = s.Replace(string.Format(CultureInfo.InvariantCulture, LookupParameterTemplate, s.Substring(3, originalLookup.Parameter.ToString().Length)), string.Format(CultureInfo.InvariantCulture, LookupParameterTemplate, LookupParameter.Delta));
                         resolvableLookup = new LookupEvaluator(lookupString);
                     }
                     else if (originalLookup.Parameter == LookupParameter.Effective)
@@ -399,7 +408,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
 
                         // Either replace [//Effective/...] with [//Delta/...] or [//Target/...] to facilitate resolution
                         // The activity will look for this lookup when resolving the original effective lookup
-                        string lookupString = s.Replace(string.Format(CultureInfo.InvariantCulture, "[//{0}/", s.Substring(3, originalLookup.Parameter.ToString().Length)), useDelta ? string.Format(CultureInfo.InvariantCulture, "[//{0}/", LookupParameter.Delta) : string.Format(CultureInfo.InvariantCulture, "[//{0}/", LookupParameter.Target));
+                        string lookupString = s.Replace(string.Format(CultureInfo.InvariantCulture, LookupParameterTemplate, s.Substring(3, originalLookup.Parameter.ToString().Length)), useDelta ? string.Format(CultureInfo.InvariantCulture, LookupParameterTemplate, LookupParameter.Delta) : string.Format(CultureInfo.InvariantCulture, LookupParameterTemplate, LookupParameter.Target));
 
                         resolvableLookup = new LookupEvaluator(lookupString);
                     }
@@ -443,9 +452,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
                         resolvableLookup.Components.Count > 1 &&
                         parentWorkflow.WorkflowDictionary.ContainsKey(resolvableLookup.Components[1]) &&
                         parentWorkflow.WorkflowDictionary[resolvableLookup.Components[1]] != null &&
-                        !this.values.ContainsKey(string.Format(CultureInfo.InvariantCulture, "{0}/{1}", LookupParameter.WorkflowData, resolvableLookup.Components[1])))
+                        !this.values.ContainsKey(string.Format(CultureInfo.InvariantCulture, LookupParameterAndComponentTemplate, LookupParameter.WorkflowData, resolvableLookup.Components[1])))
                     {
-                        this.Publish(string.Format(CultureInfo.InvariantCulture, "{0}/{1}", LookupParameter.WorkflowData, resolvableLookup.Components[1]), parentWorkflow.WorkflowDictionary[resolvableLookup.Components[1]]);
+                        this.Publish(string.Format(CultureInfo.InvariantCulture, LookupParameterAndComponentTemplate, LookupParameter.WorkflowData, resolvableLookup.Components[1]), parentWorkflow.WorkflowDictionary[resolvableLookup.Components[1]]);
                     }
                 }
 
@@ -471,12 +480,10 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
                 }
 
                 // Resolve lookups associated with the [//Delta/...] parameter
-                if (this.parameters.Contains(LookupParameter.Delta))
+                if (this.parameters.Contains(LookupParameter.Delta) && 
+                    (this.Request.CurrentRequest.Operation != OperationType.SystemEvent))
                 {
-                    if (this.Request.CurrentRequest.Operation != OperationType.SystemEvent)
-                    {
-                        this.PublishRequestDelta(this.Request.CurrentRequest, false);
-                    }
+                    this.PublishRequestDelta(this.Request.CurrentRequest, false);                    
                 }
 
                 // If necessary, add the supplied query results to the resource dictionary
@@ -487,7 +494,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
                     {
                         foreach (string query in this.QueryResults.Keys)
                         {
-                            this.Publish(string.Format(CultureInfo.InvariantCulture, "{0}/{1}", LookupParameter.Queries, query), this.QueryResults[query]);
+                            this.Publish(string.Format(CultureInfo.InvariantCulture, LookupParameterAndComponentTemplate, LookupParameter.Queries, query), this.QueryResults[query]);
                         }
                     }
                     else
@@ -833,13 +840,13 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
                                     }
                                 }
 
-                                this.Publish(string.Format(CultureInfo.InvariantCulture, "{0}/{1}", LookupParameter.Request.ToString(), attribute), requestParameters);
+                                this.Publish(string.Format(CultureInfo.InvariantCulture, LookupParameterAndComponentTemplate, LookupParameter.Request.ToString(), attribute), requestParameters);
                             }
                         }
                     }
                     else
                     {
-                        this.Publish(string.Format(CultureInfo.InvariantCulture, "{0}/{1}", this.resourceKey, attribute), read.Resource[attribute]);
+                        this.Publish(string.Format(CultureInfo.InvariantCulture, LookupParameterAndComponentTemplate, this.resourceKey, attribute), read.Resource[attribute]);
                     }
                 }
             }
@@ -1005,7 +1012,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
                             // we want to return them in the form of a strongly-typed list
                             // For example: List<string> instead of List<object>
                             // Use reflection to create a new strongly-typed list
-                            Type listType = typeof(List<>).MakeGenericType(new Type[] { type });
+                            Type listType = typeof(List<>).MakeGenericType(type);
                             var typedList = Activator.CreateInstance(listType);
 
                             // Using reflection, fetch the add method for the new list
@@ -1163,7 +1170,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsApproversCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsApproversCondition, ConditionEvaluatedTemplate, e.Result);
             }
         }
 
@@ -1182,7 +1189,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsRequestParameterCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsRequestParameterCondition, ConditionEvaluatedTemplate, e.Result);
             }
         }
 
@@ -1217,7 +1224,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsCompositeRequestCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsCompositeRequestCondition, ConditionEvaluatedTemplate, e.Result);
             }
         }
 
@@ -1236,7 +1243,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Component
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsPerformReadCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.ResolveLookupsPerformReadCondition, ConditionEvaluatedTemplate, e.Result);
             }
         }
 

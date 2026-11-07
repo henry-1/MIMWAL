@@ -16,6 +16,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Web.UI.WebControls;
 
     #endregion
@@ -88,6 +89,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Reviewed. It's a non-concern here.")]
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Reviewed. It's a non-concern here.")]
+        [SuppressMessage("SonarAnalyzer.CSharp", "S2365", Justification = "Don't want to change the property into a method. This might break other parts of the library.")]
         public List<string> Values
         {
             get
@@ -103,10 +105,14 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.FormCo
                 // add a line to the multiline text box control
                 if (value != null)
                 {
+                    var sb = new StringBuilder();
+
                     foreach (string s in value)
                     {
-                        this.textBoxControl.Text += string.Format(CultureInfo.CurrentCulture, "{0}\n", s);
+                        sb.Append(string.Format(CultureInfo.CurrentCulture, "{0}\n", s));
                     }
+
+                    this.textBoxControl.Text = sb.ToString();
                 }
                 else
                 {

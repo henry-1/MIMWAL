@@ -949,6 +949,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionConvertToUniqueIdentifier = 11618;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction ConvertToUniqueIdentifier events
+        /// </summary>
+        public const int ExpressionFunctionConvertToUniqueIdentifierInvalidFunctionParameterFormatError = 11618;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction Count events
         /// </summary>
         public const int ExpressionFunctionCount = 11619;
@@ -1279,6 +1284,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionMultiply = 11684;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction Multiply events
+        /// </summary>
+        public const int ExpressionFunctionMultiplyOverflowError = 11684;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction Divide events
         /// </summary>
         public const int ExpressionFunctionDivide = 11685;
@@ -1399,22 +1409,22 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int UpdateLookupsAuthorizationCondition = 12009;
 
         /// <summary>
-        /// The event identifier for LogonUser Constructor events
+        /// The event identifier for LogOnUser Constructor events
         /// </summary>
         public const int LogOnUserConstructor = 12101;
 
         /// <summary>
-        /// The event identifier for LogonUser Destructor events
+        /// The event identifier for LogOnUser Destructor events
         /// </summary>
         public const int LogOnUserDestructor = 12102;
 
         /// <summary>
-        /// The event identifier for LogonUser Dispose events
+        /// The event identifier for LogOnUser Dispose events
         /// </summary>
         public const int LogOnUserDispose = 12103;
 
         /// <summary>
-        /// The event identifier for LogonUser LogOn events
+        /// The event identifier for LogOnUser LogOn events
         /// </summary>
         public const int LogOnUserLogOn = 12104;
 
@@ -1936,22 +1946,37 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for RunPowerShellScript RunScript events
         /// </summary>
-        public const int RunPowerShellScriptRunScriptInconsistentScriptReturnTypeError = 40403;
+        public const int RunPowerShellScriptRunScriptInconsistentScriptReturnTypeError = 40404;
 
         /// <summary>
         /// The event identifier for RunPowerShellScript RunScript events
         /// </summary>
-        public const int RunPowerShellScriptRunScriptExecutionFailedError = 40403;
+        public const int RunPowerShellScriptRunScriptExecutionFailedError = 40405;
 
         /// <summary>
         /// The event identifier for RunPowerShellScript SetupStreamEventHandlers events
         /// </summary>
-        public const int RunPowerShellScriptSetupStreamEventHandlersErrorEvents = 40405;
+        public const int RunPowerShellScriptSetupStreamEventHandlersErrorEvents = 40406;
 
         /// <summary>
         /// The event identifier for RunPowerShellScript Run_ExecuteCode events
         /// </summary>
         public const int RunPowerShellScriptRunExecuteCodeScriptNotFoundError = 40407;
+
+        /// <summary>
+        /// The event identifier for RunPowerShellScript Run_ExecuteCode events
+        /// </summary>public const int RunPowerShellScriptRunExecuteCodeLoadUserProfileError = 40407;
+        public const int RunPowerShellScriptAsUserError = 40407;
+
+        /// <summary>
+        /// The event identifier for RunPowerShellScript Run_ExecuteCode events
+        /// </summary>
+        public const int RunPowerShellScriptCreateEnvironmentError = 40407;
+
+        /// <summary>
+        /// The event identifier for RunPowerShellScript Run_ExecuteCode events
+        /// </summary>
+        public const int RunPowerShellScriptProcessCreationError = 404007;
 
         /// <summary>
         /// The event identifier for UpdateResources Execute events
@@ -2116,12 +2141,22 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for ExpressionFunction Run events
         /// </summary>
+        public const int ExpressionFunctionRunFunctionOverflowError = 41601;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Run events
+        /// </summary>
         public const int ExpressionFunctionRunUnsupportedFunctionError = 41602;
 
         /// <summary>
         /// The event identifier for ExpressionFunction Run events
         /// </summary>
         public const int ExpressionFunctionRunFunctionSyntaxValidationError = 41602;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Run events
+        /// </summary>
+        public const int ExpressionFunctionRunFunctionInvalidArgumentError = 41603;
 
         /// <summary>
         /// The event identifier for ExpressionFunction Run events
@@ -2269,9 +2304,19 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionParametersContainInvalidFirstFunctionParameterTypeError = 41614;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction ParametersContain events
+        /// </summary>
+        public const int ExpressionFunctionParametersContainInvalidSecondFunctionParameterTypeError = 41614;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction RegexMatch events
         /// </summary>
         public const int ExpressionFunctionRegexMatchInvalidFunctionParameterCountError = 41615;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction RegexMatch events
+        /// </summary>
+        public const int ExpressionFunctionStringregexMatchFunctionParameterFormatError = 41615;
 
         /// <summary>
         /// The event identifier for ExpressionFunction RegexMatch events
@@ -2297,6 +2342,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction Add events
         /// </summary>
         public const int ExpressionFunctionAddInvalidSecondFunctionParameterTypeError = 41616;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Add events
+        /// </summary>
+        public const int ExpressionFunctionAddInvalidFirstFunctionParameterError = 41616;
 
         /// <summary>
         /// The event identifier for ExpressionFunction ConcatenateMultivaluedString events
@@ -2334,7 +2384,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionDateTimeAddInvalidFunctionParameterCountError = 41620;
 
         /// <summary>
-        /// The event identifier for ExpressionFunction DateTimeAdd events
+        /// The event identifier for ExpressionFunction DateTimeAdd eventsExpressionFunctionDateTimeFormatInvalidFirstFunctionParameterTypeError
         /// </summary>
         public const int ExpressionFunctionDateTimeAddNullFunctionParameterError = 41620;
 
@@ -2347,6 +2397,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction DateTimeAdd events
         /// </summary>
         public const int ExpressionFunctionDateTimeAddInvalidSecondFunctionParameterTypeError = 41620;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction DateTimeAdd events
+        /// </summary>
+        public const int ExpressionFunctionDateTimeAddInvalidSecondFunctionParameterFormatError = 41620;
 
         /// <summary>
         /// The event identifier for ExpressionFunction DateTimeFormat events
@@ -2362,6 +2417,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction DateTimeFormat events
         /// </summary>
         public const int ExpressionFunctionDateTimeFormatInvalidFirstFunctionParameterTypeError = 41621;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction DateTimeFormat events
+        /// </summary>
+        public const int ExpressionFunctionDateTimeFormatFunctionParameterFormatError = 41621;
 
         /// <summary>
         /// The event identifier for ExpressionFunction DateTimeFormat events
@@ -2421,6 +2481,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for ExpressionFunction Left events
         /// </summary>
+        public const int ExpressionFunctionStringLeftFunctionParameterFormatError = 41628;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Left events
+        /// </summary>
         public const int ExpressionFunctionLeftNullFunctionParameterError = 41628;
 
         /// <summary>
@@ -2449,6 +2514,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionLeftPadInvalidThirdFunctionParameterTypeError = 41629;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction LeftPad events
+        /// </summary>
+        public const int ExpressionFunctionLeftPadInvalidThirdFunctionParameterFormatError = 41629;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction Length events
         /// </summary>
         public const int ExpressionFunctionLengthInvalidFunctionParameterCountError = 41630;
@@ -2472,6 +2542,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction Mid events
         /// </summary>
         public const int ExpressionFunctionMidNullFunctionParameterError = 41633;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Mid events
+        /// </summary>
+        public const int ExpressionFunctionMidFunctionParameterFormatError = 41633;
 
         /// <summary>
         /// The event identifier for ExpressionFunction Mid events
@@ -2506,12 +2581,27 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for ExpressionFunction RandomNum events
         /// </summary>
+        public const int ExpressionFunctionRandomNumberFunctionParameterError = 41636;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction RandomNum events
+        /// </summary>
         public const int ExpressionFunctionRandomNumberInvalidFirstFunctionParameterTypeError = 41636;
 
         /// <summary>
         /// The event identifier for ExpressionFunction RandomNum events
         /// </summary>
+        public const int ExpressionFunctionRandomNumberInvalidFirstFunctionParameterValueError = 41636;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction RandomNum events
+        /// </summary>
         public const int ExpressionFunctionRandomNumberInvalidSecondFunctionParameterTypeError = 41636;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction RandomNum events
+        /// </summary>
+        public const int ExpressionFunctionRandomNumberInvalidSecondFunctionParameterValueError = 41636;
 
         /// <summary>
         /// The event identifier for ExpressionFunction RegexReplace events
@@ -2539,6 +2629,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionReplaceStringNullFunctionParameterError = 41639;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction ReplaceString events
+        /// </summary>
+        public const int ExpressionFunctionReplaceStringEmptyFunctionParameterError = 41639;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction Right events
         /// </summary>
         public const int ExpressionFunctionRightInvalidFunctionParameterCountError = 41640;
@@ -2552,6 +2647,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction Right events
         /// </summary>
         public const int ExpressionFunctionRightInvalidSecondFunctionParameterTypeError = 41640;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Right events
+        /// </summary>
+        public const int ExpressionFunctionRightInvalidSecondFunctionParameterValueError = 41640;
 
         /// <summary>
         /// The event identifier for ExpressionFunction RightPad events
@@ -2627,6 +2727,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction Word events
         /// </summary>
         public const int ExpressionFunctionWordInvalidSecondFunctionParameterTypeError = 41647;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Word events
+        /// </summary>
+        public const int ExpressionFunctionWordInvalidSecondFunctionParameterValueError = 41647;
 
         /// <summary>
         /// The event identifier for ExpressionFunction Word events
@@ -2714,6 +2819,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionConvertSidToStringInvalidFirstFunctionParameterTypeError = 41653;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction ConvertSidToString events
+        /// </summary>
+        public const int ExpressionFunctionConvertSidToStringInvalidSidError = 41653;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction ConvertStringToGuid events
         /// </summary>
         public const int ExpressionFunctionConvertStringToGuidInvalidFunctionParameterCountError = 41654;
@@ -2729,14 +2839,34 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionConvertStringToGuidInvalidFirstFunctionParameterTypeError = 41654;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction ConvertStringToGuid events
+        /// </summary>
+        public const int ExpressionFunctionConvertStringToGuidInvalidFirstFunctionParameterFormatError = 41654;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction ConvertToBoolean events
         /// </summary>
         public const int ExpressionFunctionConvertToBooleanInvalidFunctionParameterCountError = 41655;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction ConvertToBoolean events
+        /// </summary>
+        public const int ExpressionFunctionConvertToBooleanInvalidFirstFunctionParameterTypeError = 41655;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction ConvertToBoolean events
+        /// </summary>
+        public const int ExpressionFunctionConvertToBooleanInvalidFirstFunctionParameterFormatError = 41655;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction ConvertToNumber events
         /// </summary>
         public const int ExpressionFunctionConvertToNumberInvalidFunctionParameterCountError = 41656;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction ConvertToNumber events
+        /// </summary>
+        public const int ExpressionFunctionConvertToNumberInvalidFunctionParameterFormatError = 41656;
 
         /// <summary>
         /// The event identifier for ExpressionFunction ConvertToNumber events
@@ -2804,6 +2934,16 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionSplitStringInvalidFirstFunctionParameterTypeError = 41660;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction SplitString events
+        /// </summary>
+        public const int ExpressionFunctionSplitStringInvalidSecondFunctionParameterTypeError = 41660;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction SplitString events
+        /// </summary>
+        public const int ExpressionFunctionSplitStringInvalidThirdFunctionParameterTypeError = 41660;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction RemoveDuplicates events
         /// </summary>
         public const int ExpressionFunctionRemoveDuplicatesInvalidFunctionParameterCountError = 41661;
@@ -2844,6 +2984,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionConvertFromBase64InvalidFirstFunctionParameterTypeError = 41663;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction ConvertFromBase64 events
+        /// </summary>
+        public const int ExpressionFunctionConvertFromBase64InvalidFirstFunctionParameterError = 41663;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction ConvertToBase64 events
         /// </summary>
         public const int ExpressionFunctionConvertToBase64InvalidFunctionParameterCountError = 41664;
@@ -2871,6 +3016,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for ExpressionFunction DateTimeFromFileTimeUtc events
         /// </summary>
+        public const int ExpressionFunctionDateTimeFromFileTimeUtcFunctionParameterFormatError = 41666;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction DateTimeFromFileTimeUtc events
+        /// </summary>
         public const int ExpressionFunctionDateTimeFromFileTimeUtcInvalidFirstFunctionParameterTypeError = 41666;
 
         /// <summary>
@@ -2882,6 +3032,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction DateTimeToFileTimeUtc events
         /// </summary>
         public const int ExpressionFunctionDateTimeToFileTimeUtcInvalidFirstFunctionParameterTypeError = 41667;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction DateTimeToFileTimeUtc events
+        /// </summary>
+        public const int ExpressionFunctionDateTimeToFileTimeUtcInvalidFirstFunctionParameterFormatError = 41667;
 
         /// <summary>
         /// The event identifier for ExpressionFunction DateTimeSubtract events
@@ -2911,6 +3066,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for ExpressionFunction Subtract events
         /// </summary>
+        public const int ExpressionFunctionSubtractInvalidFunctionParameterFormatError = 41669;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Subtract events
+        /// </summary>
         public const int ExpressionFunctionSubtractNullFunctionParameterError = 41669;
 
         /// <summary>
@@ -2927,6 +3087,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// The event identifier for ExpressionFunction SortList events
         /// </summary>
         public const int ExpressionFunctionSortListInvalidFunctionParameterCountError = 41670;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction SortList events
+        /// </summary>
+        public const int ExpressionFunctionSortListInvalidFunctionParameterFormatError = 41670;
 
         /// <summary>
         /// The event identifier for ExpressionFunction ParametersList events
@@ -3029,6 +3194,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionFormatMultivaluedListInvalidSecondFunctionParameterTypeError = 41676;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction FormatMultivaluedList events
+        /// </summary>
+        public const int ExpressionFunctionFormatMultivaluedListInvalidParameterFormatError = 41676;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction CreateSqlParameter events
         /// </summary>
         public const int ExpressionFunctionCreateSqlParameterInvalidFunctionParameterCountError = 41677;
@@ -3126,6 +3296,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for ExpressionFunction DataTimeFromString events
         /// </summary>
+        public const int ExpressionFunctionDateTimeFromStringInvalidFunctionParameterFormatError = 41682;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction DataTimeFromString events
+        /// </summary>
         public const int ExpressionFunctionDateTimeFromStringNullFunctionParameterError = 41682;
 
         /// <summary>
@@ -3184,6 +3359,11 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         public const int ExpressionFunctionDivideInvalidSecondFunctionParameterTypeError = 41685;
 
         /// <summary>
+        /// The event identifier for ExpressionFunction Divide events
+        /// </summary>
+        public const int ExpressionFunctionDevideFunctionParameterError = 41685;
+
+        /// <summary>
         /// The event identifier for ExpressionFunction Mod events
         /// </summary>
         public const int ExpressionFunctionModInvalidFunctionParameterCountError = 41686;
@@ -3196,8 +3376,19 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
         /// <summary>
         /// The event identifier for ExpressionFunction Mod events
         /// </summary>
+        public const int ExpressionFunctionModNullFunctionParameterError = 41686;
+
+        /// <summary>
+        /// The event identifier for ExpressionFunction Mod events
+        /// </summary>
         public const int ExpressionFunctionModInvalidSecondFunctionParameterTypeError = 41686;
 
+        /// <summary>
+        /// The event identifier for ExpressionFunction Mod events
+        /// </summary>
+        public const int ExpressionFunctionModInvalidSecondFunctionParameterValueError = 41686;
+
+        
         /// <summary>
         /// The event identifier for ExpressionFunction IndexByValue events
         /// </summary>

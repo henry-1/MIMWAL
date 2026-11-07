@@ -1,13 +1,4 @@
-﻿//-----------------------------------------------------------------------------------------------------------------------
-// <copyright file="CreateResource.cs" company="Microsoft">
-//      Copyright (c) Microsoft. All Rights Reserved.
-//      Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
-// </copyright>
-// <summary>
-// CreateResource Activity 
-// </summary>
-//-----------------------------------------------------------------------------------------------------------------------
-
+﻿
 namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activities
 {
     #region Namespaces Declarations
@@ -32,6 +23,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     /// <summary>
     /// Creates resource
     /// </summary>
+    [SuppressMessage("SonarAnalyzer.CSharp", "S2223", Justification = "DependencyProperty")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S1104", Justification = "DependencyProperty")]
     public partial class CreateResource : SequenceActivity
     {
         #region Windows Workflow Designer generated code
@@ -109,28 +102,25 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Guid> Conflicts;
 
         /// <summary>
         /// The create request parameters.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
+        [CLSCompliant(false)]
         public CreateRequestParameter[] CreateParameters;
 
         /// <summary>
         /// The created resource identifier.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Guid CreatedResourceId;
 
         /// <summary>
         /// The expression evaluator.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public ExpressionEvaluator ActivityExpressionEvaluator;
 
         /// <summary>
@@ -138,7 +128,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<UpdateLookupDefinition> LookupUpdates;
 
         /// <summary>
@@ -146,21 +135,18 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Used only internally to bind to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public List<Definition> Queries;
 
         /// <summary>
         /// The current iterated value.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public object Value;
 
         /// <summary>
         /// The value ([//Value]) expressions.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Bound to an activity.")]
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed. VS designer renders public properties as dependency property.")]
         public Dictionary<string, object> ValueExpressions;
 
         /// <summary>
@@ -187,6 +173,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
         /// Break iteration if true
         /// </summary>
         private bool breakIteration;
+
+        private const string ConditionEvaluated = "Condition evaluated '{0}'.";
 
         #endregion
 
@@ -690,24 +678,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             {
                 // Determine if requests should be submitted based on whether or not a condition was supplied
                 // and if that condition resolves to true
-                if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
-                {
-                    submitRequests = true;
-                }
-                else
-                {
-                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
-                    if (resolved is bool && (bool)resolved)
-                    {
-                        submitRequests = true;
-                    }
-                }
-
-                if (!submitRequests)
-                {
+                if (!TestSubmitRequests(submitRequests))
                     return;
-                }
-
+                
                 // If the activity is not configured for iteration, a null value is added to the list
                 // to ensure a single update is submitted based on the update definitions
                 if (string.IsNullOrEmpty(this.Iteration))
@@ -747,6 +720,24 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             {
                 Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourcePrepareIterationExecuteCode, "Iteration: '{0}'. Condition: '{1}'. Submit Request: '{2}'. Total Iterations: '{3}'.", this.Iteration, this.ActivityExecutionCondition, submitRequests, iterationValues.Count);
             }
+        }
+
+        private bool TestSubmitRequests(bool submitRequests)
+        {
+            if (string.IsNullOrEmpty(this.ActivityExecutionCondition))
+            {
+                submitRequests = true;
+            }
+            else
+            {
+                object resolved = this.ActivityExpressionEvaluator.ResolveExpression(this.ActivityExecutionCondition);
+                if (resolved is bool && (bool)resolved)
+                {
+                    submitRequests = true;
+                }
+            }
+
+            return submitRequests;
         }
 
         /// <summary>
@@ -813,7 +804,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceForEachIterationUntilCondition, "Iteration: '{0}' of '{1}'. Condition evaluated '{2}'.", this.iterations, maxIterations, e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceForEachIterationUntilCondition, "Iteration: '{0}' of '{1}'. {2} '{3}'.", this.iterations, maxIterations, ConditionEvaluated, e.Result);
             }
         }
 
@@ -856,6 +847,109 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
         }
 
+
+        private void InitializeExpressionEvaluator()
+        {
+            // Load resolved value expressions to the expression evaluator
+            foreach (KeyValuePair<string, object> pair in this.ValueExpressions)
+            {
+                this.ActivityExpressionEvaluator.LookupCache[pair.Key] = pair.Value;
+            }
+
+            // Clear the variable cache (copy keys first, since we mutate during enumeration)
+            foreach (string variable in this.ActivityExpressionEvaluator.VariableCache.Keys.ToList())
+            {
+                this.ActivityExpressionEvaluator.VariableCache[variable] = null;
+            }
+        }
+
+        private static bool IsVariableTarget(string target)
+        {
+            try
+            {
+                return ExpressionEvaluator.DetermineParameterType(target, true) == ParameterType.Variable;
+            }
+            catch (WorkflowActivityLibraryException)
+            {
+                // Not a recognizable parameter type; treat as an attribute target
+                return false;
+            }
+        }
+
+        private void Assign(string target, object value, bool targetIsVariable, UpdateMode mode, List<CreateRequestParameter> createParameters)
+        {
+            if (targetIsVariable)
+            {
+                this.ActivityExpressionEvaluator.PublishVariable(target, value, mode);
+            }
+            else
+            {
+                createParameters.Add(new CreateRequestParameter(target, value));
+            }
+        }
+
+        private void ApplyAttributeDefinition(Definition definition, List<CreateRequestParameter> createParameters)
+        {
+            object resolved = this.ActivityExpressionEvaluator.ResolveExpression(definition.Left);
+
+            if (resolved == null)
+                return;
+            
+            string target = definition.Right;
+            bool targetIsVariable = IsVariableTarget(target);
+
+            InsertedValuesCollection inserted = resolved as InsertedValuesCollection;
+            if (inserted != null)
+            {
+                // Source used InsertValues: add each value to the variable, or one parameter per value
+                foreach (object value in inserted)
+                {
+                    this.Assign(target, value, targetIsVariable, UpdateMode.Insert, createParameters);
+                }
+                return;
+            }
+
+            RemovedValuesCollection removed = resolved as RemovedValuesCollection;
+            if (removed != null)
+            {
+                this.ApplyRemovedValuesCollection(target, targetIsVariable, removed);
+                return;
+            }
+
+            Type type = resolved.GetType();
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                // Multivalued attribute: one parameter per value, or the whole list to the variable cache
+                if (targetIsVariable)
+                {
+                    this.ActivityExpressionEvaluator.PublishVariable(target, resolved, UpdateMode.Modify);
+                }
+                else
+                {
+                    foreach (object o in (IEnumerable)resolved)
+                    {
+                        createParameters.Add(new CreateRequestParameter(target, o));
+                    }
+                }
+                return;
+            }
+
+            this.Assign(target, resolved, targetIsVariable, UpdateMode.Modify, createParameters);
+        }
+
+        private void ApplyRemovedValuesCollection(string target, bool targetIsVariable, RemovedValuesCollection removed)
+        {
+            // Source used RemoveValues: only meaningful when targeting a variable
+            if (targetIsVariable)
+            {
+                foreach (object value in removed)
+                {
+                    this.ActivityExpressionEvaluator.PublishVariable(target, value, UpdateMode.Remove);
+                }
+            }
+        }
+
+
         /// <summary>
         /// Handles the ExecuteCode event of the PrepareCreate CodeActivity.
         /// </summary>
@@ -867,106 +961,21 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
 
             try
             {
-                // Load resolved value expressions to the expression evaluator
-                foreach (string key in this.ValueExpressions.Keys)
-                {
-                    this.ActivityExpressionEvaluator.LookupCache[key] = this.ValueExpressions[key];
-                }
-
-                // Clear the variable cache for the expression evaluator
-                List<string> variables = this.ActivityExpressionEvaluator.VariableCache.Keys.ToList();
-                foreach (string variable in variables)
-                {
-                    this.ActivityExpressionEvaluator.VariableCache[variable] = null;
-                }
-
+                // Initialze Lookup Cache and Variable Cache
+                this.InitializeExpressionEvaluator();
+                
                 // Create a new collection of create request parameters and
                 // specify the resource type for the new resource
                 List<CreateRequestParameter> createParameters = new List<CreateRequestParameter>
-                    {
-                        new CreateRequestParameter("ObjectType", this.ResourceType)
-                    };
+                {
+                    new CreateRequestParameter("ObjectType", this.ResourceType)
+                };
 
                 // Loop through each attribute assignment definition to build the
                 // create resource parameters which will be used to create the new resource
                 foreach (Definition attributeDefinition in this.attributes)
                 {
-                    // Resolve the source expression, including any functions or concatenation,
-                    // to retrieve the typed value that should be assigned to the target attribute
-                    object resolved = this.ActivityExpressionEvaluator.ResolveExpression(attributeDefinition.Left);
-
-                    // Determine if we are targeting a variable
-                    // If not, assume we are targeting an attribute which should result in a create request parameter
-                    bool targetVariable = false;
-                    try
-                    {
-                        targetVariable = ExpressionEvaluator.DetermineParameterType(attributeDefinition.Right, true) == ParameterType.Variable;
-                    }
-                    catch (WorkflowActivityLibraryException)
-                    {
-                    }
-
-                    if (resolved == null)
-                    {
-                        continue;
-                    }
-
-                    if (resolved.GetType() == typeof(InsertedValuesCollection))
-                    {
-                        // If the resolved object is an InsertedValues collection, the source includes the InsertValues function
-                        // All associated values should be added to the target variable
-                        // If the target is an attribute, simply build a create request parameter for each
-                        foreach (object o in (InsertedValuesCollection)resolved)
-                        {
-                            if (targetVariable)
-                            {
-                                this.ActivityExpressionEvaluator.PublishVariable(attributeDefinition.Right, o, UpdateMode.Insert);
-                            }
-                            else
-                            {
-                                createParameters.Add(new CreateRequestParameter(attributeDefinition.Right, o));
-                            }
-                        }
-                    }
-                    else if (resolved.GetType() == typeof(RemovedValuesCollection))
-                    {
-                        // If the resolved object is a RemovedValues collection, the source includes the RemoveValues function
-                        // All associated values should be removed from the target, but only when the target is a variable
-                        if (!targetVariable)
-                        {
-                            continue;
-                        }
-
-                        foreach (object o in (RemovedValuesCollection)resolved)
-                        {
-                            this.ActivityExpressionEvaluator.PublishVariable(attributeDefinition.Right, o, UpdateMode.Remove);
-                        }
-                    }
-                    else if (resolved.GetType().IsGenericType && resolved.GetType().GetGenericTypeDefinition() == typeof(List<>))
-                    {
-                        // If the resolved object is a List<>, we are attempting to populate a multivalued attribute
-                        // We need to create a new create request parameter for each value or write the list to the variable cache
-                        if (targetVariable)
-                        {
-                            this.ActivityExpressionEvaluator.PublishVariable(attributeDefinition.Right, resolved, UpdateMode.Modify);
-                        }
-                        else
-                        {
-                            createParameters.AddRange(from object o in (IEnumerable)resolved select new CreateRequestParameter(attributeDefinition.Right, o));
-                        }
-                    }
-                    else
-                    {
-                        // For all other conditions, build a new create request parameter for the target attribute or publish the variable
-                        if (targetVariable)
-                        {
-                            this.ActivityExpressionEvaluator.PublishVariable(attributeDefinition.Right, resolved, UpdateMode.Modify);
-                        }
-                        else
-                        {
-                            createParameters.Add(new CreateRequestParameter(attributeDefinition.Right, resolved));
-                        }
-                    }
+                    this.ApplyAttributeDefinition(attributeDefinition, createParameters);                   
                 }
 
                 // Publish the create parameters to the create resource activities
@@ -1044,7 +1053,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceCheckConflictCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceCheckConflictCondition, ConditionEvaluated, e.Result);
             }
         }
 
@@ -1063,7 +1072,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceUniqueCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceUniqueCondition, ConditionEvaluated, e.Result);
             }
         }
 
@@ -1082,7 +1091,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceContentToPublishCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceContentToPublishCondition, ConditionEvaluated, e.Result);
             }
         }
 
@@ -1101,7 +1110,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
             }
             finally
             {
-                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceAuthorizationCondition, "Condition evaluated '{0}'.", e.Result);
+                Logger.Instance.WriteMethodExit(EventIdentifier.CreateResourceAuthorizationCondition, ConditionEvaluated, e.Result);
             }
         }
 
