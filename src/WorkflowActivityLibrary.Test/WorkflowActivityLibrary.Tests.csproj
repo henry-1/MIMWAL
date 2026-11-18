@@ -37,9 +37,11 @@
   <ItemGroup>
     <Reference Include="Microsoft.ResourceManagement, Version=4.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Security" />
     <Reference Include="System.Workflow.Activities" />
     <Reference Include="System.Workflow.ComponentModel" />
@@ -123,6 +125,10 @@
     <Compile Include="ExpressionFunctions\ExpressionFunctionTestHelper.cs" />
     <Compile Include="ExpressionFunctions\Collection\SortList.Tests.cs" />
     <Compile Include="ExpressionFunctions\Math\MathCount.Tests.cs" />
+    <Compile Include="ExpressionFunctions\SQL\CreateSqlParameter.Tests.cs" />
+    <Compile Include="ExpressionFunctions\SQL\CreateSqlParameter2.Tests.cs" />
+    <Compile Include="ExpressionFunctions\SQL\ExecuteSqlScalar.Tests.cs" />
+    <Compile Include="ExpressionFunctions\SQL\ExecuteSqlNonQuery.Tests.cs" />
     <Compile Include="ExpressionFunctions\String\StringTitleCase.Tests.cs" />
     <Compile Include="ExpressionFunctions\String\StringConcatenate.Tests.cs" />
     <Compile Include="ExpressionFunctions\String\StringConcatenateMultivaluedString.Tests.cs" />
@@ -170,6 +176,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ExpressionFunctions\Shared\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

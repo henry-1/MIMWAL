@@ -137,6 +137,8 @@
     <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.LessThan.cs" />
     <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.Not.cs" />
     <Compile Include="Common\ExpressionFunction\Boolean\ExpressionFunction.Or.cs" />
+    <Compile Include="Common\ExpressionFunction\SQL\ExpressionFunction.CreateSqlParameter.cs" />
+    <Compile Include="Common\ExpressionFunction\SQL\ExpressionFunction.CreateSqlParameter2.cs" />
     <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.RegexMatch.cs" />
     <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertNumberToList.cs" />
     <Compile Include="Common\ExpressionFunction\Converter\ExpressionFunction.ConvertStringToGuid.cs" />
@@ -178,7 +180,7 @@
     <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParameterValueAdded.cs" />
     <Compile Include="Common\ExpressionFunction\Parameter\ExpressionFunction.ParameterValueRemoved.cs" />
     <Compile Include="Common\ExpressionFunction\Shared\ExpressionFunction.Shared.Helper.cs" />
-    <Compile Include="Common\ExpressionFunction\SQL\ExpressionFunction.SQL.cs" />
+    <Compile Include="Common\ExpressionFunction\SQL\ExpressionFunction.ExecuteSql.cs" />
     <Compile Include="Common\ExpressionFunction\String\ExpressionFunctio.TitleCase.cs" />
     <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.Concatenate.cs" />
     <Compile Include="Common\ExpressionFunction\String\ExpressionFunction.ConcatenateMultivaluedString.cs" />

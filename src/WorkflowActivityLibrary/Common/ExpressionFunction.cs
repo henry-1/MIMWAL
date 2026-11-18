@@ -14,29 +14,14 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Common
 
     using System;
     using System.Collections;
-    using System.Collections.Generic;
-    using System.Configuration;
-    using System.Data;
-    using System.Data.Common;
-    using System.Data.Odbc;
-    using System.Data.SqlClient;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
-    using System.Security.Principal;
     using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Web;
     using System.Xml;
-    using System.Xml.Linq;
     using System.Xml.Serialization;
-    using System.Xml.XPath;
-    using Microsoft.ResourceManagement.WebServices;
-    using Microsoft.ResourceManagement.WebServices.WSResourceManagement;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Enumerations;
     using MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Exceptions;
-    using System.Security.Cryptography;
 
     #endregion
 

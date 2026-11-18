@@ -21,7 +21,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     using System.Globalization;
     using System.IO;
     using System.Linq;    
-    using System.Security;
     using System.Text;
     using System.Workflow.Activities;
     using System.Workflow.ComponentModel;
@@ -33,7 +32,6 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.Activitie
     using System.Net;
     using System.Web.Script.Serialization;
     using System.Security.Cryptography;
-
     using System.Runtime.InteropServices;
 
     #endregion

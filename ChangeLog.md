@@ -27,7 +27,10 @@ All notable changes to the MIMWAL project are documented in this file.
 * `Add()` now throws when calculations exceed the `Int64` range instead of silently wrapping.
 * `Subtract()` now throws when calculations exceed the `Int64` range instead of silently wrapping.
 * Rewrote `PasswordGenerator` class to reliably meet the required password complexity rules.
-* Improved XPath syntax validation using XPathExpression.Compile() and moved IsXpath() to its own XpathValidator class.
+* Improved XPath syntax validation using `XPathExpression.Compile()` and moved `IsXpath()` to its own `XpathValidator` class.
+* Added an optional SQL injection prevention measure through the new `WAL_DenySqlTextCommands` setting. Setting it to true prevents `ExecuteSqlScalar` and `ExecuteSqlNonQuery` from executing arbitrary SQL text while retaining support for parameterized stored procedures. Existing behavior is preserved when the setting is omitted or set to false.
+
+
 
 #### Workflow Activities
 * Fixed message templates in `Messages.resx` file, including `RequestApproval_MultipleEscalationEmailTemplatesError`, where incorrect placeholders could cause a secondary error and hide the original error.

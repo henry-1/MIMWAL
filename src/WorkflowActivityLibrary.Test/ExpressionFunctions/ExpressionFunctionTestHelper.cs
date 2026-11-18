@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Xml;
@@ -130,5 +131,19 @@ namespace WorkflowActivityLibrary.Tests.ExpressionFunctions
 
             return func.Run();
         }
+
+        public static void SetSqlTextCommandDeniedSettingOverride(string value)
+        {
+            FieldInfo field = typeof(ExpressionFunction).GetField(
+                "SqlTextCommandDeniedSettingOverride",
+                BindingFlags.Static | BindingFlags.NonPublic);
+
+            if (field == null)
+                throw new InvalidOperationException(
+                    "SqlTextCommandDeniedSettingOverride field was not found.");
+
+            field.SetValue(null, value);
+        }
+
     }
 }

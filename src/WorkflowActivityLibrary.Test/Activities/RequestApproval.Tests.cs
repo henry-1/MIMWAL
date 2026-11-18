@@ -661,8 +661,24 @@ namespace WorkflowActivityLibrary.Tests.Activities
         {
             object[,] testCases = new object[,]
             {
-        { "/Person[DisplayName='Test']", true },
-        { "approver@example.com", false }
+                // Valid XPath
+                { "/Person[DisplayName='Test']", true },
+                { "/Person[DisplayName=\"Test\"]", true },
+                { "/Person[DisplayName=Concatenate('Test','User')]", true },
+
+                // Not XPath
+                { "approver@example.com", false },
+                { "Person", false },
+                { "a", false },
+                { "2", false },
+                { "\"2\"", false },
+                { "Add(2,2)", false },
+
+                // Invalid XPath
+                { "/", false },
+                { "//", false },
+                { "/Person[", false },
+                { "/Person[DisplayName=]", false }
             };
 
             for (int i = 0; i < testCases.GetLength(0); i++)

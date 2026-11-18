@@ -2421,6 +2421,12 @@ namespace WorkflowActivityLibrary.Tests.Activities
                 },
                 new object[]
                 {
+                    "ExpressionFunction",
+                    "ConcatenateMultivaluedString('Administrator','@domain.de')",
+                    false
+                },
+                new object[]
+                {
                     "Null",
                     null,
                     false
@@ -2484,6 +2490,12 @@ namespace WorkflowActivityLibrary.Tests.Activities
                 {
                     "Expression",
                     "[//WorkflowData/Recipients]",
+                    false
+                },
+                new object[]
+                {
+                    "String",
+                    "Max",
                     false
                 },
                 new object[]
