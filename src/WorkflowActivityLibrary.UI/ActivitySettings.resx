@@ -825,25 +825,25 @@
   <data name="WorkflowDataVariablesDefinitionValidationError" xml:space="preserve">
     <value>One or more workflow lookup variable definitions are incomplete</value>
   </data>
-  <data name="PowershellVersion" xml:space="preserve">
-    <value>Powershell Version</value>
+  <data name="PowerShellVersion" xml:space="preserve">
+    <value>PowerShell Version</value>
   </data>
-  <data name="PowershellVersionHelpText" xml:space="preserve">
-    <value>Specify the Powershell Version to be used with this Workflow</value>
+  <data name="PowerShellVersionHelpText" xml:space="preserve">
+    <value>Specify the PowerShell Version to be used with this Workflow</value>
   </data>
-  <data name="Powershell5" xml:space="preserve">
-    <value>Windows Powershell (5.x)</value>
+  <data name="PowerShell5" xml:space="preserve">
+    <value>Windows PowerShell (5.x)</value>
   </data>
-  <data name="Powershell7" xml:space="preserve">
-    <value>Powershell (7.x)</value>
+  <data name="PowerShell7" xml:space="preserve">
+    <value>PowerShell (7.x)</value>
   </data>
-  <data name="PowershellRequestTimeout" xml:space="preserve">
+  <data name="PowerShellRequestTimeout" xml:space="preserve">
     <value>Script ExecutionTimeout</value>
   </data>
-  <data name="PowershellRequestTimeoutHelpText" xml:space="preserve">
+  <data name="PowerShellRequestTimeoutHelpText" xml:space="preserve">
     <value>Specify a value (ms) MIM workflow will wait for script execution to complete. 0 (zero) meaning, wait without limit. Setting no limit could result in a script running forever and blocking the Workflow.</value>
   </data>
-  <data name="PowershellTimeoutValidationError" xml:space="preserve">
+  <data name="PowerShellTimeoutValidationError" xml:space="preserve">
     <value>Timeout must be an integer number greater then or equal to zero.</value>
   </data>
   <data name="ExecutionConditionValidationError" xml:space="preserve">

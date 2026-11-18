@@ -826,20 +826,20 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Windows Powershell (5.x).
+        ///   Looks up a localized string similar to Windows PowerShell (5.x).
         /// </summary>
-        internal static string Powershell5 {
+        internal static string PowerShell5 {
             get {
-                return ResourceManager.GetString("Powershell5", resourceCulture);
+                return ResourceManager.GetString("PowerShell5", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Powershell (7.x).
+        ///   Looks up a localized string similar to PowerShell (7.x).
         /// </summary>
-        internal static string Powershell7 {
+        internal static string PowerShell7 {
             get {
-                return ResourceManager.GetString("Powershell7", resourceCulture);
+                return ResourceManager.GetString("PowerShell7", resourceCulture);
             }
         }
         
@@ -882,18 +882,18 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         /// <summary>
         ///   Looks up a localized string similar to Script ExecutionTimeout.
         /// </summary>
-        internal static string PowershellRequestTimeout {
+        internal static string PowerShellRequestTimeout {
             get {
-                return ResourceManager.GetString("PowershellRequestTimeout", resourceCulture);
+                return ResourceManager.GetString("PowerShellRequestTimeout", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Specify a value (ms) MIM workflow will wait for script execution to complete. 0 (zero) meaning, wait without limit. Setting no limit could result in a script running forever and blocking the Workflow..
         /// </summary>
-        internal static string PowershellRequestTimeoutHelpText {
+        internal static string PowerShellRequestTimeoutHelpText {
             get {
-                return ResourceManager.GetString("PowershellRequestTimeoutHelpText", resourceCulture);
+                return ResourceManager.GetString("PowerShellRequestTimeoutHelpText", resourceCulture);
             }
         }
         
@@ -1017,9 +1017,9 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         /// <summary>
         ///   Looks up a localized string similar to Timeout must be an integer number greater then or equal to zero..
         /// </summary>
-        internal static string PowershellTimeoutValidationError {
+        internal static string PowerShellTimeoutValidationError {
             get {
-                return ResourceManager.GetString("PowershellTimeoutValidationError", resourceCulture);
+                return ResourceManager.GetString("PowerShellTimeoutValidationError", resourceCulture);
             }
         }
         
@@ -1078,20 +1078,20 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Powershell Version.
+        ///   Looks up a localized string similar to PowerShell Version.
         /// </summary>
-        internal static string PowershellVersion {
+        internal static string PowerShellVersion {
             get {
-                return ResourceManager.GetString("PowershellVersion", resourceCulture);
+                return ResourceManager.GetString("PowerShellVersion", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify the Powershell Version to be used with this Workflow.
+        ///   Looks up a localized string similar to Specify the PowerShell Version to be used with this Workflow.
         /// </summary>
-        internal static string PowershellVersionHelpText {
+        internal static string PowerShellVersionHelpText {
             get {
-                return ResourceManager.GetString("PowershellVersionHelpText", resourceCulture);
+                return ResourceManager.GetString("PowerShellVersionHelpText", resourceCulture);
             }
         }
         

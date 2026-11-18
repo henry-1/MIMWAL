@@ -150,8 +150,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
                 // Add standard controls to the form via the activity form controller
                 this.activityDisplayName = this.controller.AddDisplayNameTextBox(ActivitySettings.ActivityDisplayName);
 
-                this.powershellVersion = this.controller.AddDropDownList(ActivitySettings.PowershellVersion, ActivitySettings.PowershellVersionHelpText);
-                this.powerShellExecutionTimeout = this.controller.AddTextBox(ActivitySettings.PowershellRequestTimeout, ActivitySettings.PowershellRequestTimeoutHelpText, false, true);
+                this.powershellVersion = this.controller.AddDropDownList(ActivitySettings.PowerShellVersion, ActivitySettings.PowerShellVersionHelpText);
+                this.powerShellExecutionTimeout = this.controller.AddTextBox(ActivitySettings.PowerShellRequestTimeout, ActivitySettings.PowerShellRequestTimeoutHelpText, false, true);
 
                 this.advanced = this.controller.AddCheckBox(ActivitySettings.AdvancedFeatures, ActivitySettings.AdvancedFeaturesHelpText);
                 this.advanced.CheckBoxControl.CheckedChanged += this.Advanced_CheckedChanged;
@@ -207,8 +207,8 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
 
                 // Configure controls
 
-                this.powershellVersion.AddListItem(ActivitySettings.Powershell5, PowershellVersion.WindowsPowershell.ToString());
-                this.powershellVersion.AddListItem(ActivitySettings.Powershell7, PowershellVersion.Powershell.ToString());
+                this.powershellVersion.AddListItem(ActivitySettings.PowerShell5, PowershellVersion.WindowsPowershell.ToString());
+                this.powershellVersion.AddListItem(ActivitySettings.PowerShell7, PowershellVersion.Powershell.ToString());
 
                 this.powerShellExecutionTimeout.TextBoxControl.TextMode = TextBoxMode.SingleLine;
 
@@ -556,7 +556,7 @@ namespace MicrosoftServices.IdentityManagement.WorkflowActivityLibrary.UI.Forms
             if (parsed && value >= 0)
                 return true;            
 
-            this.controller.ValidationError = ActivitySettings.PowershellTimeoutValidationError;
+            this.controller.ValidationError = ActivitySettings.PowerShellTimeoutValidationError;
             return false;
         }
 
